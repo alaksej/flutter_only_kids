@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:only_kids/services/counter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:only_kids/blocs/counter_bloc.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -8,15 +9,17 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CounterBloc _counter = BlocProvider.of<CounterBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(title),
       ),
-      body: StreamBuilder(
-          stream: counterService.stream$,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
+      body: BlocBuilder(
+          bloc: _counter,
+          builder: (BuildContext context, int count) {
             return Center(
               // Center is a layout widget. It takes a single child and positions it
               // in the middle of the parent.
@@ -27,7 +30,7 @@ class MyHomePage extends StatelessWidget {
                     'You have pushed the button this many times:',
                   ),
                   Text(
-                    '${snapshot.data}',
+                    '$count',
                     style: Theme.of(context).textTheme.display1,
                   ),
                 ],
@@ -35,7 +38,9 @@ class MyHomePage extends StatelessWidget {
             );
           }),
       floatingActionButton: FloatingActionButton(
-        onPressed: counterService.increment,
+        onPressed: () {
+          _counter.dispatch(CounterEvent.increment);
+        },
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
