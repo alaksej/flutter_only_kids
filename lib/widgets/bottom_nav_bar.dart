@@ -25,8 +25,8 @@ class BottomNavBar extends StatelessWidget {
                 title: Text('Book'),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.call),
-                title: Text('Call Us'),
+                icon: Icon(Icons.location_on),
+                title: Text('Contacts'),
               ),
             ],
             currentIndex: _navBarBloc.currentState,
