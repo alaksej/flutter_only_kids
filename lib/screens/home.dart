@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:only_kids/blocs/counter_bloc.dart';
+import 'package:only_kids/widgets/bottom_nav_bar.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -43,7 +44,8 @@ class MyHomePage extends StatelessWidget {
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
+      bottomNavigationBar: BottomNavBar(),
     );
   }
 }

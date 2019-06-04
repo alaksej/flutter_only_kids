@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/counter_bloc.dart';
+import 'blocs/nav_bar_bloc.dart';
 import 'screens/home.dart';
 
 void main() => runApp(MyApp());
@@ -15,9 +16,12 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: BlocProvider<CounterBloc>(
-          bloc: CounterBloc(),
-          child: MyHomePage(title: 'Flutter Demo Home Page'),
+        home: BlocProviderTree(
+          blocProviders: [
+            BlocProvider<CounterBloc>(bloc: CounterBloc()),
+            BlocProvider<NavBarBloc>(bloc: NavBarBloc()),
+          ],
+          child: MyHomePage(title: 'Only Kids'),
         ));
   }
 }
