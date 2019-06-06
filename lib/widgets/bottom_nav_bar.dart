@@ -30,7 +30,7 @@ class BottomNavBar extends StatelessWidget {
               ),
             ],
             currentIndex: _navBarBloc.currentState,
-            selectedItemColor: Colors.amber[800],
+            selectedItemColor: Theme.of(context).accentColor,
             onTap: (index) {
               _navBarBloc.dispatch(NavBarEvent(index));
             },
