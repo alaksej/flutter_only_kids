@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          accentColor: Colors.pink,
         ),
         home: BlocProviderTree(
           blocProviders: [
