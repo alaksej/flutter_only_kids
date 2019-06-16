@@ -1,8 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:only_kids/blocs/counter_bloc.dart';
 import 'package:only_kids/screens/about_page.dart';
 import 'package:only_kids/screens/services_page.dart';
 import 'package:only_kids/screens/team_page.dart';
@@ -30,8 +28,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final CounterBloc _counter = BlocProvider.of<CounterBloc>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -43,7 +39,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: _HomeBody(counter: _counter),
+      body: _HomeBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -61,14 +57,6 @@ class _HomePageState extends State<HomePage> {
 }
 
 class _HomeBody extends StatelessWidget {
-  const _HomeBody({
-    Key key,
-    @required CounterBloc counter,
-  })  : _counter = counter,
-        super(key: key);
-
-  final CounterBloc _counter;
-
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -80,57 +68,50 @@ class _HomeBody extends StatelessWidget {
               Colors.black.withOpacity(0.2), BlendMode.dstATop),
         ),
       ),
-      child: BlocBuilder(
-          bloc: _counter,
-          builder: (BuildContext context, int count) {
-            return Center(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                    // color: Theme.of(context).canvasColor,
-                    ),
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: ListView(
-                    children: <Widget>[
-                      ListTile(
-                        title: Text('Services'),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      ServicesPage()));
-                        },
-                      ),
-                      Divider(height: 1.0),
-                      ListTile(
-                        title: Text('Our Team'),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      TeamPage()));
-                        },
-                      ),
-                      Divider(height: 1.0),
-                      ListTile(
-                        title: Text('About Us'),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      AboutPage()));
-                        },
-                      ),
-                      Divider(height: 1.0),
-                    ],
-                  ),
-                ),
+      child: Center(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+              // color: Theme.of(context).canvasColor,
               ),
-            );
-          }),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 10.0),
+            child: ListView(
+              children: <Widget>[
+                ListTile(
+                  title: Text('Services'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => ServicesPage()));
+                  },
+                ),
+                Divider(height: 1.0),
+                ListTile(
+                  title: Text('Our Team'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => TeamPage()));
+                  },
+                ),
+                Divider(height: 1.0),
+                ListTile(
+                  title: Text('About Us'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => AboutPage()));
+                  },
+                ),
+                Divider(height: 1.0),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

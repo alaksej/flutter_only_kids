@@ -49,19 +49,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
             ),
             RaisedButton(
               onPressed: () {
-                final picked = DateTime(
-                  _selectedDate.year,
-                  _selectedDate.month,
-                  _selectedDate.day,
-                  _selectedTime.hour,
-                  _selectedTime.minute,
-                );
-                final String name = _textEditingController.text;
-                print('Creating appointment for $name on $picked');
-                Firestore.instance
-                    .collection('appointments')
-                    .document()
-                    .setData({'name': name, 'datetime': picked});
+                _submitAppointment();
               },
               child: Text('Submit'),
             ),
@@ -69,6 +57,23 @@ class _AppointmentPageState extends State<AppointmentPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _submitAppointment() async {
+    final picked = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+      _selectedTime.hour,
+      _selectedTime.minute,
+    );
+    final String name = _textEditingController.text;
+    print('Creating appointment for $name on $picked');
+    await Firestore.instance
+        .collection('appointments')
+        .document()
+        .setData({'name': name, 'datetime': picked});
+    Navigator.pop(context);
   }
 }
 

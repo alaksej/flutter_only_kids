@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'blocs/counter_bloc.dart';
 import 'blocs/nav_bar_bloc.dart';
 import 'screens/home_page.dart';
 
@@ -15,7 +14,6 @@ class MyApp extends StatelessWidget {
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     analytics.logAppOpen();
@@ -29,8 +27,9 @@ class MyApp extends StatelessWidget {
         navigatorObservers: <NavigatorObserver>[observer],
         home: BlocProviderTree(
           blocProviders: [
-            BlocProvider<CounterBloc>(bloc: CounterBloc()),
-            BlocProvider<NavBarBloc>(bloc: NavBarBloc()),
+            BlocProvider<NavBarBloc>(
+              builder: (BuildContext context) => NavBarBloc(),
+            ),
           ],
           child: HomePage(title: 'Only Kids'),
         ));
