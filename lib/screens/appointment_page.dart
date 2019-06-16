@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppointmentPage extends StatefulWidget {
   @override
@@ -9,7 +10,7 @@ class AppointmentPage extends StatefulWidget {
 class _AppointmentPageState extends State<AppointmentPage> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = _DateTimePicker.timeSlots[0];
-
+  TextEditingController _textEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,15 +44,24 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 });
               },
             ),
+            TextField(
+              controller: _textEditingController,
+            ),
             RaisedButton(
               onPressed: () {
-                print(DateTime(
+                final picked = DateTime(
                   _selectedDate.year,
                   _selectedDate.month,
                   _selectedDate.day,
                   _selectedTime.hour,
                   _selectedTime.minute,
-                ));
+                );
+                final String name = _textEditingController.text;
+                print('Creating appointment for $name on $picked');
+                Firestore.instance
+                    .collection('appointments')
+                    .document()
+                    .setData({'name': name, 'datetime': picked});
               },
               child: Text('Submit'),
             ),
