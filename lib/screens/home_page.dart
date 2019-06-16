@@ -31,8 +31,10 @@ class HomePage extends StatelessWidget {
       body: _HomeBody(counter: _counter),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => AppointmentPage()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AppointmentPage()));
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
@@ -84,9 +86,7 @@ class _HomeBody extends StatelessWidget {
                                       ServicesPage()));
                         },
                       ),
-                      Divider(
-                        height: 1.0,
-                      ),
+                      Divider(height: 1.0),
                       ListTile(
                         title: Text('Our Team'),
                         onTap: () {
@@ -97,9 +97,7 @@ class _HomeBody extends StatelessWidget {
                                       TeamPage()));
                         },
                       ),
-                      Divider(
-                        height: 1.0,
-                      ),
+                      Divider(height: 1.0),
                       ListTile(
                         title: Text('About Us'),
                         onTap: () {
@@ -110,9 +108,7 @@ class _HomeBody extends StatelessWidget {
                                       AboutPage()));
                         },
                       ),
-                      Divider(
-                        height: 1.0,
-                      ),
+                      Divider(height: 1.0),
                     ],
                   ),
                 ),
