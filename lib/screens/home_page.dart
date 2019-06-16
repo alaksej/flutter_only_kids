@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
@@ -71,15 +72,35 @@ class _HomeBody extends StatelessWidget {
       child: Column(
         children: <Widget>[
           _buildPageItems(context),
+          _buildAppointments(context),
         ],
       ),
     );
+  }
+
+  Widget _buildAppointments(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('appointments').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return LinearProgressIndicator();
+
+          return ListView(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            padding: const EdgeInsets.only(top: 20.0),
+            children: snapshot.data.documents
+                .map((data) => _buildListItem(context, data))
+                .toList(),
+          );
+        });
   }
 
   Container _buildPageItems(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10.0),
       child: ListView(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
         children: <Widget>[
           ListTile(
             title: Text('Services'),
@@ -115,4 +136,44 @@ class _HomeBody extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    final record = Record.fromSnapshot(data);
+
+    return Padding(
+      key: ValueKey(record.name),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: ListTile(
+            title: Text(record.name),
+            trailing: Text(record.datetime.toString()),
+            onTap: () {
+              print('Edit');
+            }),
+      ),
+    );
+  }
+}
+
+class Record {
+  final String name;
+  final DateTime datetime;
+  final DocumentReference reference;
+
+  Record.fromMap(Map<String, dynamic> map, {this.reference})
+      : assert(map['name'] != null),
+        assert(map['datetime'] != null),
+        name = map['name'],
+        datetime = DateTime.fromMicrosecondsSinceEpoch(
+            map['datetime'].microsecondsSinceEpoch);
+
+  Record.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data, reference: snapshot.reference);
+
+  @override
+  String toString() => "Record<$name:$datetime>";
 }
