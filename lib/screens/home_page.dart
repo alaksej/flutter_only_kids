@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:only_kids/blocs/counter_bloc.dart';
+import 'package:only_kids/screens/about_page.dart';
+import 'package:only_kids/screens/services_page.dart';
+import 'package:only_kids/screens/team_page.dart';
 import 'package:only_kids/widgets/bottom_nav_bar.dart';
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+import 'book_page.dart';
+
+class HomePage extends StatelessWidget {
+  HomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
@@ -23,10 +28,11 @@ class MyHomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: MyBody(counter: _counter),
+      body: _HomeBody(counter: _counter),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _counter.dispatch(CounterEvent.increment);
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) => BookPage()));
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
@@ -36,8 +42,8 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class MyBody extends StatelessWidget {
-  const MyBody({
+class _HomeBody extends StatelessWidget {
+  const _HomeBody({
     Key key,
     @required CounterBloc counter,
   })  : _counter = counter,
@@ -70,12 +76,42 @@ class MyBody extends StatelessWidget {
                     children: <Widget>[
                       ListTile(
                         title: Text('Services'),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ServicesPage()));
+                        },
+                      ),
+                      Divider(
+                        height: 1.0,
                       ),
                       ListTile(
                         title: Text('Our Team'),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      TeamPage()));
+                        },
+                      ),
+                      Divider(
+                        height: 1.0,
                       ),
                       ListTile(
                         title: Text('About Us'),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      AboutPage()));
+                        },
+                      ),
+                      Divider(
+                        height: 1.0,
                       ),
                     ],
                   ),

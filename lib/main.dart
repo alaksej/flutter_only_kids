@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/counter_bloc.dart';
 import 'blocs/nav_bar_bloc.dart';
-import 'screens/home.dart';
+import 'screens/home_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Only Kids',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           accentColor: Colors.pink,
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             BlocProvider<CounterBloc>(bloc: CounterBloc()),
             BlocProvider<NavBarBloc>(bloc: NavBarBloc()),
           ],
-          child: MyHomePage(title: 'Only Kids'),
+          child: HomePage(title: 'Only Kids'),
         ));
   }
 }
