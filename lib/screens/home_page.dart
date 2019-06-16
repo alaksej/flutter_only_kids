@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:only_kids/blocs/counter_bloc.dart';
@@ -8,10 +10,23 @@ import 'package:only_kids/widgets/bottom_nav_bar.dart';
 
 import 'appointment_page.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({Key key, this.title, this.analytics, this.observer})
+      : super(key: key);
 
   final String title;
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
+
+  @override
+  _HomePageState createState() => _HomePageState(analytics, observer);
+}
+
+class _HomePageState extends State<HomePage> {
+  _HomePageState(this.analytics, this.observer);
+
+  final FirebaseAnalyticsObserver observer;
+  final FirebaseAnalytics analytics;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +34,7 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.more_vert),
@@ -35,6 +50,7 @@ class HomePage extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => AppointmentPage()));
+          analytics.setCurrentScreen(screenName: 'Appointment');
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
