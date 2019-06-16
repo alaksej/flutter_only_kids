@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 class AppointmentPage extends StatelessWidget {
   final DateTime _fromDate = DateTime.now();
-  final TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
+  final TimeOfDay _fromTime = _DateTimePicker.timeList[0];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,6 +82,29 @@ class _InputDropdown extends StatelessWidget {
 }
 
 class _DateTimePicker extends StatelessWidget {
+  static final List<TimeOfDay> timeList = const [
+    TimeOfDay(hour: 10, minute: 0),
+    TimeOfDay(hour: 10, minute: 30),
+    TimeOfDay(hour: 11, minute: 0),
+    TimeOfDay(hour: 11, minute: 30),
+    TimeOfDay(hour: 12, minute: 0),
+    TimeOfDay(hour: 12, minute: 30),
+    TimeOfDay(hour: 13, minute: 0),
+    TimeOfDay(hour: 13, minute: 30),
+    TimeOfDay(hour: 14, minute: 0),
+    TimeOfDay(hour: 14, minute: 30),
+    TimeOfDay(hour: 15, minute: 0),
+    TimeOfDay(hour: 15, minute: 30),
+    TimeOfDay(hour: 16, minute: 0),
+    TimeOfDay(hour: 16, minute: 30),
+    TimeOfDay(hour: 17, minute: 0),
+    TimeOfDay(hour: 17, minute: 30),
+    TimeOfDay(hour: 18, minute: 0),
+    TimeOfDay(hour: 18, minute: 30),
+    TimeOfDay(hour: 19, minute: 0),
+    TimeOfDay(hour: 19, minute: 30),
+  ];
+
   const _DateTimePicker(
       {Key key,
       this.labelText,
@@ -99,10 +122,15 @@ class _DateTimePicker extends StatelessWidget {
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+      selectableDayPredicate: (DateTime date) => date.isAfter(
+            DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 1),
+          ),
+    );
     if (picked != null && picked != selectedDate) selectDate(picked);
   }
 
@@ -132,11 +160,19 @@ class _DateTimePicker extends StatelessWidget {
         const SizedBox(width: 12.0),
         Expanded(
           flex: 3,
-          child: _InputDropdown(
-            valueText: selectedTime.format(context),
-            valueStyle: valueStyle,
-            onPressed: () {
-              _selectTime(context);
+          child: DropdownButton(
+            style: valueStyle,
+            value: selectedTime.format(context),
+            items: timeList
+                .map(
+                  (TimeOfDay timeOfDay) => DropdownMenuItem(
+                        child: Text(timeOfDay.format(context)),
+                        value: timeOfDay.format(context),
+                      ),
+                )
+                .toList(),
+            onChanged: (value) {
+              print(value);
             },
           ),
         ),
