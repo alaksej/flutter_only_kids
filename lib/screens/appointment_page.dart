@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class AppointmentPage extends StatelessWidget {
-  final DateTime _fromDate = DateTime.now();
-  final TimeOfDay _fromTime = _DateTimePicker.timeList[0];
+class AppointmentPage extends StatefulWidget {
+  @override
+  _AppointmentPageState createState() => _AppointmentPageState();
+}
+
+class _AppointmentPageState extends State<AppointmentPage> {
+  DateTime _selectedDate = DateTime.now();
+  TimeOfDay _selectedTime = _DateTimePicker.timeSlots[0];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,17 +30,29 @@ class AppointmentPage extends StatelessWidget {
               ],
             ),
             _DateTimePicker(
-              selectedDate: _fromDate,
-              selectedTime: _fromTime,
+              selectedDate: _selectedDate,
+              selectedTime: _selectedTime,
               selectDate: (DateTime date) {
-                print(date);
+                setState(() {
+                  _selectedDate = date;
+                });
               },
               selectTime: (TimeOfDay time) {
-                print(time);
+                setState(() {
+                  _selectedTime = time;
+                });
               },
             ),
             RaisedButton(
-              onPressed: () {},
+              onPressed: () {
+                print(DateTime(
+                  _selectedDate.year,
+                  _selectedDate.month,
+                  _selectedDate.day,
+                  _selectedTime.hour,
+                  _selectedTime.minute,
+                ));
+              },
               child: Text('Submit'),
             ),
           ],
@@ -86,7 +104,7 @@ class _InputDropdown extends StatelessWidget {
 }
 
 class _DateTimePicker extends StatelessWidget {
-  static final List<TimeOfDay> timeList = const [
+  static final List<TimeOfDay> timeSlots = const [
     TimeOfDay(hour: 10, minute: 0),
     TimeOfDay(hour: 10, minute: 30),
     TimeOfDay(hour: 11, minute: 0),
@@ -138,9 +156,9 @@ class _DateTimePicker extends StatelessWidget {
     if (picked != null && picked != selectedDate) selectDate(picked);
   }
 
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay picked =
-        await showTimePicker(context: context, initialTime: selectedTime);
+  void _selectTime(BuildContext context, String value) async {
+    final TimeOfDay picked = _DateTimePicker.timeSlots
+        .firstWhere((item) => item.format(context) == value);
     if (picked != null && picked != selectedTime) selectTime(picked);
   }
 
@@ -167,7 +185,7 @@ class _DateTimePicker extends StatelessWidget {
           child: DropdownButton(
             style: valueStyle,
             value: selectedTime.format(context),
-            items: timeList
+            items: timeSlots
                 .map(
                   (TimeOfDay timeOfDay) => DropdownMenuItem(
                         child: Text(timeOfDay.format(context)),
@@ -176,7 +194,7 @@ class _DateTimePicker extends StatelessWidget {
                 )
                 .toList(),
             onChanged: (value) {
-              print(value);
+              _selectTime(context, value);
             },
           ),
         ),
