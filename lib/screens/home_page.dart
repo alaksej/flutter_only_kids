@@ -68,49 +68,50 @@ class _HomeBody extends StatelessWidget {
               Colors.black.withOpacity(0.2), BlendMode.dstATop),
         ),
       ),
-      child: Center(
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-              // color: Theme.of(context).canvasColor,
-              ),
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0),
-            child: ListView(
-              children: <Widget>[
-                ListTile(
-                  title: Text('Services'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => ServicesPage()));
-                  },
-                ),
-                Divider(height: 1.0),
-                ListTile(
-                  title: Text('Our Team'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => TeamPage()));
-                  },
-                ),
-                Divider(height: 1.0),
-                ListTile(
-                  title: Text('About Us'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => AboutPage()));
-                  },
-                ),
-                Divider(height: 1.0),
-              ],
-            ),
+      child: Column(
+        children: <Widget>[
+          _buildPageItems(context),
+        ],
+      ),
+    );
+  }
+
+  Container _buildPageItems(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10.0),
+      child: ListView(
+        children: <Widget>[
+          ListTile(
+            title: Text('Services'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => ServicesPage()));
+            },
           ),
-        ),
+          Divider(height: 1.0),
+          ListTile(
+            title: Text('Our Team'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => TeamPage()));
+            },
+          ),
+          Divider(height: 1.0),
+          ListTile(
+            title: Text('About Us'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => AboutPage()));
+            },
+          ),
+          Divider(height: 1.0),
+        ],
       ),
     );
   }
