@@ -33,6 +33,10 @@ class AppointmentPage extends StatelessWidget {
                 print(time);
               },
             ),
+            RaisedButton(
+              onPressed: () {},
+              child: Text('Submit'),
+            ),
           ],
         ),
       ),
