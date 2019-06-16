@@ -6,7 +6,7 @@ import 'package:only_kids/screens/services_page.dart';
 import 'package:only_kids/screens/team_page.dart';
 import 'package:only_kids/widgets/bottom_nav_bar.dart';
 
-import 'book_page.dart';
+import 'appointment_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => BookPage()));
+              MaterialPageRoute(builder: (BuildContext context) => AppointmentPage()));
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
