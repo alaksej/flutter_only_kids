@@ -69,7 +69,7 @@ class _HomeBody extends StatelessWidget {
               Colors.black.withOpacity(0.2), BlendMode.dstATop),
         ),
       ),
-      child: Column(
+      child: ListView(
         children: <Widget>[
           _buildPageItems(context),
           _buildAppointments(context),
@@ -84,13 +84,34 @@ class _HomeBody extends StatelessWidget {
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LinearProgressIndicator();
 
-          return ListView(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            padding: const EdgeInsets.only(top: 20.0),
-            children: snapshot.data.documents
-                .map((data) => _buildListItem(context, data))
-                .toList(),
+          return Card(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  child: Text(
+                    'My Appointments',
+                    style: Theme.of(context).textTheme.headline,
+                  ),
+                ),
+                Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  margin: EdgeInsets.all(10.0),
+                  child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(top: 20.0),
+                    children: snapshot.data.documents
+                        .map((data) => _buildListItem(context, data))
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
           );
         });
   }
