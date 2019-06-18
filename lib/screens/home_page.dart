@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/screens/about_page.dart';
 import 'package:only_kids/screens/services_page.dart';
 import 'package:only_kids/screens/team_page.dart';
@@ -79,41 +80,71 @@ class _HomeBody extends StatelessWidget {
   }
 
   Widget _buildAppointments(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('appointments').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return LinearProgressIndicator();
-
-          return Card(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(5.0),
-                  child: Text(
-                    'My Appointments',
-                    style: Theme.of(context).textTheme.headline,
-                  ),
-                ),
-                Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  margin: EdgeInsets.all(10.0),
-                  child: ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(top: 20.0),
-                    children: snapshot.data.documents
-                        .map((data) => _buildListItem(context, data))
-                        .toList(),
-                  ),
-                ),
-              ],
+    return Card(
+      child: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.all(5.0),
+            child: Text(
+              'My Appointments',
+              style: Theme.of(context).textTheme.headline,
             ),
-          );
-        });
+          ),
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            margin: EdgeInsets.all(10.0),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: Firestore.instance.collection('appointments').snapshots(),
+              builder: (context, snapshot) => !snapshot.hasData
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).primaryColor),
+                      ),
+                    )
+                  : _buildAppointmentsList(snapshot, context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ListView _buildAppointmentsList(
+      AsyncSnapshot<QuerySnapshot> snapshot, BuildContext context) {
+    return ListView(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      padding: const EdgeInsets.only(top: 20.0),
+      children: snapshot.data.documents
+          .map((data) => _buildAppointmentsListItem(context, data))
+          .toList(),
+    );
+  }
+
+  Widget _buildAppointmentsListItem(BuildContext context, DocumentSnapshot data) {
+    final appointment = Appointment.fromSnapshot(data);
+
+    return Padding(
+      key: ValueKey(appointment.name),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: ListTile(
+            title: Text(appointment.name),
+            trailing: Text(appointment.datetime.toString()),
+            onTap: () {
+              print('Edit');
+            }),
+      ),
+    );
   }
 
   Container _buildPageItems(BuildContext context) {
@@ -157,44 +188,4 @@ class _HomeBody extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final record = Record.fromSnapshot(data);
-
-    return Padding(
-      key: ValueKey(record.name),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: ListTile(
-            title: Text(record.name),
-            trailing: Text(record.datetime.toString()),
-            onTap: () {
-              print('Edit');
-            }),
-      ),
-    );
-  }
-}
-
-class Record {
-  final String name;
-  final DateTime datetime;
-  final DocumentReference reference;
-
-  Record.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['name'] != null),
-        assert(map['datetime'] != null),
-        name = map['name'],
-        datetime = DateTime.fromMicrosecondsSinceEpoch(
-            map['datetime'].microsecondsSinceEpoch);
-
-  Record.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
-
-  @override
-  String toString() => "Record<$name:$datetime>";
 }
