@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Appointment {
+  final String username;
   final String name;
   final DateTime datetime;
   final DocumentReference reference;
@@ -8,6 +9,7 @@ class Appointment {
   Appointment.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['name'] != null),
         assert(map['datetime'] != null),
+        username = map['username'],
         name = map['name'],
         datetime = DateTime.fromMicrosecondsSinceEpoch(
             map['datetime'].microsecondsSinceEpoch);
