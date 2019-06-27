@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:only_kids/components/top_app_bar.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/screens/about_page.dart';
 import 'package:only_kids/screens/services_page.dart';
@@ -31,16 +32,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.more_vert),
-            tooltip: 'Air it',
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: TopAppBar(title: widget.title),
       body: _HomeBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -126,7 +118,8 @@ class _HomeBody extends StatelessWidget {
     );
   }
 
-  Widget _buildAppointmentsListItem(BuildContext context, DocumentSnapshot data) {
+  Widget _buildAppointmentsListItem(
+      BuildContext context, DocumentSnapshot data) {
     final appointment = Appointment.fromSnapshot(data);
 
     return Padding(

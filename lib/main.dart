@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:only_kids/services/user_service.dart';
 
 import 'blocs/nav_bar_bloc.dart';
 import 'screens/home_page.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,7 +20,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     analytics.logAppOpen();
 
-    return MaterialApp(
+    return MultiProvider(
+      providers: [
+        Provider<UserService>.value(value: new UserService())
+      ],
+      child: MaterialApp(
         title: 'Only Kids',
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -32,6 +38,8 @@ class MyApp extends StatelessWidget {
             ),
           ],
           child: HomePage(title: 'Only Kids'),
-        ));
+        ),
+      ),
+    );
   }
 }
