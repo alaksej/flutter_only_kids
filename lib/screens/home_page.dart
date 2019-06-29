@@ -3,13 +3,10 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:only_kids/components/top_app_bar.dart';
 import 'package:only_kids/models/appointment.dart';
-import 'package:only_kids/screens/services_page.dart';
-import 'package:only_kids/screens/team_page.dart';
 import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/widgets/bottom_nav_bar.dart';
 
 import '../main.dart';
-import 'about_page.dart';
 import 'appointment_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -62,7 +59,6 @@ class _HomeBody extends StatelessWidget {
       ),
       child: ListView(
         children: <Widget>[
-          _buildPageItems(context),
           _buildAppointments(context),
         ],
       ),
@@ -127,48 +123,6 @@ class _HomeBody extends StatelessWidget {
             onTap: () {
               print('Edit');
             }),
-      ),
-    );
-  }
-
-  Container _buildPageItems(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10.0),
-      child: ListView(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        children: <Widget>[
-          ListTile(
-            title: Text('Services'),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => ServicesPage()));
-            },
-          ),
-          Divider(height: 1.0),
-          ListTile(
-            title: Text('Our Team'),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => TeamPage()));
-            },
-          ),
-          Divider(height: 1.0),
-          ListTile(
-            title: Text('About Us'),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => AboutPage()));
-            },
-          ),
-          Divider(height: 1.0),
-        ],
       ),
     );
   }
