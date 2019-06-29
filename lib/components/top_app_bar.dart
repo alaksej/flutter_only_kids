@@ -11,17 +11,15 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final AuthService _authService = Provider.of<AuthService>(context);
+    final FirebaseUser _user = Provider.of<FirebaseUser>(context);
+    final isLoggedIn = _user != null;
 
-    return StreamBuilder<FirebaseUser>(
-        stream: _authService.user,
-        builder: (context, snapshot) {
-          return AppBar(
-            title: Text(this.title),
-            actions: snapshot.hasData
-                ? _buildUserActions(context, _authService, snapshot.data)
-                : _buildLogInActions(context),
-          );
-        });
+    return AppBar(
+      title: Text(this.title),
+      actions: isLoggedIn
+          ? _buildUserActions(context, _authService, _user)
+          : _buildLogInActions(context),
+    );
   }
 
   List<Widget> _buildUserActions(

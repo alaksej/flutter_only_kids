@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:only_kids/services/auth_service.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider<UserService>.value(value: new UserService()),
         Provider<AuthService>.value(value: new AuthService()),
+        StreamProvider<FirebaseUser>.value(value: AuthService.instance.user),
       ],
       child: MaterialApp(
         title: 'Only Kids',

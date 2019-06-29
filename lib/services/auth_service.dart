@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AuthService {
+  static AuthService _instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
@@ -11,6 +12,13 @@ class AuthService {
   Observable<FirebaseUser> user; // firebase user
   Observable<Map<String, dynamic>> profile; // custom user data in Firestore
   BehaviorSubject<bool> loading = BehaviorSubject.seeded(false);
+
+  static AuthService get instance {
+    if (_instance == null) {
+      _instance = AuthService();
+    }
+    return _instance;
+  }
 
   // constructor
   AuthService() {
