@@ -49,18 +49,12 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
         PopupMenuButton<_AppBarOverflowOptions>(
           onSelected: (_AppBarOverflowOptions selection) async {
             await userService.signOut();
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => HomePage(),
-              ),
-            );
           },
           itemBuilder: (BuildContext context) {
             return <PopupMenuEntry<_AppBarOverflowOptions>>[
               PopupMenuItem<_AppBarOverflowOptions>(
                 value: _AppBarOverflowOptions.signout,
-                child: const Text('Disconnect from Google Photos'),
+                child: const Text('Log Out'),
               )
             ];
           },
