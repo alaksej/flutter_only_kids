@@ -10,45 +10,39 @@ class AppointmentsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(5.0),
-            child: Text(
-              'My Appointments',
-              style: Theme.of(context).textTheme.headline,
-            ),
+    return Column(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 15.0),
+          child: Text(
+            'My Appointments',
+            style: Theme.of(context).textTheme.headline,
           ),
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5.0),
-            ),
-            margin: EdgeInsets.all(10.0),
-            child: StreamBuilder<List<Appointment>>(
-              stream: _appointmentService.getByCurrentUser(),
-              builder: (context, snapshot) => !snapshot.hasData
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-                      ),
-                    )
-                  : _buildAppointmentsList(snapshot.data, context),
-            ),
+        ),
+        Expanded(
+          child: StreamBuilder<List<Appointment>>(
+            stream: _appointmentService.getByCurrentUser(),
+            builder: (context, snapshot) => !snapshot.hasData
+                ? Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                    ),
+                  )
+                : _buildAppointmentsList(snapshot.data, context),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   ListView _buildAppointmentsList(List<Appointment> appointments, BuildContext context) {
-    return ListView(
+    return ListView.separated(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 20.0),
-      children: appointments.map((data) => _buildAppointmentsListItem(context, data)).toList(),
+      separatorBuilder: (context, index) => Divider(height: 1),
+      itemCount: appointments.length,
+      itemBuilder: (context, index) => _buildAppointmentsListItem(context, appointments[index]),
     );
   }
 
@@ -56,18 +50,19 @@ class AppointmentsList extends StatelessWidget {
     return Padding(
       key: ValueKey(appointment.username),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: ListTile(
-          title: Text(appointment.username),
-          trailing: Text(DateFormat.yMMMd().format(appointment.datetime)),
-          onTap: () {
-            print('Edit');
-          },
-        ),
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            title: Text(
+              DateFormat.yMMMd().format(appointment.datetime),
+              style: Theme.of(context).textTheme.body2,
+            ),
+            trailing: Icon(Icons.edit),
+            onTap: () {
+              print('Edit');
+            },
+          ),
+        ],
       ),
     );
   }

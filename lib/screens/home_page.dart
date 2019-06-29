@@ -48,15 +48,6 @@ class _HomePageState extends State<HomePage> {
 class _HomeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/background.jpg'),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
-        ),
-      ),
-      child: AppointmentsList(),
-    );
+    return AppointmentsList();
   }
 }
