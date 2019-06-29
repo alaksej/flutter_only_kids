@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/services/appointment_service.dart';
@@ -51,7 +52,7 @@ class AppointmentsList extends StatelessWidget {
     );
   }
 
-  Widget _buildAppointmentsListItem(BuildContext context, appointment) {
+  Widget _buildAppointmentsListItem(BuildContext context, Appointment appointment) {
     return Padding(
       key: ValueKey(appointment.username),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -62,7 +63,7 @@ class AppointmentsList extends StatelessWidget {
         ),
         child: ListTile(
           title: Text(appointment.username),
-          trailing: Text(appointment.datetime.toString()),
+          trailing: Text(DateFormat.yMMMd().format(appointment.datetime)),
           onTap: () {
             print('Edit');
           },
