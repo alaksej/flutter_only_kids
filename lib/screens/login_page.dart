@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:only_kids/main.dart';
+import 'package:only_kids/screens/appointment_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 
 import 'home_page.dart';
 
 class LoginPage extends StatelessWidget {
+  final bool goToAppointmentAfterLogin;
+
+  LoginPage({this.goToAppointmentAfterLogin = false});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,8 +29,7 @@ class LoginPage extends StatelessWidget {
         if (!snapshot.hasData || snapshot.data) {
           return Center(
             child: CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
             ),
           );
         } else {
@@ -41,8 +45,7 @@ class LoginPage extends StatelessWidget {
                   child: const Text(
                     'Log in to book an appointment',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500, color: Color(0x99000000)),
+                    style: TextStyle(fontWeight: FontWeight.w500, color: Color(0x99000000)),
                   ),
                 ),
               ),
@@ -52,7 +55,7 @@ class LoginPage extends StatelessWidget {
                 onPressed: () async {
                   try {
                     await _authService.googleSignIn()
-                        ? _navigateToHome(context)
+                        ? goToAppointmentAfterLogin ? await _openAppointment(context) : _navigateBack(context)
                         : _showSignInError(context);
                   } on Exception catch (error) {
                     print(error);
@@ -76,11 +79,15 @@ class LoginPage extends StatelessWidget {
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
-  void _navigateToHome(BuildContext context) {
-    Navigator.pop(
+  void _navigateBack(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  Future<void> _openAppointment(BuildContext context) async {
+    await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => HomePage(),
+        builder: (BuildContext context) => AppointmentPage(),
       ),
     );
   }
