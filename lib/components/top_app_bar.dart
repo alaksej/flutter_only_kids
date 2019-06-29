@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:only_kids/main.dart';
 import 'package:only_kids/screens/login_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthService _authService = Provider.of<AuthService>(context);
+    final AuthService _authService = getIt.get<AuthService>();
     final FirebaseUser _user = Provider.of<FirebaseUser>(context);
     final isLoggedIn = _user != null;
 

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:only_kids/components/top_app_bar.dart';
+import 'package:only_kids/main.dart';
 import 'package:only_kids/services/auth_service.dart';
-import 'package:provider/provider.dart';
 
 import 'home_page.dart';
 
@@ -18,12 +16,12 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    final AuthService _authService = Provider.of<AuthService>(context);
+    final AuthService _authService = getIt.get<AuthService>();
 
     return StreamBuilder<bool>(
-      stream: _authService.loading,
+      stream: _authService.loading$,
       builder: (context, snapshot) {
-        if (snapshot.data) {
+        if (!snapshot.hasData || snapshot.data) {
           return Center(
             child: CircularProgressIndicator(
               valueColor:

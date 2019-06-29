@@ -5,33 +5,25 @@ import 'package:only_kids/models/user_profile.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AuthService {
-  static AuthService _instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
 
-  Observable<FirebaseUser> user; // firebase user
-  Observable<Map<String, dynamic>> profile; // custom user data in Firestore
-  BehaviorSubject<bool> loading = BehaviorSubject.seeded(false);
+  Observable<FirebaseUser> user$; // firebase user
+  Observable<Map<String, dynamic>> profile$; // custom user data in Firestore
+  BehaviorSubject<bool> loading$ = BehaviorSubject.seeded(false);
 
-  static AuthService get instance {
-    if (_instance == null) {
-      _instance = AuthService();
-    }
-    return _instance;
-  }
+  FirebaseUser _user;
+  FirebaseUser get currentUser => _user;
+  bool get isLoggedIn => _user != null;
 
   // constructor
   AuthService() {
-    user = Observable(_auth.onAuthStateChanged);
+    user$ = Observable(_auth.onAuthStateChanged).doOnData((u) => _user = u).shareReplay(maxSize: 1);
 
-    profile = user.switchMap((FirebaseUser u) {
+    profile$ = user$.switchMap((FirebaseUser u) {
       if (u != null) {
-        return _db
-            .collection('users')
-            .document(u.uid)
-            .snapshots()
-            .map((snap) => snap.data);
+        return _db.collection('users').document(u.uid).snapshots().map((snap) => snap.data);
       } else {
         return Observable.just({});
       }
@@ -40,10 +32,9 @@ class AuthService {
 
   Future<bool> googleSignIn() async {
     try {
-      loading.add(true);
+      loading$.add(true);
       GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
-      GoogleSignInAuthentication googleAuth =
-          await googleSignInAccount.authentication;
+      GoogleSignInAuthentication googleAuth = await googleSignInAccount.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.getCredential(
         accessToken: googleAuth.accessToken,
@@ -59,7 +50,7 @@ class AuthService {
       print("Google sign in error: $error");
       return false;
     } finally {
-      loading.add(false);
+      loading$.add(false);
     }
   }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:only_kids/main.dart';
+import 'package:only_kids/models/appointment.dart';
+import 'package:only_kids/services/appointment_service.dart';
 
 final List<TimeOfDay> timeSlots = const [
   TimeOfDay(hour: 10, minute: 0),
@@ -31,9 +33,10 @@ class AppointmentPage extends StatefulWidget {
 }
 
 class _AppointmentPageState extends State<AppointmentPage> {
+  final AppointmentService _appointmentService = getIt.get<AppointmentService>();
+
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = timeSlots[0];
-  TextEditingController _textEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,9 +52,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 _selectedDate = date;
               });
             },
-          ),
-          TextField(
-            controller: _textEditingController,
           ),
           RaisedButton(
             onPressed: () {
@@ -72,12 +72,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
       _selectedTime.hour,
       _selectedTime.minute,
     );
-    final String name = _textEditingController.text;
-    print('Creating appointment for $name on $picked');
-    await Firestore.instance
-        .collection('appointments')
-        .document()
-        .setData({'name': name, 'datetime': picked});
+
+    await _appointmentService.addForCurrentUser(Appointment(datetime: picked));
+
     Navigator.pop(context);
   }
 }
@@ -99,8 +96,7 @@ class _DatePicker extends StatelessWidget {
       firstDate: DateTime(2019),
       lastDate: DateTime(2101),
       selectableDayPredicate: (DateTime date) => date.isAfter(
-            DateTime(DateTime.now().year, DateTime.now().month,
-                DateTime.now().day - 1),
+            DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1),
           ),
     );
     if (picked != null && picked != selectedDate) selectDate(picked);
