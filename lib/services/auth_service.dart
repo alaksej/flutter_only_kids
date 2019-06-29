@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:only_kids/models/user_profile.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AuthService {
@@ -65,13 +66,7 @@ class AuthService {
   void updateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
 
-    return ref.setData({
-      'uid': user.uid,
-      'email': user.email,
-      'photoURL': user.photoUrl,
-      'displayName': user.displayName,
-      'lastSeen': DateTime.now()
-    }, merge: true);
+    return ref.setData(UserProfile.fromFirebaseUser(user).toMap(), merge: true);
   }
 
   Future<String> signOut() async {
