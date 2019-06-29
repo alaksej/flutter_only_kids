@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/services/user_service.dart';
 
 import 'blocs/nav_bar_bloc.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<UserService>.value(value: new UserService()),
+        Provider<AuthService>.value(value: new AuthService()),
       ],
       child: MaterialApp(
         title: 'Only Kids',

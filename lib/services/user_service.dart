@@ -1,3 +1,5 @@
+import 'package:only_kids/services/auth_service.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -10,6 +12,7 @@ class User {
 
 class UserService {
   final BehaviorSubject<User> _currentUser = BehaviorSubject.seeded(null);
+  final AuthService _authService = AuthService(); // TODO: use provider or smth
 
   Observable<User> get currentUser$ => _currentUser.stream;
   User get currentUser => _currentUser.value;
@@ -21,8 +24,9 @@ class UserService {
     _currentUser.add(user);
   }
 
-  signIn() {
+  signIn() async {
     setUser(User(1, displayName: 'Alex', email: 'alex@email.com'));
+    await _authService.googleSignIn();
     return true;
   }
 
