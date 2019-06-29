@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        Provider<UserService>.value(value: new UserService())
+        Provider<UserService>.value(value: new UserService()),
       ],
       child: MaterialApp(
         title: 'Only Kids',

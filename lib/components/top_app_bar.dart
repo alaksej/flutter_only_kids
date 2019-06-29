@@ -16,7 +16,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
         stream: _userService.isLoggedIn$,
         builder: (context, snapshot) {
           return AppBar(
-            title: Text('TODO'),
+            title: Text(this.title),
             actions: _buildActions(_userService, context),
           );
         });

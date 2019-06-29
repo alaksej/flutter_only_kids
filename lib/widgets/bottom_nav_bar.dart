@@ -9,27 +9,32 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final NavBarBloc _navBarBloc = BlocProvider.of<NavBarBloc>(context);
+    final NavBarBloc _navBarBloc = BlocProvider.of<NavBarBloc>(context);
 
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          title: Text('Home'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.date_range),
-          title: Text('Book'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.location_on),
-          title: Text('Contacts'),
-        ),
-      ],
-      currentIndex: 1, // _navBarBloc.currentState,
-      selectedItemColor: Theme.of(context).accentColor,
-      onTap: (index) {
-        // _navBarBloc.dispatch(NavBarEvent(index));
+    return BlocBuilder(
+      bloc: _navBarBloc,
+      builder: (BuildContext context, int currentIndex) {
+        return BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              title: Text('Home'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.date_range),
+              title: Text('Book'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.location_on),
+              title: Text('Contacts'),
+            ),
+          ],
+          currentIndex: _navBarBloc.currentState,
+          selectedItemColor: Theme.of(context).accentColor,
+          onTap: (index) {
+            _navBarBloc.dispatch(NavBarEvent(index));
+          },
+        );
       },
     );
   }
