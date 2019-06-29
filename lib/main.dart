@@ -14,19 +14,21 @@ import 'package:get_it/get_it.dart';
 
 GetIt getIt = GetIt();
 
-void main() => runApp(MyApp());
+void main() {
+  getIt.registerSingleton<AuthService>(AuthService());
+  getIt.registerSingleton<AppointmentService>(AppointmentService());
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   Widget build(BuildContext context) {
-    getIt.registerSingleton<AuthService>(AuthService());
-    getIt.registerSingleton<AppointmentService>(AppointmentService());
-
     analytics.logAppOpen();
+
+    final appTitle = 'Only Kids';
 
     return MultiProvider(
       providers: [
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Only Kids',
+        title: appTitle,
         theme: ThemeData(
           primarySwatch: Colors.blue,
           accentColor: Colors.pink,
@@ -47,7 +49,7 @@ class MyApp extends StatelessWidget {
               builder: (BuildContext context) => NavBarBloc(),
             ),
           ],
-          child: HomePage(title: 'Only Kids'),
+          child: HomePage(title: appTitle),
         ),
       ),
     );
