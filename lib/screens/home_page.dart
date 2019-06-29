@@ -3,11 +3,8 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:only_kids/components/appointments_list.dart';
 import 'package:only_kids/components/top_app_bar.dart';
-import 'package:only_kids/models/appointment.dart';
-import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/widgets/bottom_nav_bar.dart';
 
-import '../main.dart';
 import 'appointment_page.dart';
 
 class HomePage extends StatefulWidget {
