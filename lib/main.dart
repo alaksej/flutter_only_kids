@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/services/auth_service.dart';
 
@@ -34,6 +35,9 @@ class MyApp extends StatelessWidget {
       providers: [
         StreamProvider<FirebaseUser>.value(
           value: getIt.get<AuthService>().user$,
+        ),
+        StreamProvider<UserProfile>.value(
+          value: getIt.get<AuthService>().profile$,
         ),
       ],
       child: MaterialApp(

@@ -10,7 +10,7 @@ class AuthService {
   final Firestore _db = Firestore.instance;
 
   Observable<FirebaseUser> user$; // firebase user
-  Observable<Map<String, dynamic>> profile$; // custom user data in Firestore
+  Observable<UserProfile> profile$; // custom user data in Firestore
   BehaviorSubject<bool> loading$ = BehaviorSubject.seeded(false);
 
   FirebaseUser _user;
@@ -23,9 +23,9 @@ class AuthService {
 
     profile$ = user$.switchMap((FirebaseUser u) {
       if (u != null) {
-        return _db.collection('users').document(u.uid).snapshots().map((snap) => snap.data);
+        return _db.collection('users').document(u.uid).snapshots().map((snap) => UserProfile.fromMap(snap.data));
       } else {
-        return Observable.just({});
+        return Observable.just(null);
       }
     });
   }
