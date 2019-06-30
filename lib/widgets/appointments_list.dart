@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +5,7 @@ import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/services/appointment_service.dart';
+import 'package:only_kids/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class AppointmentsList extends StatelessWidget {
@@ -64,7 +64,7 @@ class AppointmentsList extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Text(
-              DateFormat('EEEE MMM d, y').format(appointment.datetime),
+              formatDate(appointment.datetime),
               style: Theme.of(context).textTheme.body2,
             ),
             trailing: Icon(Icons.edit),
