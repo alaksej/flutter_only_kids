@@ -71,9 +71,18 @@ class DatePicker extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                   const SizedBox(width: 12.0),
-                  Text(
-                    DateFormat.yMMMd().format(selectedDate),
-                    style: Theme.of(context).textTheme.headline,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        DateFormat.yMMMd().format(selectedDate),
+                        style: Theme.of(context).textTheme.headline,
+                      ),
+                      Text(
+                        DateFormat('EEEE').format(selectedDate),
+                        style: Theme.of(context).textTheme.caption,
+                      )
+                    ],
                   ),
                 ],
               ),
