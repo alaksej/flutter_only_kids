@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/models/user_profile.dart';
@@ -17,11 +16,13 @@ class AppointmentsList extends StatelessWidget {
 
     return Column(
       children: <Widget>[
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 15.0),
-          child: Text(
-            'My Appointments',
-            style: Theme.of(context).textTheme.headline,
+        Center(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 15.0),
+            child: Text(
+              'My Appointments',
+              style: Theme.of(context).textTheme.headline,
+            ),
           ),
         ),
         if (_userProfile != null)
@@ -45,7 +46,10 @@ class AppointmentsList extends StatelessWidget {
     );
   }
 
-  ListView _buildAppointmentsList(List<Appointment> appointments, BuildContext context) {
+  Widget _buildAppointmentsList(List<Appointment> appointments, BuildContext context) {
+    if (appointments.length == 0) {
+      return Text('You have no upcoming appointments', style: Theme.of(context).textTheme.subhead);
+    }
     return ListView.separated(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
