@@ -3,6 +3,7 @@ import 'package:only_kids/widgets/date_picker.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/services/appointment_service.dart';
+import 'package:only_kids/widgets/time_picker.dart';
 
 final List<TimeOfDay> timeSlots = const [
   TimeOfDay(hour: 10, minute: 0),
@@ -54,8 +55,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
             },
           ),
           Expanded(
-            child: ListView(
-              children: _buildTimeSlots(context),
+            child: TimePicker(
+              timeSlots: timeSlots,
+              selectedTime: _selectedTime,
+              selectTime: (TimeOfDay time) {
+                setState(() {
+                  _selectedTime = time;
+                });
+              },
             ),
           ),
           Row(
@@ -76,16 +83,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
           ),
         ],
       ),
-    );
-  }
-
-  List<Widget> _buildTimeSlots(BuildContext context, ) {
-    return timeSlots.map((slot) => _buildTimeSlot(context, slot)).toList();
-  }
-
-  Widget _buildTimeSlot(BuildContext context, TimeOfDay slot) {
-    return ListTile(
-      leading: Text(slot.format(context)),
     );
   }
 
