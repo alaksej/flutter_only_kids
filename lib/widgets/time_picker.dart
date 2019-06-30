@@ -37,7 +37,8 @@ class TimePicker extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(slot.format(context)),
-          if (slot.hour == selectedTime.hour && slot.minute == selectedTime.minute) Text('Picked'),
+          if (selectedTime != null && slot.hour == selectedTime.hour && slot.minute == selectedTime.minute)
+            Text('Picked'),
         ],
       ),
     );

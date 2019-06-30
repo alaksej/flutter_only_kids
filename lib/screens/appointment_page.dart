@@ -37,7 +37,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   final AppointmentService _appointmentService = getIt.get<AppointmentService>();
 
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = timeSlots[0];
+  TimeOfDay _selectedTime;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,9 +73,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 child: RaisedButton(
                   color: Theme.of(context).primaryColor,
                   textColor: Theme.of(context).primaryTextTheme.button.color,
-                  onPressed: () {
-                    _submitAppointment();
-                  },
+                  onPressed: canSubmit ? _submitAppointment : null,
                   child: Text('Submit'),
                 ),
               ),
@@ -85,6 +83,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
       ),
     );
   }
+
+  bool get canSubmit => _selectedDate != null && _selectedTime != null;
 
   Future<void> _submitAppointment() async {
     final picked = DateTime(
