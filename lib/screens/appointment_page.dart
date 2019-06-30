@@ -53,14 +53,39 @@ class _AppointmentPageState extends State<AppointmentPage> {
               });
             },
           ),
-          RaisedButton(
-            onPressed: () {
-              _submitAppointment();
-            },
-            child: Text('Submit'),
+          Expanded(
+            child: ListView(
+              children: _buildTimeSlots(context),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: RaisedButton(
+                  color: Theme.of(context).primaryColor,
+                  textColor: Theme.of(context).primaryTextTheme.button.color,
+                  onPressed: () {
+                    _submitAppointment();
+                  },
+                  child: Text('Submit'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
+    );
+  }
+
+  List<Widget> _buildTimeSlots(BuildContext context, ) {
+    return timeSlots.map((slot) => _buildTimeSlot(context, slot)).toList();
+  }
+
+  Widget _buildTimeSlot(BuildContext context, TimeOfDay slot) {
+    return ListTile(
+      leading: Text(slot.format(context)),
     );
   }
 
