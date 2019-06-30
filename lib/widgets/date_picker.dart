@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+final int yearsToShow = 100;
+final int daysPerYear = 365;
+
 class DatePicker extends StatelessWidget {
   const DatePicker({
     Key key,
@@ -12,17 +15,19 @@ class DatePicker extends StatelessWidget {
   final ValueChanged<DateTime> selectDate;
 
   bool _isSelectable(DateTime date) {
-    final now = DateTime.now();
-    final startOftoday = DateTime(now.year, now.month, now.day);
-    return date.isAfter(startOftoday);
+    return date.isAfter(startOfToday);
   }
+
+  DateTime get now => DateTime.now();
+  DateTime get startOfToday => DateTime(now.year, now.month, now.day);
+  DateTime get lastDate => startOfToday.add(Duration(days: yearsToShow * daysPerYear));
 
   Future<void> _pickDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(2019),
-      lastDate: DateTime(2101),
+      firstDate: startOfToday,
+      lastDate: lastDate,
       selectableDayPredicate: _isSelectable,
     );
     if (picked != null && picked != selectedDate) _selectDate(picked);
