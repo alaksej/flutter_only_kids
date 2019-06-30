@@ -46,6 +46,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
       ),
       body: Column(
         children: <Widget>[
+          Text('Please select the date:', style: Theme.of(context).textTheme.subhead),
           DatePicker(
             selectedDate: _selectedDate,
             selectDate: (DateTime date) {
@@ -54,15 +55,19 @@ class _AppointmentPageState extends State<AppointmentPage> {
               });
             },
           ),
+          Text('Please select the time:', style: Theme.of(context).textTheme.subhead),
           Expanded(
-            child: TimePicker(
-              timeSlots: timeSlots,
-              selectedTime: _selectedTime,
-              selectTime: (TimeOfDay time) {
-                setState(() {
-                  _selectedTime = time;
-                });
-              },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TimePicker(
+                timeSlots: timeSlots,
+                selectedTime: _selectedTime,
+                selectTime: (TimeOfDay time) {
+                  setState(() {
+                    _selectedTime = time;
+                  });
+                },
+              ),
             ),
           ),
           Row(

@@ -25,7 +25,34 @@ class TimePicker extends StatelessWidget {
   List<Widget> _buildTimeSlots(
     BuildContext context,
   ) {
-    return timeSlots.map((slot) => _buildTimeSlot(context, slot)).toList();
+    return timeSlots
+        .map((slot) => isSelected(slot) ? _buildSelectedTimeSlot(context, slot) : _buildTimeSlot(context, slot))
+        .toList();
+  }
+
+  bool isSelected(TimeOfDay time) {
+    return selectedTime != null && time.hour == selectedTime.hour && time.minute == selectedTime.minute;
+  }
+
+  Widget _buildSelectedTimeSlot(BuildContext context, TimeOfDay slot) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).accentColor,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            slot.format(context),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondary,
+              fontSize: Theme.of(context).textTheme.subhead.fontSize,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildTimeSlot(BuildContext context, TimeOfDay slot) {
@@ -37,8 +64,6 @@ class TimePicker extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(slot.format(context)),
-          if (selectedTime != null && slot.hour == selectedTime.hour && slot.minute == selectedTime.minute)
-            Text('Picked'),
         ],
       ),
     );
