@@ -1,8 +1,8 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
-import 'package:only_kids/components/appointments_list.dart';
-import 'package:only_kids/components/top_app_bar.dart';
+import 'package:only_kids/widgets/appointments_list.dart';
+import 'package:only_kids/widgets/top_app_bar.dart';
 import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/screens/login_page.dart';
 import 'package:only_kids/widgets/bottom_nav_bar.dart';

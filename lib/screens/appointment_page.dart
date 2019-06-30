@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:only_kids/components/date_picker.dart';
+import 'package:only_kids/widgets/date_picker.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/services/appointment_service.dart';
