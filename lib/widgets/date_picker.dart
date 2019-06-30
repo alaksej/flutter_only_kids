@@ -56,7 +56,7 @@ class DatePicker extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _buildArrow(Icons.arrow_left, onTap: _isSelectable(prevDay) ? goPrevDay : null),
+          _buildArrow(Icons.chevron_left, onTap: _isSelectable(prevDay) ? goPrevDay : null),
           Expanded(
             child: InkWell(
               onTap: () => _pickDate(context),
@@ -86,7 +86,7 @@ class DatePicker extends StatelessWidget {
               ),
             ),
           ),
-          _buildArrow(Icons.arrow_right, onTap: _isSelectable(nextDay) ? goNextDay : null),
+          _buildArrow(Icons.chevron_right, onTap: _isSelectable(nextDay) ? goNextDay : null),
         ],
       ),
     );
