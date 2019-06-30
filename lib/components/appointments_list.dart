@@ -64,7 +64,7 @@ class AppointmentsList extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Text(
-              DateFormat.yMMMd().format(appointment.datetime),
+              DateFormat('EEEE MMM d, y').format(appointment.datetime),
               style: Theme.of(context).textTheme.body2,
             ),
             trailing: Icon(Icons.edit),
