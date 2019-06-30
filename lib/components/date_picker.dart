@@ -35,14 +35,15 @@ class DatePicker extends StatelessWidget {
     selectDate(date);
   }
 
-  void prevDay() {
-    final date = selectedDate.subtract(Duration(days: 1));
-    _selectDate(date);
+  DateTime get prevDay => selectedDate.subtract(Duration(days: 1));
+  DateTime get nextDay => selectedDate.add(Duration(days: 1));
+
+  void goPrevDay() {
+    _selectDate(prevDay);
   }
 
-  void nextDay() {
-    final date = selectedDate.add(Duration(days: 1));
-    _selectDate(date);
+  void goNextDay() {
+    _selectDate(nextDay);
   }
 
   @override
@@ -52,7 +53,7 @@ class DatePicker extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _buildArrow(Icons.arrow_left, prevDay),
+          _buildArrow(Icons.arrow_left, onTap: _isSelectable(prevDay) ? goPrevDay : null),
           Expanded(
             child: InkWell(
               onTap: () => _pickDate(context),
@@ -73,13 +74,13 @@ class DatePicker extends StatelessWidget {
               ),
             ),
           ),
-          _buildArrow(Icons.arrow_right, nextDay),
+          _buildArrow(Icons.arrow_right, onTap: _isSelectable(nextDay) ? goNextDay : null),
         ],
       ),
     );
   }
 
-  InkWell _buildArrow(IconData icon, void Function() onTap) {
+  InkWell _buildArrow(IconData icon, {void Function() onTap}) {
     return InkWell(
       onTap: onTap,
       child: Container(
