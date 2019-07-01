@@ -6,6 +6,7 @@ import 'package:only_kids/services/auth_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AppointmentService {
+  final Firestore _db = Firestore.instance;
   final CollectionReference _appointmentsRef = Firestore.instance.collection('appointments');
   final AuthService _authService = getIt.get<AuthService>();
 
@@ -22,27 +23,28 @@ class AppointmentService {
   }
 
   Stream<List<Appointment>> getByUser(FirebaseUser user) {
-    var stream = _appointmentsRef.where('uid', isEqualTo: user.uid).snapshots().map((list) {
-      print(list);
-      return list.documents.toList().map((appointment) => Appointment.fromSnapshot(appointment)).toList();
+    final stream = _appointmentsRef.where('uid', isEqualTo: user.uid).snapshots().map((list) {
+      return list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList();
     });
     return stream;
   }
 
-  Future<void> addForCurrentUser(Appointment appointment) async {
-    if (!_authService.isLoggedIn) {
-      print('Unable to add appointment: the user must be logged in.');
-      return;
-    }
+  Future<String> addForCurrentUser(Appointment appointment) async {
+    assert(_authService.isLoggedIn);
 
-    var userAppointment = Appointment(
+    final userAppointment = Appointment(
       uid: _authService.currentUser.uid,
       username: _authService.currentUser.displayName,
       datetime: appointment.datetime,
     );
 
-    print('Creating appointment for ${appointment.username} on ${appointment.datetime}.');
+    final docRef = await _appointmentsRef.add(userAppointment.toMap());
 
-    await _appointmentsRef.add(userAppointment.toMap());
+    return docRef.documentID;
+  }
+
+  Future<void> updateForCurrentUser(Appointment appointment) async {
+    assert(appointment.uid == _authService.currentUser.uid);
+    await _appointmentsRef.document(appointment.id).setData(appointment.toMap(), merge: true);
   }
 }

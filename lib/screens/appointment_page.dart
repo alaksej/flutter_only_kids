@@ -29,15 +29,31 @@ final List<TimeOfDay> timeSlots = const [
 ];
 
 class AppointmentPage extends StatefulWidget {
+  AppointmentPage({
+    Key key,
+    this.appointment,
+  })  : isEditMode = appointment != null,
+        super(key: key);
+
+  final Appointment appointment;
+  final bool isEditMode;
+
   @override
   _AppointmentPageState createState() => _AppointmentPageState();
 }
 
 class _AppointmentPageState extends State<AppointmentPage> {
   final AppointmentService _appointmentService = getIt.get<AppointmentService>();
-
-  DateTime _selectedDate = DateTime.now();
+  DateTime _selectedDate;
   TimeOfDay _selectedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = widget.isEditMode ? widget.appointment.datetime : DateTime.now();
+    _selectedTime = widget.appointment?.time;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,18 +86,19 @@ class _AppointmentPageState extends State<AppointmentPage> {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          ButtonBar(
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  textColor: Theme.of(context).primaryTextTheme.button.color,
-                  onPressed: canSubmit ? _submitAppointment : null,
-                  child: Text('Submit'),
-                ),
+              RaisedButton(
+                color: Theme.of(context).primaryColor,
+                textColor: Theme.of(context).primaryTextTheme.button.color,
+                onPressed: canSubmit ? _save : null,
+                child: Text(widget.isEditMode ? 'Save' : 'Book'),
               ),
+              if (widget.isEditMode)
+                RaisedButton(
+                  onPressed: _back,
+                  child: Text('Back'),
+                ),
             ],
           ),
         ],
@@ -91,7 +108,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   bool get canSubmit => _selectedDate != null && _selectedTime != null;
 
-  Future<void> _submitAppointment() async {
+  Future<void> _save() async {
     final picked = DateTime(
       _selectedDate.year,
       _selectedDate.month,
@@ -100,8 +117,18 @@ class _AppointmentPageState extends State<AppointmentPage> {
       _selectedTime.minute,
     );
 
-    await _appointmentService.addForCurrentUser(Appointment(datetime: picked));
+    widget.isEditMode
+        ? await _appointmentService.updateForCurrentUser(Appointment(
+            id: widget.appointment.id,
+            uid: widget.appointment.uid,
+            datetime: picked,
+          ))
+        : await _appointmentService.addForCurrentUser(Appointment(datetime: picked));
 
+    Navigator.pop(context);
+  }
+
+  _back() {
     Navigator.pop(context);
   }
 }

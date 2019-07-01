@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/models/user_profile.dart';
+import 'package:only_kids/screens/appointment_page.dart';
 import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +74,12 @@ class AppointmentsList extends StatelessWidget {
             ),
             trailing: Icon(Icons.edit),
             onTap: () {
-              print('Edit');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => AppointmentPage(appointment: appointment),
+                ),
+              );
             },
           ),
         ],
