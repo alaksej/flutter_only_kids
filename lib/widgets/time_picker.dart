@@ -25,46 +25,48 @@ class TimePicker extends StatelessWidget {
   List<Widget> _buildTimeSlots(
     BuildContext context,
   ) {
-    return timeSlots
-        .map((slot) => isSelected(slot) ? _buildSelectedTimeSlot(context, slot) : _buildTimeSlot(context, slot))
-        .toList();
+    return timeSlots.map((slot) => _buildTimeSlot(context, slot)).toList();
   }
 
   bool isSelected(TimeOfDay time) {
     return selectedTime != null && time.hour == selectedTime.hour && time.minute == selectedTime.minute;
   }
 
-  Widget _buildSelectedTimeSlot(BuildContext context, TimeOfDay slot) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).accentColor,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            slot.format(context),
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSecondary,
-              fontSize: Theme.of(context).textTheme.subhead.fontSize,
-            ),
-          ),
-        ],
-      ),
-    );
+  Color slotColor(BuildContext context, TimeOfDay slot) {
+    return isSelected(slot) ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor;
   }
 
   Widget _buildTimeSlot(BuildContext context, TimeOfDay slot) {
-    return InkWell(
-      onTap: () {
-        selectTime(slot);
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(slot.format(context)),
-        ],
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        color: slotColor(context, slot),
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: InkWell(
+        radius: 0,
+        onTap: !isSelected(slot)
+            ? () {
+                selectTime(slot);
+              }
+            : null,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            isSelected(slot)
+                ? Text(
+                    slot.format(context),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                      fontSize: Theme.of(context).textTheme.subhead.fontSize,
+                    ),
+                  )
+                : Text(
+                    slot.format(context),
+                  ),
+          ],
+        ),
       ),
     );
   }
