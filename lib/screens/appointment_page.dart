@@ -59,6 +59,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Appointment'),
+        actions: <Widget>[
+          if (widget.isEditMode)
+            IconButton(
+              icon: Icon(Icons.delete),
+              tooltip: 'Cancel',
+              onPressed: _cancel,
+            ),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -94,11 +102,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 onPressed: canSubmit ? _save : null,
                 child: Text(widget.isEditMode ? 'Save' : 'Book'),
               ),
-              if (widget.isEditMode)
-                RaisedButton(
-                  onPressed: _back,
-                  child: Text('Back'),
-                ),
             ],
           ),
         ],
@@ -121,6 +124,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
         ? await _appointmentService.updateForCurrentUser(Appointment(
             id: widget.appointment.id,
             uid: widget.appointment.uid,
+            username: widget.appointment.username,
             datetime: picked,
           ))
         : await _appointmentService.addForCurrentUser(Appointment(datetime: picked));
@@ -128,7 +132,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
     Navigator.pop(context);
   }
 
-  _back() {
+  _cancel() async {
+    await _appointmentService.delete(widget.appointment.id);
     Navigator.pop(context);
   }
 }

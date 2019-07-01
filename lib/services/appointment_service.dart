@@ -6,7 +6,6 @@ import 'package:only_kids/services/auth_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AppointmentService {
-  final Firestore _db = Firestore.instance;
   final CollectionReference _appointmentsRef = Firestore.instance.collection('appointments');
   final AuthService _authService = getIt.get<AuthService>();
 
@@ -46,5 +45,9 @@ class AppointmentService {
   Future<void> updateForCurrentUser(Appointment appointment) async {
     assert(appointment.uid == _authService.currentUser.uid);
     await _appointmentsRef.document(appointment.id).setData(appointment.toMap(), merge: true);
+  }
+
+  Future<void> delete(String appointmentId) async {
+    await _appointmentsRef.document(appointmentId).delete();
   }
 }

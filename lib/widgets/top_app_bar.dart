@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/user_profile.dart';
