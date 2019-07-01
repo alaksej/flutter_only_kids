@@ -58,7 +58,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Appointment'),
+        title: Text(widget.isEditMode ? 'Edit Appointment' : 'New Appointment'),
         actions: <Widget>[
           if (widget.isEditMode)
             IconButton(
