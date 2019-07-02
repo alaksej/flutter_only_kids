@@ -122,8 +122,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
     );
 
     final confirmed = widget.isEditMode
-        ? await _showDialog('Update appointment', 'New appointment date: ${formatDate(picked)}', 'Confirm')
-        : await _showDialog('Create appointment', 'Add appointment on: ${formatDate(picked)}', 'Confirm');
+        ? await _showDialog('Update appointment', 'New appointment date: ${formatDate(picked)}', 'OK')
+        : await _showDialog('Create appointment', 'Add appointment on: ${formatDate(picked)}', 'OK');
 
     if (!confirmed) {
       return;
@@ -166,13 +166,13 @@ class _AppointmentPageState extends State<AppointmentPage> {
           content: new Text(content),
           actions: <Widget>[
             new FlatButton(
-              child: new Text(closeButtton),
+              child: new Text(closeButtton.toUpperCase()),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             new FlatButton(
-              child: new Text(confirmButton),
+              child: new Text(confirmButton.toUpperCase()),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
