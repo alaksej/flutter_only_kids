@@ -15,12 +15,16 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
     final UserProfile _user = Provider.of<UserProfile>(context);
     final isLoggedIn = _user != null;
 
-    return AppBar(
-      title: Text(this.title),
-      actions: isLoggedIn
-          ? _buildUserActions(context, _authService, _user)
-          : _buildLogInActions(context),
-    );
+    return StreamBuilder<bool>(
+        stream: _authService.loading$,
+        builder: (context, snapshot) {
+          return AppBar(
+            title: Text(this.title),
+            actions: !snapshot.hasData || snapshot.data
+                ? []
+                : isLoggedIn ? _buildUserActions(context, _authService, _user) : _buildLogInActions(context),
+          );
+        });
   }
 
   List<Widget> _buildUserActions(
