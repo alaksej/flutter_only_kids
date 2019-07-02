@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/date_picker.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
@@ -64,7 +65,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
             IconButton(
               icon: Icon(Icons.delete),
               tooltip: 'Cancel',
-              onPressed: _cancel,
+              onPressed: _cancelAppointment,
             ),
         ],
       ),
@@ -120,6 +121,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
       _selectedTime.minute,
     );
 
+    final confirmed = widget.isEditMode
+        ? await _showDialog('Update appointment', 'New appointment date: ${formatDate(picked)}', 'Confirm')
+        : await _showDialog('Create appointment', 'Add appointment on: ${formatDate(picked)}', 'Confirm');
+
+    if (!confirmed) {
+      return;
+    }
+
     widget.isEditMode
         ? await _appointmentService.updateForCurrentUser(Appointment(
             id: widget.appointment.id,
@@ -132,8 +141,45 @@ class _AppointmentPageState extends State<AppointmentPage> {
     Navigator.pop(context);
   }
 
-  _cancel() async {
+  _cancelAppointment() async {
+    final confirmed = await _showDialog(
+      'Cancel Appointment',
+      'Are you sure you want to cancel this appointment?',
+      'Yes',
+      'No',
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     await _appointmentService.delete(widget.appointment.id);
     Navigator.pop(context);
+  }
+
+  Future<bool> _showDialog(String title, String content, String confirmButton, [String closeButtton = 'Close']) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(content),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text(closeButtton),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            new FlatButton(
+              child: new Text(confirmButton),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
