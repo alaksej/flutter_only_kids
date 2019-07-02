@@ -21,23 +21,32 @@ class AuthService {
   AuthService() {
     user$ = Observable(_auth.onAuthStateChanged).doOnData((u) => _user = u).shareReplay(maxSize: 1);
 
-    profile$ = DeferStream(
-      () {
-        loading$.add(true);
-        return user$.switchMap(
-          (FirebaseUser u) {
-            if (u != null) {
-              // TODO: get rid of second network request
-              return _db.collection('users').document(u.uid).snapshots().map((snap) => UserProfile.fromMap(snap.data));
-            } else {
-              return Observable.just(null);
-            }
-          },
-        ).doOnEach((notification) {
-          loading$.add(false);
-        });
-      },
+    profile$ = user$.map(
+      (u) => UserProfile(
+            uid: u.uid,
+            email: u.email,
+            photoUrl: u.photoUrl,
+            displayName: u.displayName,
+          ),
     );
+
+    // profile$ = DeferStream(
+    //   () {
+    //     loading$.add(true);
+    //     return user$.switchMap(
+    //       (FirebaseUser u) {
+    //         if (u != null) {
+    //           // TODO: get rid of second network request
+    //           return _db.collection('users').document(u.uid).snapshots().map((snap) => UserProfile.fromMap(snap.data));
+    //         } else {
+    //           return Observable.just(null);
+    //         }
+    //       },
+    //     ).doOnEach((notification) {
+    //       loading$.add(false);
+    //     });
+    //   },
+    // );
   }
 
   Future<bool> googleSignIn() async {
@@ -53,7 +62,6 @@ class AuthService {
 
       FirebaseUser user = await _auth.signInWithCredential(credential);
       updateUserData(user);
-      print("user name: ${user.displayName}");
 
       return true;
     } catch (error) {
