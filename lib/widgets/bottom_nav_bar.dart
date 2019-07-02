@@ -22,7 +22,7 @@ class BottomNavBar extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.date_range),
-              title: Text('Book'),
+              title: Text('Calendar'),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.location_on),
