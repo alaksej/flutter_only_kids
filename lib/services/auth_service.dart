@@ -22,12 +22,9 @@ class AuthService {
     user$ = Observable(_auth.onAuthStateChanged).doOnData((u) => _user = u).shareReplay(maxSize: 1);
 
     profile$ = user$.map(
-      (u) => UserProfile(
-            uid: u.uid,
-            email: u.email,
-            photoUrl: u.photoUrl,
-            displayName: u.displayName,
-          ),
+      (u) => u != null
+          ? UserProfile.fromFirebaseUser(u)
+          : null,
     );
 
     // profile$ = DeferStream(

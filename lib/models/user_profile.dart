@@ -6,6 +6,7 @@ class UserProfile {
   final String email;
   final String photoUrl;
   final String displayName;
+  final String phoneNumber;
   final DateTime lastSeen;
   DocumentReference reference;
 
@@ -15,6 +16,7 @@ class UserProfile {
     this.photoUrl,
     this.displayName,
     this.lastSeen,
+    this.phoneNumber,
   });
 
   UserProfile.fromFirebaseUser(FirebaseUser user)
@@ -23,6 +25,7 @@ class UserProfile {
         email = user.email,
         photoUrl = user.photoUrl,
         displayName = user.displayName,
+        phoneNumber = user.phoneNumber,
         lastSeen = DateTime.now();
 
   UserProfile.fromMap(Map<String, dynamic> data)
@@ -31,6 +34,7 @@ class UserProfile {
         email = data['email'],
         photoUrl = data['photoUrl'],
         displayName = data['displayName'],
+        phoneNumber = data['phoneNumber'],
         lastSeen = DateTime.fromMicrosecondsSinceEpoch(
             data['lastSeen'].microsecondsSinceEpoch);
 
@@ -42,6 +46,7 @@ class UserProfile {
         'email': email,
         'photoURL': photoUrl,
         'displayName': displayName,
+        'phoneNumber': phoneNumber,
         'lastSeen': lastSeen,
       };
 }

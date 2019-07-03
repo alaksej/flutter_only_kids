@@ -4,6 +4,7 @@ import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/screens/login_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -43,15 +44,27 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
         .firstWhere((String str) => str != null && str.trimLeft().isNotEmpty)
         .trimLeft()[0]
         .toUpperCase();
-
-    widgets.add(
-      Container(
-        height: 6,
-        child: CircleAvatar(
+    if (user.photoUrl == null) {
+      widgets.add(
+        CircleAvatar(
           child: Text(placeholderChar),
         ),
-      ),
-    );
+      );
+    } else {
+      widgets.add(
+        CircleAvatar(
+          radius: 18.0,
+          child: ClipOval(
+            child: CachedNetworkImage(
+              placeholder: (context, url) => CircleAvatar(
+                    child: Text(placeholderChar),
+                  ),
+              imageUrl: user.photoUrl,
+            ),
+          ),
+        ),
+      );
+    }
 
     widgets.add(
       PopupMenuButton<_AppBarOverflowOptions>(
