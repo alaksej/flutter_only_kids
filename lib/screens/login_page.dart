@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/screens/appointment_page.dart';
 import 'package:only_kids/services/auth_service.dart';
-
-import 'home_page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginPage extends StatelessWidget {
   final bool goToAppointmentAfterLogin;
@@ -36,22 +35,20 @@ class LoginPage extends StatelessWidget {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // SvgPicture.asset(
-              //   'assets/lockup_photos_horizontal.svg',
-              // ),
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(30),
-                  child: const Text(
-                    'Log in to book an appointment',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.w500, color: Color(0x99000000)),
-                  ),
+              Container(
+                padding: const EdgeInsets.all(30),
+                child: const Text(
+                  'Please, sign in using one of the methods below:',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w500, color: Color(0x99000000)),
                 ),
               ),
-              RaisedButton(
-                padding: const EdgeInsets.all(15),
-                child: const Text('Sign In with Google'),
+              RaisedButton.icon(
+                icon: SvgPicture.asset(
+                  'assets/icon/icons8-google.svg',
+                  height: 30.0,
+                ),
+                label: const Text('Sign In with Google'),
                 onPressed: () async {
                   try {
                     await _authService.googleSignIn()
