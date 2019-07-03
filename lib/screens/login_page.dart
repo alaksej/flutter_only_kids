@@ -40,7 +40,6 @@ class LoginPage extends StatelessWidget {
                 child: const Text(
                   'Please, sign in using one of the methods below:',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.w500, color: Color(0x99000000)),
                 ),
               ),
               RaisedButton.icon(
