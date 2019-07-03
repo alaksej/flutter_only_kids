@@ -10,3 +10,7 @@ A Flutter project for the Only Kids hairdressing salon.
 * ```keytool -list -v -alias androiddebugkey -keystore %USERPROFILE%\.android\debug.keystore```
 * Enter keystore password: ```android```
 * Copy the SHA1 and add it to https://console.firebase.google.com/project/only-kids/settings/general/android:com.example.only_kids
+
+
+### Firestore security rules
+* ```firebase deploy --only firestore:rules```
