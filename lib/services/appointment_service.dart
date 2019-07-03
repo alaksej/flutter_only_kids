@@ -22,7 +22,7 @@ class AppointmentService {
   }
 
   Stream<List<Appointment>> getByUser(FirebaseUser user) {
-    final stream = _appointmentsRef.where('uid', isEqualTo: user.uid).snapshots().map((list) {
+    final stream = _appointmentsRef.where('uid', isEqualTo: user.uid).orderBy('datetime').snapshots().map((list) {
       return list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList();
     });
     return stream;
