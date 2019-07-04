@@ -42,7 +42,7 @@ class AppointmentsList extends StatelessWidget {
               stream: _userProfile.admin ? _appointmentService.getAll() : _appointmentService.getByCurrentUser(),
               builder: (context, snapshot) => !snapshot.hasData
                   ? Center(child: _buildCircularProgressIndicator(context))
-                  : _buildAppointmentsList(snapshot.data, context),
+                  : _buildAppointmentsList(snapshot.data, context, _userProfile.admin),
             ),
           ),
         if (_userProfile == null)
@@ -64,18 +64,18 @@ class AppointmentsList extends StatelessWidget {
     );
   }
 
-  Widget _buildAppointmentsList(List<Appointment> appointments, BuildContext context) {
+  Widget _buildAppointmentsList(List<Appointment> appointments, BuildContext context, bool admin) {
     if (appointments.length == 0) {
       return Text('You have no upcoming appointments', style: Theme.of(context).textTheme.subhead);
     }
     return ListView(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      children: appointments.map((appointment) => _buildAppointmentsListItem(context, appointment)).toList(),
+      children: appointments.map((appointment) => _buildAppointmentsListItem(context, appointment, admin)).toList(),
     );
   }
 
-  Widget _buildAppointmentsListItem(BuildContext context, Appointment appointment) {
+  Widget _buildAppointmentsListItem(BuildContext context, Appointment appointment, bool admin) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -92,6 +92,19 @@ class AppointmentsList extends StatelessWidget {
                 time(appointment.datetime),
                 style: Theme.of(context).textTheme.subtitle,
               ),
+              if (admin) ...[
+                SizedBox(height: 5.0),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.account_circle,
+                      size: 15.0,
+                    ),
+                    SizedBox(width: 5.0),
+                    Text(appointment.username, style: Theme.of(context).textTheme.subtitle),
+                  ],
+                ),
+              ]
             ],
           ),
           trailing: Icon(Icons.chevron_right),
