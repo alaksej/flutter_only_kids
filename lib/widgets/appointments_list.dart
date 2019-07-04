@@ -18,14 +18,22 @@ class AppointmentsList extends StatelessWidget {
     final UserProfile _userProfile = Provider.of<UserProfile>(context);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Center(
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 15.0),
-            child: Text(
-              'My Appointments',
-              style: Theme.of(context).textTheme.headline,
+        Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Theme.of(context).dividerColor),
             ),
+          ),
+          padding: EdgeInsets.all(30.0),
+          child: Row(
+            children: <Widget>[
+              Text(
+                _userProfile.admin ? 'Appointments' : 'My Appointments',
+                style: Theme.of(context).textTheme.headline,
+              ),
+            ],
           ),
         ),
         if (_userProfile != null)
@@ -33,9 +41,7 @@ class AppointmentsList extends StatelessWidget {
             child: StreamBuilder<List<Appointment>>(
               stream: _userProfile.admin ? _appointmentService.getAll() : _appointmentService.getByCurrentUser(),
               builder: (context, snapshot) => !snapshot.hasData
-                  ? Center(
-                      child: _buildCircularProgressIndicator(context),
-                    )
+                  ? Center(child: _buildCircularProgressIndicator(context))
                   : _buildAppointmentsList(snapshot.data, context),
             ),
           ),
@@ -62,38 +68,42 @@ class AppointmentsList extends StatelessWidget {
     if (appointments.length == 0) {
       return Text('You have no upcoming appointments', style: Theme.of(context).textTheme.subhead);
     }
-    return ListView.separated(
+    return ListView(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      padding: const EdgeInsets.only(top: 20.0),
-      separatorBuilder: (context, index) => Divider(height: 1),
-      itemCount: appointments.length,
-      itemBuilder: (context, index) => _buildAppointmentsListItem(context, appointments[index]),
+      children: appointments.map((appointment) => _buildAppointmentsListItem(context, appointment)).toList(),
     );
   }
 
   Widget _buildAppointmentsListItem(BuildContext context, Appointment appointment) {
-    return Padding(
-      key: ValueKey(appointment.username),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            title: Text(
-              formatDate(appointment.datetime),
-              style: Theme.of(context).textTheme.body2,
-            ),
-            trailing: Icon(Icons.edit),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => AppointmentPage(appointment: appointment),
-                ),
-              );
-            },
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListTile(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                dayDate(appointment.datetime),
+                style: Theme.of(context).textTheme.subhead,
+              ),
+              SizedBox(height: 5.0),
+              Text(
+                time(appointment.datetime),
+                style: Theme.of(context).textTheme.subtitle,
+              ),
+            ],
           ),
-        ],
+          trailing: Icon(Icons.chevron_right),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => AppointmentPage(appointment: appointment),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

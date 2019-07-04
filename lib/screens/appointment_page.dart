@@ -128,8 +128,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
     );
 
     final confirmed = widget.isEditMode
-        ? await _showDialog('Update appointment', 'New appointment date: ${formatDate(picked)}', 'OK')
-        : await _showDialog('Create appointment', 'Add appointment on: ${formatDate(picked)}', 'OK');
+        ? await _showDialog('Update appointment', 'New appointment date: ${dayDateTime(picked)}', 'OK')
+        : await _showDialog('Create appointment', 'Add appointment on: ${dayDateTime(picked)}', 'OK');
 
     if (!confirmed) {
       return;
