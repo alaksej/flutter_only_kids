@@ -31,7 +31,7 @@ class AppointmentsList extends StatelessWidget {
         if (_userProfile != null)
           Expanded(
             child: StreamBuilder<List<Appointment>>(
-              stream: _appointmentService.getByCurrentUser(),
+              stream: _userProfile.admin ? _appointmentService.getAll() : _appointmentService.getByCurrentUser(),
               builder: (context, snapshot) => !snapshot.hasData
                   ? Center(
                       child: _buildCircularProgressIndicator(context),

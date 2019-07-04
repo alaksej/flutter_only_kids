@@ -22,10 +22,19 @@ class AppointmentService {
   }
 
   Stream<List<Appointment>> getByUser(FirebaseUser user) {
-    final stream = _appointmentsRef.where('uid', isEqualTo: user.uid).orderBy('datetime').snapshots().map((list) {
-      return list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList();
-    });
+    final stream = _appointmentsRef
+        .where('uid', isEqualTo: user.uid)
+        .orderBy('datetime')
+        .snapshots()
+        .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
     return stream;
+  }
+
+  Stream<List<Appointment>> getAll() {
+    return _appointmentsRef
+        .orderBy('datetime')
+        .snapshots()
+        .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
   }
 
   Future<String> addForCurrentUser(Appointment appointment) async {
@@ -42,8 +51,7 @@ class AppointmentService {
     return docRef.documentID;
   }
 
-  Future<void> updateForCurrentUser(Appointment appointment) async {
-    assert(appointment.uid == _authService.currentUser.uid);
+  Future<void> update(Appointment appointment) async {
     await _appointmentsRef.document(appointment.id).setData(appointment.toMap(), merge: true);
   }
 

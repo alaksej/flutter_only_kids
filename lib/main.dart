@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
           value: getIt.get<AuthService>().user$,
         ),
         StreamProvider<UserProfile>.value(
-          value: getIt.get<AuthService>().profile$,
+          value: getIt.get<AuthService>().userProfile$,
         ),
       ],
       child: MaterialApp(

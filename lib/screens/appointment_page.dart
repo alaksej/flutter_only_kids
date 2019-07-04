@@ -136,7 +136,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
     }
 
     widget.isEditMode
-        ? await _appointmentService.updateForCurrentUser(Appointment(
+        ? await _appointmentService.update(Appointment(
             id: widget.appointment.id,
             uid: widget.appointment.uid,
             username: widget.appointment.username,

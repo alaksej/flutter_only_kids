@@ -10,7 +10,7 @@ class AuthService {
   final Firestore _db = Firestore.instance;
 
   Observable<FirebaseUser> user$; // firebase user
-  Stream<UserProfile> profile$; // custom user data in Firestore
+  Stream<UserProfile> userProfile$; // custom user data in Firestore
   BehaviorSubject<bool> loading$ = BehaviorSubject.seeded(false);
 
   FirebaseUser _user;
@@ -21,29 +21,29 @@ class AuthService {
   AuthService() {
     user$ = Observable(_auth.onAuthStateChanged).doOnData((u) => _user = u).shareReplay(maxSize: 1);
 
-    profile$ = user$.map(
-      (u) => u != null
-          ? UserProfile.fromFirebaseUser(u)
-          : null,
-    );
-
-    // profile$ = DeferStream(
-    //   () {
-    //     loading$.add(true);
-    //     return user$.switchMap(
-    //       (FirebaseUser u) {
-    //         if (u != null) {
-    //           // TODO: get rid of second network request
-    //           return _db.collection('users').document(u.uid).snapshots().map((snap) => UserProfile.fromMap(snap.data));
-    //         } else {
-    //           return Observable.just(null);
-    //         }
-    //       },
-    //     ).doOnEach((notification) {
-    //       loading$.add(false);
-    //     });
-    //   },
+    // profile$ = user$.map(
+    //   (u) => u != null
+    //       ? UserProfile.fromFirebaseUser(u)
+    //       : null,
     // );
+
+    userProfile$ = Observable(DeferStream(
+      () {
+        loading$.add(true);
+        return user$.switchMap(
+          (FirebaseUser u) {
+            if (u != null) {
+              // TODO: get rid of second network request
+              return _db.collection('users').document(u.uid).snapshots().map((snap) => UserProfile.fromMap(snap.data));
+            } else {
+              return Observable.just(null);
+            }
+          },
+        ).doOnEach((notification) {
+          loading$.add(false);
+        });
+      },
+    )).shareReplay(maxSize: 1);
   }
 
   Future<bool> googleSignIn() async {
