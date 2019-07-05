@@ -6,7 +6,7 @@ import 'package:only_kids/services/auth_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AppointmentService {
-  final CollectionReference _appointmentsRef = Firestore.instance.collection('appointments');
+  final CollectionReference _collectionRef = Firestore.instance.collection('appointments');
   final AuthService _authService = getIt.get<AuthService>();
 
   Stream<List<Appointment>> getByCurrentUser() {
@@ -22,7 +22,7 @@ class AppointmentService {
   }
 
   Stream<List<Appointment>> getByUser(FirebaseUser user) {
-    final stream = _appointmentsRef
+    final stream = _collectionRef
         .where('uid', isEqualTo: user.uid)
         .orderBy('datetime')
         .snapshots()
@@ -31,7 +31,7 @@ class AppointmentService {
   }
 
   Stream<List<Appointment>> getAll() {
-    return _appointmentsRef
+    return _collectionRef
         .orderBy('datetime')
         .snapshots()
         .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
@@ -46,16 +46,16 @@ class AppointmentService {
       datetime: appointment.datetime,
     );
 
-    final docRef = await _appointmentsRef.add(userAppointment.toMap());
+    final docRef = await _collectionRef.add(userAppointment.toMap());
 
     return docRef.documentID;
   }
 
   Future<void> update(Appointment appointment) async {
-    await _appointmentsRef.document(appointment.id).setData(appointment.toMap(), merge: true);
+    await _collectionRef.document(appointment.id).setData(appointment.toMap(), merge: true);
   }
 
   Future<void> delete(String appointmentId) async {
-    await _appointmentsRef.document(appointmentId).delete();
+    await _collectionRef.document(appointmentId).delete();
   }
 }

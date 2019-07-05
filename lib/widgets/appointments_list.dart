@@ -30,7 +30,7 @@ class AppointmentsList extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Text(
-                _userProfile.admin ? 'Appointments' : 'My Appointments',
+                _userProfile != null && _userProfile.admin ? 'Appointments' : 'My Appointments',
                 style: Theme.of(context).textTheme.headline,
               ),
             ],

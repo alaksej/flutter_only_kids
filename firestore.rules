@@ -11,5 +11,10 @@ service cloud.firestore {
     match /{document=**} {
       allow read, write: if isAuthor() || isAdmin();
     }
+
+    match /calendars/{calendar} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }

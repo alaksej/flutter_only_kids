@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:only_kids/models/user_profile.dart';
+import 'package:only_kids/services/calendar_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/date_picker.dart';
 import 'package:only_kids/main.dart';
@@ -7,29 +8,6 @@ import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/widgets/time_picker.dart';
 import 'package:provider/provider.dart';
-
-final List<TimeOfDay> timeSlots = const [
-  TimeOfDay(hour: 10, minute: 0),
-  TimeOfDay(hour: 10, minute: 30),
-  TimeOfDay(hour: 11, minute: 0),
-  TimeOfDay(hour: 11, minute: 30),
-  TimeOfDay(hour: 12, minute: 0),
-  TimeOfDay(hour: 12, minute: 30),
-  TimeOfDay(hour: 13, minute: 0),
-  TimeOfDay(hour: 13, minute: 30),
-  TimeOfDay(hour: 14, minute: 0),
-  TimeOfDay(hour: 14, minute: 30),
-  TimeOfDay(hour: 15, minute: 0),
-  TimeOfDay(hour: 15, minute: 30),
-  TimeOfDay(hour: 16, minute: 0),
-  TimeOfDay(hour: 16, minute: 30),
-  TimeOfDay(hour: 17, minute: 0),
-  TimeOfDay(hour: 17, minute: 30),
-  TimeOfDay(hour: 18, minute: 0),
-  TimeOfDay(hour: 18, minute: 30),
-  TimeOfDay(hour: 19, minute: 0),
-  TimeOfDay(hour: 19, minute: 30),
-];
 
 class AppointmentPage extends StatefulWidget {
   AppointmentPage({
@@ -47,6 +25,8 @@ class AppointmentPage extends StatefulWidget {
 
 class _AppointmentPageState extends State<AppointmentPage> {
   final AppointmentService _appointmentService = getIt.get<AppointmentService>();
+  final CalendarService _calendarService = getIt.get<CalendarService>();
+
   DateTime _selectedDate;
   TimeOfDay _selectedTime;
 
@@ -109,15 +89,25 @@ class _AppointmentPageState extends State<AppointmentPage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TimePicker(
-                timeSlots: timeSlots,
-                selectedTime: _selectedTime,
-                selectTime: (TimeOfDay time) {
-                  setState(() {
-                    _selectedTime = time;
-                  });
-                },
-              ),
+              child: StreamBuilder<List<TimeOfDay>>(
+                  stream: _calendarService.getTimeSlots(),
+                  builder: (context, snapshot) {
+                    return snapshot.hasData
+                        ? TimePicker( 
+                            timeSlots: snapshot.data,
+                            selectedTime: _selectedTime,
+                            selectTime: (TimeOfDay time) {
+                              setState(() {
+                                _selectedTime = time;
+                              });
+                            },
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                            ),
+                          );
+                  }),
             ),
           ),
           ButtonBar(

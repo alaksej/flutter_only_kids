@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/services/appointment_service.dart';
+import 'package:only_kids/services/calendar_service.dart';
 import 'package:only_kids/services/auth_service.dart';
 
 import 'blocs/nav_bar_bloc.dart';
@@ -18,6 +19,7 @@ GetIt getIt = GetIt();
 void main() {
   getIt.registerSingleton<AuthService>(AuthService());
   getIt.registerSingleton<AppointmentService>(AppointmentService());
+  getIt.registerSingleton<CalendarService>(CalendarService());
   runApp(MyApp());
 }
 
