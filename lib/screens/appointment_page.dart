@@ -66,7 +66,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     size: 30.0,
                   ),
                   SizedBox(width: 10.0),
-                  Text(widget.appointment.username, style: Theme.of(context).textTheme.headline),
+                  Text(widget.appointment?.username ?? '', style: Theme.of(context).textTheme.headline),
                 ],
               ),
             ),
