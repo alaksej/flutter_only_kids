@@ -35,7 +35,7 @@ class UserProfile {
       : assert(data != null),
         uid = data['uid'],
         email = data['email'],
-        photoUrl = data['photoUrl'],
+        photoUrl = data['photoURL'],
         displayName = data['displayName'],
         phoneNumber = data['phoneNumber'],
         admin = data['admin'] ?? false,
