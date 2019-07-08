@@ -10,6 +10,7 @@ service cloud.firestore {
 
     match /{document=**} {
       allow read, write: if isAuthor() || isAdmin();
+      allow create: if resource.data.uid != null;
     }
 
     match /calendars/{calendar} {
