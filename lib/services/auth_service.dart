@@ -71,8 +71,7 @@ class AuthService {
 
   void updateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
-
-    return ref.setData(UserProfile.fromFirebaseUser(user).toMap(), merge: true);
+    return ref.setData(UserProfile.firebaseUserToMap(user), merge: true);
   }
 
   Future<String> signOut() async {

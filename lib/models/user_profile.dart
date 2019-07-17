@@ -21,15 +21,17 @@ class UserProfile {
     this.admin = false,
   });
 
-  UserProfile.fromFirebaseUser(FirebaseUser user)
-      : assert(user != null),
-        uid = user.uid,
-        email = user.email,
-        photoUrl = user.photoUrl,
-        displayName = user.displayName,
-        phoneNumber = user.phoneNumber,
-        admin = false,
-        lastSeen = DateTime.now();
+  static Map<String, dynamic> firebaseUserToMap(FirebaseUser user) {
+    assert(user != null);
+    return {
+      'uid': user.uid,
+      'email': user.email,
+      'photoUrl': user.photoUrl,
+      'displayName': user.displayName,
+      'phoneNumber': user.phoneNumber,
+      'lastSeen': DateTime.now(),
+    };
+  }
 
   UserProfile.fromMap(Map<String, dynamic> data)
       : assert(data != null),
@@ -39,8 +41,7 @@ class UserProfile {
         displayName = data['displayName'],
         phoneNumber = data['phoneNumber'],
         admin = data['admin'] ?? false,
-        lastSeen = DateTime.fromMicrosecondsSinceEpoch(
-            data['lastSeen'].microsecondsSinceEpoch);
+        lastSeen = DateTime.fromMicrosecondsSinceEpoch(data['lastSeen'].microsecondsSinceEpoch);
 
   @override
   String toString() => "UserProfile<$uid:$email>";
