@@ -20,22 +20,6 @@ class AppointmentsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: Theme.of(context).dividerColor),
-            ),
-          ),
-          padding: EdgeInsets.all(30.0),
-          child: Row(
-            children: <Widget>[
-              Text(
-                _userProfile != null && _userProfile.admin ? 'Appointments' : 'My Appointments',
-                style: Theme.of(context).textTheme.headline,
-              ),
-            ],
-          ),
-        ),
         if (_userProfile != null)
           Expanded(
             child: StreamBuilder<List<Appointment>>(
@@ -49,10 +33,10 @@ class AppointmentsList extends StatelessWidget {
           StreamBuilder<bool>(
             stream: _authService.loading$,
             builder: (context, snapshot) => Center(
-                  child: !snapshot.hasData || snapshot.data
-                      ? _buildCircularProgressIndicator(context)
-                      : Text('Please log in to manage your appointments'),
-                ),
+              child: !snapshot.hasData || snapshot.data
+                  ? _buildCircularProgressIndicator(context)
+                  : Text('Please log in to manage your appointments'),
+            ),
           ),
       ],
     );
