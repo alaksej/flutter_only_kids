@@ -7,10 +7,14 @@ service cloud.firestore {
     function isAuthor() {
       return resource.data.uid != null && resource.data.uid == request.auth.uid;
     }
+    
+    function isAuthenticated() {
+      return request.auth.uid != null;
+    }
 
     match /{document=**} {
-      allow read, write: if isAuthor() || isAdmin();
-      allow create: if resource.data.uid != null;
+      allow read, update, delete: if isAuthor() || isAdmin();
+      allow create: if isAuthenticated();
     }
 
     match /calendars/{calendar} {
