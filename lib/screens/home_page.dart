@@ -160,9 +160,6 @@ class HomePage extends StatelessWidget {
       )
     ];
   }
-
-  @override
-  Size get preferredSize => AppBar().preferredSize;
 }
 
 enum _AppBarOverflowOptions {
