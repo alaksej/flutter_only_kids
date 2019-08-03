@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/screens/appointment_page.dart';
-import 'package:only_kids/services/appointment_service.dart';
-import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class AppointmentsList extends StatelessWidget {
-  final AppointmentService _appointmentService = getIt.get<AppointmentService>();
-  final AuthService _authService = getIt.get<AuthService>();
+  final List<Appointment> _appointments;
+
+  AppointmentsList(this._appointments);
 
   @override
   Widget build(BuildContext context) {
@@ -20,31 +18,8 @@ class AppointmentsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        if (_userProfile != null)
-          Expanded(
-            child: StreamBuilder<List<Appointment>>(
-              stream: _userProfile.admin ? _appointmentService.getAll() : _appointmentService.getByCurrentUser(),
-              builder: (context, snapshot) => !snapshot.hasData
-                  ? Center(child: _buildCircularProgressIndicator(context))
-                  : _buildAppointmentsList(snapshot.data, context, _userProfile.admin),
-            ),
-          ),
-        if (_userProfile == null)
-          StreamBuilder<bool>(
-            stream: _authService.loading$,
-            builder: (context, snapshot) => Center(
-              child: !snapshot.hasData || snapshot.data
-                  ? _buildCircularProgressIndicator(context)
-                  : Text('Please log in to manage your appointments'),
-            ),
-          ),
+        Expanded(child: _buildAppointmentsList(_appointments, context, _userProfile.admin)),
       ],
-    );
-  }
-
-  Widget _buildCircularProgressIndicator(BuildContext context) {
-    return CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
     );
   }
 

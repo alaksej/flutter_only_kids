@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:only_kids/models/appointment.dart';
+import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/widgets/appointments_list.dart';
 import 'package:only_kids/models/user_profile.dart';
@@ -25,9 +27,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserProfile _user = Provider.of<UserProfile>(context);
+    final UserProfile _userProfile = Provider.of<UserProfile>(context);
     final AuthService _authService = getIt.get<AuthService>();
-    final isLoggedIn = _user != null;
+    final isLoggedIn = _userProfile != null;
+    final AppointmentService _appointmentService = getIt.get<AppointmentService>();
 
     return DefaultTabController(
       length: myTabs.length,
@@ -42,11 +45,27 @@ class HomePage extends StatelessWidget {
                 title: Text(this.title),
                 actions: !snapshot.hasData || snapshot.data
                     ? []
-                    : isLoggedIn ? _buildUserActions(context, _authService, _user) : _buildLogInActions(context),
+                    : isLoggedIn ? _buildUserActions(context, _authService, _userProfile) : _buildLogInActions(context),
               ),
               body: TabBarView(
                 children: [
-                  AppointmentsList(),
+                  _userProfile == null
+                      ? StreamBuilder<bool>(
+                          stream: _authService.loading$,
+                          builder: (context, snapshot) => Center(
+                            child: !snapshot.hasData || snapshot.data
+                                ? _buildCircularProgressIndicator(context)
+                                : Text('Please log in to manage your appointments'),
+                          ),
+                        )
+                      : StreamBuilder<List<Appointment>>(
+                          stream: _userProfile.admin
+                              ? _appointmentService.getAll()
+                              : _appointmentService.getByCurrentUser(),
+                          builder: (context, snapshot) => !snapshot.hasData
+                              ? Center(child: _buildCircularProgressIndicator(context))
+                              : AppointmentsList(snapshot.data),
+                        ),
                   Center(
                     child: Text('Past appointments'),
                   ),
@@ -54,7 +73,7 @@ class HomePage extends StatelessWidget {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  _user == null
+                  _userProfile == null
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -69,6 +88,12 @@ class HomePage extends StatelessWidget {
               bottomNavigationBar: BottomNavBar(),
             );
           }),
+    );
+  }
+
+  Widget _buildCircularProgressIndicator(BuildContext context) {
+    return CircularProgressIndicator(
+      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
     );
   }
 
