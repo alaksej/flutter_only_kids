@@ -64,27 +64,34 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
               break;
           }
         },
-        child: CircleAvatar(
-          radius: 18.0,
-          child: ClipOval(
-            child: CachedNetworkImage(
-              placeholder: (context, url) => CircleAvatar(
-                child: Text(placeholderChar),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            radius: 15.0,
+            child: Container(
+              width: 30.0,
+              height: 30.0,
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  placeholder: (context, url) => CircleAvatar(
+                    child: Text(placeholderChar),
+                  ),
+                  imageUrl: user.photoUrl,
+                ),
               ),
-              imageUrl: user.photoUrl,
             ),
           ),
         ),
         itemBuilder: (BuildContext context) {
           return <PopupMenuEntry<_AppBarOverflowOptions>>[
             PopupMenuItem<_AppBarOverflowOptions>(
+              value: _AppBarOverflowOptions.settings,
+              child: const Text('Settings'),
+            ),
+            PopupMenuItem<_AppBarOverflowOptions>(
               value: _AppBarOverflowOptions.signout,
               child: const Text('Log Out'),
             ),
-            PopupMenuItem<_AppBarOverflowOptions>(
-              value: _AppBarOverflowOptions.settings,
-              child: const Text('Settings'),
-            )
           ];
         },
       ),
