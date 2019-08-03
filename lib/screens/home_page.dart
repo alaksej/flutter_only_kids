@@ -51,14 +51,14 @@ class HomePage extends StatelessWidget {
                 _buildTab(
                   _userProfile,
                   _authService,
-                  _userProfile.admin
-                      ? _appointmentService.getUpcomingAll()
-                      : _appointmentService.getUpcomingByCurrentUser(),
+                  _appointmentService.getUpcomingAll(),
+                  _appointmentService.getUpcomingByCurrentUser(),
                 ),
                 _buildTab(
                   _userProfile,
                   _authService,
-                  _userProfile.admin ? _appointmentService.getPastAll() : _appointmentService.getPastByCurrentUser(),
+                  _appointmentService.getPastAll(),
+                  _appointmentService.getPastByCurrentUser(),
                 ),
               ],
             ),
@@ -83,22 +83,35 @@ class HomePage extends StatelessWidget {
   }
 
   StreamBuilder<Object> _buildTab(
-      UserProfile _userProfile, AuthService _authService, Stream<List<Appointment>> appointmentsStream) {
+    UserProfile _userProfile,
+    AuthService _authService,
+    Stream<List<Appointment>> appointmentsAll,
+    Stream<List<Appointment>> appointmentsUser,
+  ) {
     return _userProfile == null
-        ? StreamBuilder<bool>(
-            stream: _authService.loading$,
-            builder: (context, snapshot) => Center(
-              child: !snapshot.hasData || snapshot.data
-                  ? _buildCircularProgressIndicator(context)
-                  : Text('Please log in to manage your appointments'),
-            ),
-          )
-        : StreamBuilder<List<Appointment>>(
-            stream: appointmentsStream,
-            builder: (context, snapshot) => !snapshot.hasData
-                ? Center(child: _buildCircularProgressIndicator(context))
-                : AppointmentsList(snapshot.data),
+        ? _buildLoginMessage(_authService)
+        : _buildAppointmentsList(
+            _userProfile.admin ? appointmentsAll : appointmentsUser,
           );
+  }
+
+  StreamBuilder<List<Appointment>> _buildAppointmentsList(Stream<List<Appointment>> appointmentsStream) {
+    return StreamBuilder<List<Appointment>>(
+      stream: appointmentsStream,
+      builder: (context, snapshot) =>
+          !snapshot.hasData ? Center(child: _buildCircularProgressIndicator(context)) : AppointmentsList(snapshot.data),
+    );
+  }
+
+  StreamBuilder<bool> _buildLoginMessage(AuthService _authService) {
+    return StreamBuilder<bool>(
+      stream: _authService.loading$,
+      builder: (context, snapshot) => Center(
+        child: !snapshot.hasData || snapshot.data
+            ? _buildCircularProgressIndicator(context)
+            : Text('Please log in to manage your appointments'),
+      ),
+    );
   }
 
   Widget _buildCircularProgressIndicator(BuildContext context) {
