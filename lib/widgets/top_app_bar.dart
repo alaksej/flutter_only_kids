@@ -50,32 +50,40 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Text(placeholderChar),
         ),
       );
-    } else {
-      widgets.add(
-        CircleAvatar(
-          radius: 18.0,
-          child: ClipOval(
-            child: CachedNetworkImage(
-              placeholder: (context, url) => CircleAvatar(
-                    child: Text(placeholderChar),
-                  ),
-              imageUrl: user.photoUrl,
-            ),
-          ),
-        ),
-      );
     }
 
     widgets.add(
       PopupMenuButton<_AppBarOverflowOptions>(
         onSelected: (_AppBarOverflowOptions selection) async {
-          await authService.signOut();
+          switch (selection) {
+            case _AppBarOverflowOptions.signout:
+              await authService.signOut();
+              break;
+            case _AppBarOverflowOptions.settings:
+              print('settings');
+              break;
+          }
         },
+        child: CircleAvatar(
+          radius: 18.0,
+          child: ClipOval(
+            child: CachedNetworkImage(
+              placeholder: (context, url) => CircleAvatar(
+                child: Text(placeholderChar),
+              ),
+              imageUrl: user.photoUrl,
+            ),
+          ),
+        ),
         itemBuilder: (BuildContext context) {
           return <PopupMenuEntry<_AppBarOverflowOptions>>[
             PopupMenuItem<_AppBarOverflowOptions>(
               value: _AppBarOverflowOptions.signout,
               child: const Text('Log Out'),
+            ),
+            PopupMenuItem<_AppBarOverflowOptions>(
+              value: _AppBarOverflowOptions.settings,
+              child: const Text('Settings'),
             )
           ];
         },
@@ -108,4 +116,5 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 enum _AppBarOverflowOptions {
   signout,
+  settings,
 }
