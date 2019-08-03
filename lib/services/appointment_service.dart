@@ -33,7 +33,7 @@ class AppointmentService {
     return stream;
   }
 
-    Stream<List<Appointment>> getPastByCurrentUser() {
+  Stream<List<Appointment>> getPastByCurrentUser() {
     var stream = _authService.user$.switchMap((user) {
       if (user == null) {
         return Observable.just(List<Appointment>());
@@ -78,6 +78,22 @@ class AppointmentService {
 
   Stream<List<Appointment>> getAll() {
     return _collectionRef
+        .orderBy('datetime')
+        .snapshots()
+        .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
+  }
+
+  Stream<List<Appointment>> getUpcomingAll() {
+    return _collectionRef
+        .where('datetime', isGreaterThanOrEqualTo: DateTime.now())
+        .orderBy('datetime')
+        .snapshots()
+        .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
+  }
+
+  Stream<List<Appointment>> getPastAll() {
+    return _collectionRef
+        .where('datetime', isLessThan: DateTime.now())
         .orderBy('datetime')
         .snapshots()
         .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());

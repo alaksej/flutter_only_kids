@@ -15,9 +15,9 @@ import 'package:only_kids/main.dart';
 import 'appointment_page.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key key, this.title, this.analytics, this.observer}) : super(key: key);
+  HomePage({Key key, this.analytics, this.observer}) : super(key: key);
   final List<Tab> myTabs = <Tab>[
-    Tab(text: 'MY APPOINTEMENTS'),
+    Tab(text: 'UPCOMING'),
     Tab(text: 'PAST'),
   ];
 
@@ -35,60 +35,71 @@ class HomePage extends StatelessWidget {
     return DefaultTabController(
       length: myTabs.length,
       child: StreamBuilder<bool>(
-          stream: _authService.loading$,
-          builder: (context, snapshot) {
-            return Scaffold(
-              appBar: AppBar(
-                bottom: TabBar(
-                  tabs: myTabs,
+        stream: _authService.loading$,
+        builder: (context, snapshot) {
+          return Scaffold(
+            appBar: AppBar(
+              bottom: TabBar(
+                tabs: myTabs,
+              ),
+              title: Text('Appointments'),
+              actions: !snapshot.hasData || snapshot.data
+                  ? []
+                  : isLoggedIn ? _buildUserActions(context, _authService, _userProfile) : _buildLogInActions(context),
+            ),
+            body: TabBarView(
+              children: [
+                _buildTab(
+                  _userProfile,
+                  _authService,
+                  _userProfile.admin
+                      ? _appointmentService.getUpcomingAll()
+                      : _appointmentService.getUpcomingByCurrentUser(),
                 ),
-                title: Text(this.title),
-                actions: !snapshot.hasData || snapshot.data
-                    ? []
-                    : isLoggedIn ? _buildUserActions(context, _authService, _userProfile) : _buildLogInActions(context),
-              ),
-              body: TabBarView(
-                children: [
-                  _userProfile == null
-                      ? StreamBuilder<bool>(
-                          stream: _authService.loading$,
-                          builder: (context, snapshot) => Center(
-                            child: !snapshot.hasData || snapshot.data
-                                ? _buildCircularProgressIndicator(context)
-                                : Text('Please log in to manage your appointments'),
-                          ),
-                        )
-                      : StreamBuilder<List<Appointment>>(
-                          stream: _userProfile.admin
-                              ? _appointmentService.getAll()
-                              : _appointmentService.getByCurrentUser(),
-                          builder: (context, snapshot) => !snapshot.hasData
-                              ? Center(child: _buildCircularProgressIndicator(context))
-                              : AppointmentsList(snapshot.data),
-                        ),
-                  Center(
-                    child: Text('Past appointments'),
-                  ),
-                ],
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  _userProfile == null
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => LoginPage(goToAppointmentAfterLogin: true)))
-                      : Navigator.push(
-                          context, MaterialPageRoute(builder: (BuildContext context) => AppointmentPage()));
-                  // analytics.setCurrentScreen(screenName: 'Appointment');
-                },
-                tooltip: 'Add an appointment',
-                child: Icon(Icons.add),
-              ),
-              bottomNavigationBar: BottomNavBar(),
-            );
-          }),
+                _buildTab(
+                  _userProfile,
+                  _authService,
+                  _userProfile.admin ? _appointmentService.getPastAll() : _appointmentService.getPastByCurrentUser(),
+                ),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                _userProfile == null
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => LoginPage(goToAppointmentAfterLogin: true)))
+                    : Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AppointmentPage()));
+                // analytics.setCurrentScreen(screenName: 'Appointment');
+              },
+              tooltip: 'Add an appointment',
+              child: Icon(Icons.add),
+            ),
+            bottomNavigationBar: BottomNavBar(),
+          );
+        },
+      ),
     );
+  }
+
+  StreamBuilder<Object> _buildTab(
+      UserProfile _userProfile, AuthService _authService, Stream<List<Appointment>> appointmentsStream) {
+    return _userProfile == null
+        ? StreamBuilder<bool>(
+            stream: _authService.loading$,
+            builder: (context, snapshot) => Center(
+              child: !snapshot.hasData || snapshot.data
+                  ? _buildCircularProgressIndicator(context)
+                  : Text('Please log in to manage your appointments'),
+            ),
+          )
+        : StreamBuilder<List<Appointment>>(
+            stream: appointmentsStream,
+            builder: (context, snapshot) => !snapshot.hasData
+                ? Center(child: _buildCircularProgressIndicator(context))
+                : AppointmentsList(snapshot.data),
+          );
   }
 
   Widget _buildCircularProgressIndicator(BuildContext context) {
