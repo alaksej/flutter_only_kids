@@ -21,7 +21,6 @@ class HomePage extends StatelessWidget {
     Tab(text: 'PAST'),
   ];
 
-  final String title;
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
 
