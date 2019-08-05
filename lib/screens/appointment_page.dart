@@ -55,70 +55,59 @@ class _AppointmentPageState extends State<AppointmentPage> {
       ),
       body: Column(
         children: <Widget>[
-          if (_userProfile.admin)
-            Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.account_circle,
-                    size: 30.0,
+          Expanded(
+            child: ListView(
+              children: <Widget>[
+                DatePicker(
+                  selectedDate: _selectedDate,
+                  selectDate: (DateTime date) {
+                    setState(() {
+                      _selectedDate = date;
+                    });
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: StreamBuilder<List<TimeOfDay>>(
+                      stream: _calendarService.getTimeSlots(),
+                      builder: (context, snapshot) {
+                        return snapshot.hasData
+                            ? TimePicker(
+                                timeSlots: snapshot.data,
+                                selectedTime: _selectedTime,
+                                selectTime: (TimeOfDay time) {
+                                  setState(() {
+                                    _selectedTime = time;
+                                  });
+                                },
+                              )
+                            : Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                                ),
+                              );
+                      }),
+                ),
+              ],
+            ),
+          ),
+          Material(
+            elevation: 8,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).bottomAppBarColor,
+              ),
+              child: ButtonBar(
+                children: <Widget>[
+                  RaisedButton(
+                    color: Theme.of(context).primaryColor,
+                    textColor: Theme.of(context).primaryTextTheme.button.color,
+                    onPressed: canSubmit ? _save : null,
+                    child: Text(widget.isEditMode ? 'Save' : 'Book'),
                   ),
-                  SizedBox(width: 10.0),
-                  Text(widget.appointment?.username ?? '', style: Theme.of(context).textTheme.headline),
                 ],
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Please select the date:', style: Theme.of(context).textTheme.subhead),
-          ),
-          DatePicker(
-            selectedDate: _selectedDate,
-            selectDate: (DateTime date) {
-              setState(() {
-                _selectedDate = date;
-              });
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Please select the time:', style: Theme.of(context).textTheme.subhead),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: StreamBuilder<List<TimeOfDay>>(
-                  stream: _calendarService.getTimeSlots(),
-                  builder: (context, snapshot) {
-                    return snapshot.hasData
-                        ? TimePicker( 
-                            timeSlots: snapshot.data,
-                            selectedTime: _selectedTime,
-                            selectTime: (TimeOfDay time) {
-                              setState(() {
-                                _selectedTime = time;
-                              });
-                            },
-                          )
-                        : Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-                            ),
-                          );
-                  }),
-            ),
-          ),
-          ButtonBar(
-            children: <Widget>[
-              RaisedButton(
-                color: Theme.of(context).primaryColor,
-                textColor: Theme.of(context).primaryTextTheme.button.color,
-                onPressed: canSubmit ? _save : null,
-                child: Text(widget.isEditMode ? 'Save' : 'Book'),
-              ),
-            ],
           ),
         ],
       ),

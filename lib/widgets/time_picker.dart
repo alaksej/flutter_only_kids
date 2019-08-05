@@ -14,11 +14,12 @@ class TimePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: GridView.count(
-        crossAxisCount: 5,
-        children: _buildTimeSlots(context),
-      ),
+    final Orientation orientation = MediaQuery.of(context).orientation;
+    return GridView.count(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      crossAxisCount: orientation == Orientation.portrait ? 5 : 10,
+      children: _buildTimeSlots(context),
     );
   }
 
