@@ -51,53 +51,76 @@ class DatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final TextTheme headerTextTheme = themeData.primaryTextTheme;
+    Color dayColor;
+    Color yearColor;
+
+    switch (themeData.primaryColorBrightness) {
+      case Brightness.light:
+        dayColor = Colors.black87;
+        yearColor = Colors.black54;
+        break;
+      case Brightness.dark:
+        dayColor = Colors.white;
+        yearColor = Colors.white70;
+        break;
+    }
+
+    final TextStyle dayStyle = headerTextTheme.display1.copyWith(color: dayColor);
+    final TextStyle yearStyle = headerTextTheme.subhead.copyWith(color: yearColor);
+
+    Color backgroundColor;
+    switch (themeData.brightness) {
+      case Brightness.light:
+        backgroundColor = themeData.primaryColor;
+        break;
+      case Brightness.dark:
+        backgroundColor = themeData.backgroundColor;
+        break;
+    }
+
     return Container(
       height: 80,
+      decoration: BoxDecoration(color: backgroundColor),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _buildArrow(Icons.chevron_left, onTap: _isSelectable(prevDay) ? goPrevDay : null),
+          _buildArrow(Icons.chevron_left, dayColor, onTap: _isSelectable(prevDay) ? goPrevDay : null),
           Expanded(
             child: InkWell(
               onTap: () => _pickDate(context),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(
-                    Icons.calendar_today,
-                    size: 50,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  const SizedBox(width: 12.0),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        DateFormat.yMMMd().format(selectedDate),
-                        style: Theme.of(context).textTheme.headline,
-                      ),
-                      Text(
-                        DateFormat('EEEE').format(selectedDate),
-                        style: Theme.of(context).textTheme.caption,
-                      )
+                      Text(localizations.formatYear(selectedDate), style: yearStyle),
+                      Text(localizations.formatMediumDate(selectedDate), style: dayStyle),
                     ],
                   ),
                 ],
               ),
             ),
           ),
-          _buildArrow(Icons.chevron_right, onTap: _isSelectable(nextDay) ? goNextDay : null),
+          _buildArrow(Icons.chevron_right, dayColor, onTap: _isSelectable(nextDay) ? goNextDay : null),
         ],
       ),
     );
   }
 
-  InkWell _buildArrow(IconData icon, {void Function() onTap}) {
+  InkWell _buildArrow(IconData icon, Color color, {void Function() onTap}) {
     return InkWell(
       onTap: onTap,
       child: Container(
         width: 40,
-        child: Icon(icon),
+        child: Icon(
+          icon,
+          color: color,
+        ),
       ),
     );
   }

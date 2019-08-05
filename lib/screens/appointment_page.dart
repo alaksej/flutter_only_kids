@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/services/calendar_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/date_picker.dart';
@@ -7,7 +6,6 @@ import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/widgets/time_picker.dart';
-import 'package:provider/provider.dart';
 
 class AppointmentPage extends StatefulWidget {
   AppointmentPage({
@@ -39,8 +37,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final UserProfile _userProfile = Provider.of<UserProfile>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.isEditMode ? 'Edit Appointment' : 'New Appointment'),
@@ -66,7 +62,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     });
                   },
                 ),
-                Padding(
+                Container(
                   padding: const EdgeInsets.all(8.0),
                   child: StreamBuilder<List<TimeOfDay>>(
                       stream: _calendarService.getTimeSlots(),
