@@ -1,25 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:only_kids/models/time_slot.dart';
 
 class Appointment {
   final String id;
   final String uid;
   final String username;
-  final DateTime datetime;
+  final DateTime dateTime;
 
   const Appointment({
     this.id,
     this.uid,
     this.username,
-    this.datetime,
+    this.dateTime,
   });
 
   Appointment.fromMap(this.id, Map<String, dynamic> map)
       : assert(map['uid'] != null),
-        assert(map['datetime'] != null),
+        assert(map['dateTime'] != null),
         uid = map['uid'],
         username = map['username'],
-        datetime = DateTime.fromMicrosecondsSinceEpoch(map['datetime'].microsecondsSinceEpoch);
+        dateTime = DateTime.fromMicrosecondsSinceEpoch(map['dateTime'].microsecondsSinceEpoch);
 
   Appointment.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(
@@ -30,11 +30,11 @@ class Appointment {
   Map<String, dynamic> toMap() => {
         'uid': uid,
         'username': username,
-        'datetime': datetime,
+        'dateTime': dateTime,
       };
 
-  TimeOfDay get time => TimeOfDay.fromDateTime(datetime);
+  TimeSlot get timeSlot => TimeSlot(dateTime: dateTime);
 
   @override
-  String toString() => "Appointment<$username:$datetime>";
+  String toString() => "Appointment<$username:$dateTime>";
 }

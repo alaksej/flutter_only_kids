@@ -53,12 +53,16 @@ class HomePage extends StatelessWidget {
                   _authService,
                   _appointmentService.getUpcomingAll(),
                   _appointmentService.getUpcomingByCurrentUser(),
+                  'You have no upcoming appointments',
+                  AppointmentMode.edit,
                 ),
                 _buildTab(
                   _userProfile,
                   _authService,
                   _appointmentService.getPastAll(),
                   _appointmentService.getPastByCurrentUser(),
+                  'You have no past appointments',
+                  AppointmentMode.readonly,
                 ),
               ],
             ),
@@ -68,8 +72,15 @@ class HomePage extends StatelessWidget {
                     ? Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => LoginPage(goToAppointmentAfterLogin: true)))
-                    : Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AppointmentPage()));
+                          builder: (BuildContext context) => LoginPage(goToAppointmentAfterLogin: true),
+                        ),
+                      )
+                    : Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => AppointmentPage(mode: AppointmentMode.create),
+                        ),
+                      );
                 // analytics.setCurrentScreen(screenName: 'Appointment');
               },
               tooltip: 'Add an appointment',
@@ -87,19 +98,24 @@ class HomePage extends StatelessWidget {
     AuthService _authService,
     Stream<List<Appointment>> appointmentsAll,
     Stream<List<Appointment>> appointmentsUser,
+    String emptyMessage,
+    AppointmentMode mode,
   ) {
     return _userProfile == null
         ? _buildLoginMessage(_authService)
-        : _buildAppointmentsList(
-            _userProfile.admin ? appointmentsAll : appointmentsUser,
-          );
+        : _buildAppointmentsList(_userProfile.admin ? appointmentsAll : appointmentsUser, emptyMessage, mode);
   }
 
-  StreamBuilder<List<Appointment>> _buildAppointmentsList(Stream<List<Appointment>> appointmentsStream) {
+  StreamBuilder<List<Appointment>> _buildAppointmentsList(
+    Stream<List<Appointment>> appointmentsStream,
+    String emptyMessage,
+    AppointmentMode mode,
+  ) {
     return StreamBuilder<List<Appointment>>(
       stream: appointmentsStream,
-      builder: (context, snapshot) =>
-          !snapshot.hasData ? Center(child: _buildCircularProgressIndicator(context)) : AppointmentsList(snapshot.data),
+      builder: (context, snapshot) => !snapshot.hasData
+          ? Center(child: _buildCircularProgressIndicator(context))
+          : AppointmentsList(snapshot.data, emptyMessage, mode),
     );
   }
 

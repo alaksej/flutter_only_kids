@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:only_kids/models/time_slot.dart';
 
 class TimePicker extends StatelessWidget {
-  final List<TimeOfDay> timeSlots;
-  final TimeOfDay selectedTime;
-  final ValueChanged<TimeOfDay> selectTime;
+  final List<TimeSlot> timeSlots;
+  final TimeSlot selected;
+  final ValueChanged<TimeSlot> select;
 
   const TimePicker({
     Key key,
-    this.timeSlots = const <TimeOfDay>[],
-    this.selectedTime,
-    this.selectTime,
+    this.timeSlots = const <TimeSlot>[],
+    this.selected,
+    this.select,
   }) : super(key: key);
 
   @override
@@ -29,27 +30,26 @@ class TimePicker extends StatelessWidget {
     return timeSlots.map((slot) => _buildTimeSlot(context, slot)).toList();
   }
 
-  bool isSelected(TimeOfDay time) {
-    return selectedTime != null && time.hour == selectedTime.hour && time.minute == selectedTime.minute;
+  bool isSelected(TimeSlot slot) {
+    return selected != null && slot.equals(selected);
   }
 
-  Color slotColor(BuildContext context, TimeOfDay slot) {
-    return isSelected(slot) ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor;
-  }
+  Widget _buildTimeSlot(BuildContext context, TimeSlot slot) {
+    final themeData = Theme.of(context);
+    final slotColor = isSelected(slot) ? themeData.accentColor : themeData.scaffoldBackgroundColor;
 
-  Widget _buildTimeSlot(BuildContext context, TimeOfDay slot) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       decoration: BoxDecoration(
-        color: slotColor(context, slot),
+        color: slotColor,
         borderRadius: BorderRadius.circular(50),
       ),
       child: InkWell(
         radius: 0,
         onTap: !isSelected(slot)
             ? () {
-                selectTime(slot);
+                select(slot);
               }
             : null,
         child: Column(
@@ -57,14 +57,14 @@ class TimePicker extends StatelessWidget {
           children: <Widget>[
             isSelected(slot)
                 ? Text(
-                    slot.format(context),
+                    slot.timeOfDay.format(context),
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      fontSize: Theme.of(context).textTheme.subhead.fontSize,
+                      color: themeData.colorScheme.onSecondary,
+                      fontSize: themeData.textTheme.subhead.fontSize,
                     ),
                   )
                 : Text(
-                    slot.format(context),
+                    slot.timeOfDay.format(context),
                   ),
           ],
         ),

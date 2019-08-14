@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:only_kids/models/time_slot.dart';
 import 'package:only_kids/services/calendar_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/date_picker.dart';
@@ -7,15 +8,22 @@ import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/widgets/time_picker.dart';
 
+enum AppointmentMode {
+  create,
+  edit,
+  readonly,
+}
+
 class AppointmentPage extends StatefulWidget {
   AppointmentPage({
     Key key,
     this.appointment,
-  })  : isEditMode = appointment != null,
+    this.mode,
+  })  : assert(appointment != null || mode == AppointmentMode.create),
         super(key: key);
 
   final Appointment appointment;
-  final bool isEditMode;
+  final AppointmentMode mode;
 
   @override
   _AppointmentPageState createState() => _AppointmentPageState();
@@ -26,25 +34,37 @@ class _AppointmentPageState extends State<AppointmentPage> {
   final CalendarService _calendarService = getIt.get<CalendarService>();
 
   DateTime _selectedDate;
-  TimeOfDay _selectedTime;
+  TimeSlot _selectedTimeSlot;
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = widget.isEditMode ? widget.appointment.datetime : DateTime.now();
-    _selectedTime = widget.appointment?.time;
+    _selectedDate = widget.mode == AppointmentMode.edit ? widget.appointment.dateTime : DateTime.now();
+    _selectedTimeSlot = widget.appointment?.timeSlot;
+  }
+
+  String _getTitle() {
+    switch (widget.mode) {
+      case AppointmentMode.create:
+        return 'New Appointment';
+      case AppointmentMode.edit:
+        return 'Edit Appointment';
+      case AppointmentMode.readonly:
+      default:
+        return 'Appointment';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isEditMode ? 'Edit Appointment' : 'New Appointment'),
+        title: Text(_getTitle()),
         actions: <Widget>[
-          if (widget.isEditMode)
+          if (widget.mode != AppointmentMode.create)
             IconButton(
               icon: Icon(Icons.delete),
-              tooltip: 'Cancel',
+              tooltip: 'Delete',
               onPressed: _cancelAppointment,
             ),
         ],
@@ -64,16 +84,17 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 ),
                 Container(
                   padding: const EdgeInsets.all(8.0),
-                  child: StreamBuilder<List<TimeOfDay>>(
-                      stream: _calendarService.getTimeSlots(),
+                  child: StreamBuilder<List<TimeSlot>>(
+                      stream: _calendarService.getTimeSlots(_selectedDate),
                       builder: (context, snapshot) {
+                        final timeSlots = snapshot.data;
                         return snapshot.hasData
                             ? TimePicker(
-                                timeSlots: snapshot.data,
-                                selectedTime: _selectedTime,
-                                selectTime: (TimeOfDay time) {
+                                timeSlots: timeSlots,
+                                selected: _selectedTimeSlot ?? snapshot.data[0],
+                                select: (TimeSlot time) {
                                   setState(() {
-                                    _selectedTime = time;
+                                    _selectedTimeSlot = time;
                                   });
                                 },
                               )
@@ -87,41 +108,39 @@ class _AppointmentPageState extends State<AppointmentPage> {
               ],
             ),
           ),
-          Material(
-            elevation: 8,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).bottomAppBarColor,
-              ),
-              child: ButtonBar(
-                children: <Widget>[
-                  RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).primaryTextTheme.button.color,
-                    onPressed: canSubmit ? _save : null,
-                    child: Text(widget.isEditMode ? 'Save' : 'Book'),
-                  ),
-                ],
+          if (widget.mode != AppointmentMode.readonly)
+            Material(
+              elevation: 8,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).bottomAppBarColor,
+                ),
+                child: ButtonBar(
+                  children: <Widget>[
+                    RaisedButton(
+                      color: Theme.of(context).primaryColor,
+                      textColor: Theme.of(context).primaryTextTheme.button.color,
+                      onPressed: canSubmit ? _save : null,
+                      child: Text(widget.mode == AppointmentMode.edit ? 'Save' : 'Book'),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
 
-  bool get canSubmit => _selectedDate != null && _selectedTime != null;
+  bool get canSubmit => _selectedDate != null && _selectedTimeSlot != null;
 
   Future<void> _save() async {
-    final picked = DateTime(
-      _selectedDate.year,
-      _selectedDate.month,
-      _selectedDate.day,
-      _selectedTime.hour,
-      _selectedTime.minute,
+    final picked = fromDateAndTime(
+      _selectedDate,
+      _selectedTimeSlot.timeOfDay,
     );
 
-    final confirmed = widget.isEditMode
+    final confirmed = widget.mode == AppointmentMode.edit
         ? await _showDialog('Update appointment', 'New appointment date: ${dayDateTime(picked)}', 'OK')
         : await _showDialog('Create appointment', 'Add appointment on: ${dayDateTime(picked)}', 'OK');
 
@@ -129,25 +148,32 @@ class _AppointmentPageState extends State<AppointmentPage> {
       return;
     }
 
-    widget.isEditMode
+    widget.mode == AppointmentMode.edit
         ? await _appointmentService.update(Appointment(
             id: widget.appointment.id,
             uid: widget.appointment.uid,
             username: widget.appointment.username,
-            datetime: picked,
+            dateTime: picked,
           ))
-        : await _appointmentService.addForCurrentUser(Appointment(datetime: picked));
+        : await _appointmentService.addForCurrentUser(Appointment(dateTime: picked));
 
     Navigator.pop(context);
   }
 
   _cancelAppointment() async {
-    final confirmed = await _showDialog(
-      'Cancel Appointment',
-      'Are you sure you want to cancel this appointment?',
-      'Yes',
-      'No',
-    );
+    final confirmed = widget.mode == AppointmentMode.edit
+        ? await _showDialog(
+            'Cancel Appointment',
+            'Are you sure you want to cancel this appointment?',
+            'Yes',
+            'No',
+          )
+        : await _showDialog(
+            'Remove Appointment',
+            'Are you sure you want to remove this past appointment?',
+            'Yes',
+            'No',
+          );
 
     if (!confirmed) {
       return;

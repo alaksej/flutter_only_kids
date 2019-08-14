@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
 class TimeSlot {
-  final TimeOfDay timeOfDay;
-  int availability;
-  
-  TimeSlot({this.timeOfDay, this.availability});
+  TimeSlot({this.dateTime, this.availability});
 
-  get isAvailable => availability > 0;
+  final DateTime dateTime;
+  int availability;
+  bool get isSelectable => hasAvailability && dateTime.isAfter(DateTime.now());
+
+  TimeOfDay get timeOfDay => TimeOfDay.fromDateTime(dateTime);
+  bool get hasAvailability => availability > 0;
 
   occupy() {
     assert(availability > 0);
     availability--;
+  }
+
+  bool equals(TimeSlot other) {
+    return timeOfDay.hour == other.timeOfDay.hour && timeOfDay.minute == other.timeOfDay.minute;
   }
 }

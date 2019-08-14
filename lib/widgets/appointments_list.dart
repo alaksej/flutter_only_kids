@@ -7,9 +7,11 @@ import 'package:only_kids/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class AppointmentsList extends StatelessWidget {
+  AppointmentsList(this._appointments, this._emptyMessage, this.mode);
+  
   final List<Appointment> _appointments;
-
-  AppointmentsList(this._appointments);
+  final String _emptyMessage;
+  final AppointmentMode mode;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class AppointmentsList extends StatelessWidget {
 
   Widget _buildAppointmentsList(List<Appointment> appointments, BuildContext context, bool admin) {
     if (appointments.length == 0) {
-      return Text('You have no upcoming appointments', style: Theme.of(context).textTheme.subhead);
+      return Text(_emptyMessage, style: Theme.of(context).textTheme.subhead);
     }
     return ListView(
       scrollDirection: Axis.vertical,
@@ -43,12 +45,12 @@ class AppointmentsList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                dayDate(appointment.datetime),
+                dayDate(appointment.dateTime),
                 style: Theme.of(context).textTheme.subhead,
               ),
               SizedBox(height: 5.0),
               Text(
-                time(appointment.datetime),
+                time(appointment.dateTime),
                 style: Theme.of(context).textTheme.subtitle,
               ),
               if (admin) ...[
@@ -71,7 +73,7 @@ class AppointmentsList extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (BuildContext context) => AppointmentPage(appointment: appointment),
+                builder: (BuildContext context) => AppointmentPage(appointment: appointment, mode: mode),
               ),
             );
           },

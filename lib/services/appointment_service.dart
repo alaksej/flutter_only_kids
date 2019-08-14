@@ -48,7 +48,7 @@ class AppointmentService {
   Stream<List<Appointment>> getByUser(FirebaseUser user) {
     final stream = _collectionRef
         .where('uid', isEqualTo: user.uid)
-        .orderBy('datetime')
+        .orderBy('dateTime')
         .snapshots()
         .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
     return stream;
@@ -58,8 +58,8 @@ class AppointmentService {
     final now = DateTime.now();
     final stream = _collectionRef
         .where('uid', isEqualTo: user.uid)
-        .where('datetime', isGreaterThanOrEqualTo: now)
-        .orderBy('datetime')
+        .where('dateTime', isGreaterThanOrEqualTo: now)
+        .orderBy('dateTime')
         .snapshots()
         .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
     return stream;
@@ -69,8 +69,8 @@ class AppointmentService {
     final now = DateTime.now();
     final stream = _collectionRef
         .where('uid', isEqualTo: user.uid)
-        .where('datetime', isLessThan: now)
-        .orderBy('datetime')
+        .where('dateTime', isLessThan: now)
+        .orderBy('dateTime')
         .snapshots()
         .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
     return stream;
@@ -78,23 +78,23 @@ class AppointmentService {
 
   Stream<List<Appointment>> getAll() {
     return _collectionRef
-        .orderBy('datetime')
+        .orderBy('dateTime')
         .snapshots()
         .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
   }
 
   Stream<List<Appointment>> getUpcomingAll() {
     return _collectionRef
-        .where('datetime', isGreaterThanOrEqualTo: DateTime.now())
-        .orderBy('datetime')
+        .where('dateTime', isGreaterThanOrEqualTo: DateTime.now())
+        .orderBy('dateTime')
         .snapshots()
         .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
   }
 
   Stream<List<Appointment>> getPastAll() {
     return _collectionRef
-        .where('datetime', isLessThan: DateTime.now())
-        .orderBy('datetime')
+        .where('dateTime', isLessThan: DateTime.now())
+        .orderBy('dateTime')
         .snapshots()
         .map((list) => list.documents.map((snapshot) => Appointment.fromSnapshot(snapshot)).toList());
   }
@@ -105,7 +105,7 @@ class AppointmentService {
     final userAppointment = Appointment(
       uid: _authService.currentUser.uid,
       username: _authService.currentUser.displayName,
-      datetime: appointment.datetime,
+      dateTime: appointment.dateTime,
     );
 
     final docRef = await _collectionRef.add(userAppointment.toMap());

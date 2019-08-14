@@ -7,6 +7,13 @@ String day(DateTime date) => DateFormat.EEEE().format(date);
 String shortDate(DateTime date) => DateFormat.yMMMd().format(date);
 String time(DateTime date) => DateFormat.jm().format(date);
 DateTime startOfDay(DateTime date) => DateTime(date.year, date.month, date.day);
+DateTime fromDateAndTime(DateTime date, TimeOfDay time) => DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
 
 TimeOfDay stringToTime(String s) {
   final int hour = int.parse(s.split(":")[0]);
