@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class TimeSlot {
-  TimeSlot({this.dateTime, this.availability});
+  TimeSlot({this.dateTime, this.availability = TimeSlot.maxAvailability});
 
+  static const int maxAvailability = 100;
   final DateTime dateTime;
   int availability;
   bool get isSelectable => hasAvailability && dateTime.isAfter(DateTime.now());

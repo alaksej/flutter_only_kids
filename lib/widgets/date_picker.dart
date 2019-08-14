@@ -9,10 +9,12 @@ class DatePicker extends StatelessWidget {
     Key key,
     this.selectedDate,
     this.selectDate,
+    this.isReadonly = false,
   }) : super(key: key);
 
   final DateTime selectedDate;
   final ValueChanged<DateTime> selectDate;
+  final isReadonly;
 
   bool _isSelectable(DateTime date) => startOfDay(date).compareTo(startOfToday) >= 0;
   DateTime get now => DateTime.now();
@@ -89,7 +91,7 @@ class DatePicker extends StatelessWidget {
           _buildArrow(Icons.chevron_left, dayColor, onTap: _isSelectable(prevDay) ? goPrevDay : null),
           Expanded(
             child: InkWell(
-              onTap: () => _pickDate(context),
+              onTap: !isReadonly ? () => _pickDate(context) : null,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[

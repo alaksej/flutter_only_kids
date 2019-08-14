@@ -36,18 +36,18 @@ class TimePicker extends StatelessWidget {
 
   Widget _buildTimeSlot(BuildContext context, TimeSlot slot) {
     final themeData = Theme.of(context);
-    final slotColor = isSelected(slot) ? themeData.accentColor : themeData.scaffoldBackgroundColor;
+    final slotBgColor = isSelected(slot) ? themeData.accentColor : themeData.scaffoldBackgroundColor;
 
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       decoration: BoxDecoration(
-        color: slotColor,
+        color: slotBgColor,
         borderRadius: BorderRadius.circular(50),
       ),
       child: InkWell(
         radius: 0,
-        onTap: !isSelected(slot)
+        onTap: slot.isSelectable
             ? () {
                 select(slot);
               }
@@ -63,9 +63,16 @@ class TimePicker extends StatelessWidget {
                       fontSize: themeData.textTheme.subhead.fontSize,
                     ),
                   )
-                : Text(
-                    slot.timeOfDay.format(context),
-                  ),
+                : slot.isSelectable
+                    ? Text(
+                        slot.timeOfDay.format(context),
+                      )
+                    : Text(
+                        slot.timeOfDay.format(context),
+                        style: TextStyle(
+                          color: themeData.disabledColor,
+                        ),
+                      ),
           ],
         ),
       ),

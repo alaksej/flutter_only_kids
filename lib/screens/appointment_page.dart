@@ -51,7 +51,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
         return 'Edit Appointment';
       case AppointmentMode.readonly:
       default:
-        return 'Appointment';
+        return 'Past Appointment';
     }
   }
 
@@ -81,6 +81,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       _selectedDate = date;
                     });
                   },
+                  isReadonly: widget.mode == AppointmentMode.readonly,
                 ),
                 Container(
                   padding: const EdgeInsets.all(8.0),
