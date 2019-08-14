@@ -39,7 +39,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   @override
   void initState() {
     super.initState();
-    _selectedDate = widget.mode == AppointmentMode.edit ? widget.appointment.dateTime : DateTime.now();
+    _selectedDate = widget.mode != AppointmentMode.create ? widget.appointment.dateTime : DateTime.now();
     _selectedTimeSlot = widget.appointment?.timeSlot;
   }
 
@@ -91,7 +91,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         return snapshot.hasData
                             ? TimePicker(
                                 timeSlots: timeSlots,
-                                selected: _selectedTimeSlot ?? snapshot.data[0],
+                                selected: _selectedTimeSlot,
                                 select: (TimeSlot time) {
                                   setState(() {
                                     _selectedTimeSlot = time;
