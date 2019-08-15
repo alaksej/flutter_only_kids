@@ -79,6 +79,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   selectDate: (DateTime date) {
                     setState(() {
                       _selectedDate = date;
+                      _selectedTimeSlot = null;
                     });
                   },
                   isReadonly: widget.mode == AppointmentMode.readonly,
