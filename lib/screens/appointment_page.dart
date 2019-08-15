@@ -99,6 +99,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                     _selectedTimeSlot = time;
                                   });
                                 },
+                                isReadonly: widget.mode == AppointmentMode.readonly,
                               )
                             : Center(
                                 child: CircularProgressIndicator(

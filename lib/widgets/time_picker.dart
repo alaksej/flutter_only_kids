@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:only_kids/models/time_slot.dart';
 
 class TimePicker extends StatelessWidget {
-  final List<TimeSlot> timeSlots;
-  final TimeSlot selected;
-  final ValueChanged<TimeSlot> select;
-
   const TimePicker({
     Key key,
     this.timeSlots = const <TimeSlot>[],
     this.selected,
     this.select,
+    this.isReadonly,
   }) : super(key: key);
+
+  final List<TimeSlot> timeSlots;
+  final TimeSlot selected;
+  final ValueChanged<TimeSlot> select;
+  final bool isReadonly;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,7 @@ class TimePicker extends StatelessWidget {
       ),
       child: InkWell(
         radius: 0,
-        onTap: slot.isSelectable
+        onTap: slot.isSelectable && !isReadonly
             ? () {
                 select(slot);
               }
@@ -63,7 +65,7 @@ class TimePicker extends StatelessWidget {
                       fontSize: themeData.textTheme.subhead.fontSize,
                     ),
                   )
-                : slot.isSelectable
+                : slot.isSelectable && !isReadonly
                     ? Text(
                         slot.timeOfDay.format(context),
                       )
