@@ -35,12 +35,22 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   DateTime _selectedDate;
   TimeSlot _selectedTimeSlot;
+  String get _comment => commentController.text;
+
+  final commentController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _selectedDate = widget.mode != AppointmentMode.create ? widget.appointment.dateTime : DateTime.now();
     _selectedTimeSlot = widget.appointment?.timeSlot;
+    commentController.text = widget.appointment?.comment;
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
   }
 
   String _getTitle() {
@@ -108,6 +118,22 @@ class _AppointmentPageState extends State<AppointmentPage> {
                               );
                       }),
                 ),
+                SizedBox(height: 20.0),
+                Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    controller: commentController,
+                    minLines: 1,
+                    maxLines: 5,
+                    readOnly: widget.mode == AppointmentMode.readonly,
+                    enabled: widget.mode != AppointmentMode.readonly,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Comment',
+                      hintText: 'Write a comment...',
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -138,6 +164,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
   bool get canSubmit => _selectedDate != null && _selectedTimeSlot != null;
 
   Future<void> _save() async {
+    assert(widget.mode != AppointmentMode.readonly);
+
     final picked = fromDateAndTime(
       _selectedDate,
       _selectedTimeSlot.timeOfDay,
@@ -151,14 +179,17 @@ class _AppointmentPageState extends State<AppointmentPage> {
       return;
     }
 
+    final Appointment newAppointment = Appointment(
+      id: widget.appointment?.id,
+      uid: widget.appointment?.uid,
+      username: widget.appointment?.username,
+      dateTime: picked,
+      comment: _comment,
+    );
+
     widget.mode == AppointmentMode.edit
-        ? await _appointmentService.update(Appointment(
-            id: widget.appointment.id,
-            uid: widget.appointment.uid,
-            username: widget.appointment.username,
-            dateTime: picked,
-          ))
-        : await _appointmentService.addForCurrentUser(Appointment(dateTime: picked));
+        ? await _appointmentService.update(newAppointment)
+        : await _appointmentService.addForCurrentUser(newAppointment);
 
     Navigator.pop(context);
   }

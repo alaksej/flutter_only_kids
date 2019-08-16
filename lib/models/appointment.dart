@@ -6,12 +6,14 @@ class Appointment {
   final String uid;
   final String username;
   final DateTime dateTime;
+  final String comment;
 
   const Appointment({
     this.id,
     this.uid,
     this.username,
     this.dateTime,
+    this.comment,
   });
 
   Appointment.fromMap(this.id, Map<String, dynamic> map)
@@ -19,6 +21,7 @@ class Appointment {
         assert(map['dateTime'] != null),
         uid = map['uid'],
         username = map['username'],
+        comment = map['comment'],
         dateTime = DateTime.fromMicrosecondsSinceEpoch(map['dateTime'].microsecondsSinceEpoch);
 
   Appointment.fromSnapshot(DocumentSnapshot snapshot)
@@ -31,10 +34,11 @@ class Appointment {
         'uid': uid,
         'username': username,
         'dateTime': dateTime,
+        'comment': comment,
       };
 
   TimeSlot get timeSlot => TimeSlot(dateTime: dateTime);
 
   @override
-  String toString() => "Appointment<$username:$dateTime>";
+  String toString() => "Appointment<$username:$dateTime:$comment>";
 }

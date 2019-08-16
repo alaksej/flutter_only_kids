@@ -106,6 +106,7 @@ class AppointmentService {
       uid: _authService.currentUser.uid,
       username: _authService.currentUser.displayName,
       dateTime: appointment.dateTime,
+      comment: appointment.comment,
     );
 
     final docRef = await _collectionRef.add(userAppointment.toMap());
