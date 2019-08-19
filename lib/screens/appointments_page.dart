@@ -14,8 +14,8 @@ import 'package:only_kids/main.dart';
 
 import 'appointment_page.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({Key key, this.analytics, this.observer}) : super(key: key);
+class AppointmentsPage extends StatelessWidget {
+  AppointmentsPage({Key key, this.analytics, this.observer}) : super(key: key);
   final List<Tab> myTabs = <Tab>[
     Tab(text: 'UPCOMING'),
     Tab(text: 'PAST'),
@@ -86,7 +86,6 @@ class HomePage extends StatelessWidget {
               tooltip: 'Add an appointment',
               child: Icon(Icons.add),
             ),
-            bottomNavigationBar: BottomNavBar(),
           );
         },
       ),
