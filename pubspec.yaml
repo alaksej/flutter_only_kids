@@ -62,6 +62,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons8-google.svg
+    - assets/instagram.svg
 
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
