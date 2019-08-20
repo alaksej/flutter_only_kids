@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:only_kids/models/destination.dart';
 import 'package:only_kids/models/user_profile.dart';
-import 'package:only_kids/screens/destination_view.dart';
+import 'package:only_kids/screens/contacts_page.dart';
+import 'package:only_kids/screens/news_page.dart';
 import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/services/calendar_service.dart';
 import 'package:only_kids/services/auth_service.dart';
@@ -73,12 +74,8 @@ class _MyAppState extends State<MyApp> {
                 index: _currentIndex,
                 children: <Widget>[
                   AppointmentsPage(),
-                  DestinationView(
-                    destination: allDestinations[1],
-                  ),
-                  DestinationView(
-                    destination: allDestinations[2],
-                  ),
+                  NewsPage(),
+                  ContactsPage(),
                 ],
               ),
             ),
