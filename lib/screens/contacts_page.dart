@@ -27,6 +27,13 @@ class ContactsPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListTile(
+                leading: Icon(Icons.phone),
+                title: Text('+375 29 137-20-65'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
                 leading: SvgPicture.asset(
                   'assets/instagram.svg',
                   height: 30.0,
