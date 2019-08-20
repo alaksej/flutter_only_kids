@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class ContactsPage extends StatelessWidget {
+class ContactsPage extends StatefulWidget {
+  @override
+  _ContactsPageState createState() => _ContactsPageState();
+}
+
+class _ContactsPageState extends State<ContactsPage> {
+  GoogleMapController mapController;
+
+  final LatLng _center = const LatLng(52.43775156440748, 31.003112813409757);
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,13 +23,15 @@ class ContactsPage extends StatelessWidget {
         title: Text('Contacts'),
       ),
       body: Container(
-        padding: const EdgeInsets.all(32.0),
         alignment: Alignment.center,
         child: ListView(
           children: <Widget>[
-            Text(
-              'Only Kids Gomel',
-              style: Theme.of(context).textTheme.headline,
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                'Only Kids Gomel',
+                style: Theme.of(context).textTheme.headline,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -39,6 +55,22 @@ class ContactsPage extends StatelessWidget {
                   height: 30.0,
                 ),
                 title: Text('Instagram'),
+              ),
+            ),
+            Container(
+              height: 300.0,
+              child: GoogleMap(
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(
+                  target: _center,
+                  zoom: 13.0,
+                ),
+                markers: Set.from([
+                  Marker(
+                    markerId: MarkerId('onlyKids'),
+                    position: _center,
+                  )
+                ]),
               ),
             ),
           ],

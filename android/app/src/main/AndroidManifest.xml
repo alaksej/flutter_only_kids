@@ -10,6 +10,9 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="Only Kids"
         android:icon="@mipmap/launcher_icon">
+
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAig4Bm0hwmnhkxmz2AXX06rw26joyGmt4"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
