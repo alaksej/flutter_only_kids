@@ -21,14 +21,13 @@ class ContactsContentsPage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Icon(Icons.location_on),
-                title: Text('Ulitsa Rogachovskaya 2a, Homieĺ 246000'),
-                trailing: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/map');
-                  },
-                  child: SvgPicture.asset(
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, '/map');
+                },
+                child: ListTile(
+                  title: Text('Ulitsa Rogachovskaya 2a, Homieĺ 246000'),
+                  leading: SvgPicture.asset(
                     'assets/google_maps.svg',
                     height: 30.0,
                   ),
