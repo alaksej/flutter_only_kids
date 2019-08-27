@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 class ContactsContentsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Color primaryColor = Theme.of(context).primaryColor;
     return Scaffold(
       appBar: AppBar(
         title: Text('Only Kids Gomel'),
@@ -21,7 +22,10 @@ class ContactsContentsPage extends StatelessWidget {
                 },
                 child: ListTile(
                   title: Text('Ulitsa Rogachovskaya 2a, Homieĺ 246000'),
-                  leading: Icon(Icons.location_on),
+                  leading: Icon(
+                    Icons.location_on,
+                    color: primaryColor,
+                  ),
                 ),
               ),
             ),
@@ -31,7 +35,10 @@ class ContactsContentsPage extends StatelessWidget {
               child: InkWell(
                 onTap: _callUs,
                 child: ListTile(
-                  leading: Icon(Icons.phone),
+                  leading: Icon(
+                    Icons.phone,
+                    color: primaryColor,
+                  ),
                   title: Text('+375 29 137-20-65'),
                 ),
               ),
@@ -45,6 +52,7 @@ class ContactsContentsPage extends StatelessWidget {
                   leading: SvgPicture.asset(
                     'assets/instagram.svg',
                     height: 25.0,
+                    color: primaryColor,
                   ),
                   title: Text('only_kids_gomel'),
                 ),
@@ -56,7 +64,10 @@ class ContactsContentsPage extends StatelessWidget {
               child: InkWell(
                 onTap: _openWebsite,
                 child: ListTile(
-                  leading: Icon(Icons.public),
+                  leading: Icon(
+                    Icons.public,
+                    color: primaryColor,
+                  ),
                   title: Text('https://onlykids.by'),
                 ),
               ),
@@ -65,17 +76,23 @@ class ContactsContentsPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(3.0),
               child: ListTile(
-                leading: Icon(Icons.access_time),
-                title: Column(
-                  children: <Widget>[
-                    _buildWorkDay('Monday', '10:00 - 20:00'),
-                    _buildWorkDay('Tuesday', '10:00 - 20:00'),
-                    _buildWorkDay('Wednesday', '10:00 - 20:00'),
-                    _buildWorkDay('Thursday', '10:00 - 20:00'),
-                    _buildWorkDay('Friday', '10:00 - 20:00'),
-                    _buildWorkDay('Saturday', '10:00 - 20:00'),
-                    _buildWorkDay('Sunday', '10:00 - 20:00'),
-                  ],
+                leading: Icon(
+                  Icons.access_time,
+                  color: primaryColor,
+                ),
+                title: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Column(
+                    children: <Widget>[
+                      _buildWorkDay('Monday', '10:00 - 20:00'),
+                      _buildWorkDay('Tuesday', '10:00 - 20:00'),
+                      _buildWorkDay('Wednesday', '10:00 - 20:00'),
+                      _buildWorkDay('Thursday', '10:00 - 20:00'),
+                      _buildWorkDay('Friday', '10:00 - 20:00'),
+                      _buildWorkDay('Saturday', '10:00 - 20:00'),
+                      _buildWorkDay('Sunday', '10:00 - 20:00'),
+                    ],
+                  ),
                 ),
               ),
             ),
