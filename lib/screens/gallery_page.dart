@@ -58,14 +58,14 @@ class _GalleryPageState extends State<GalleryPage> {
     final double blur = active ? 20 : 0;
     final double top = active ? 50 : 100;
     final double bottom = active ? 50 : 100;
-
+    final double borderRadius = 20;
 
     return AnimatedContainer(
       duration: Duration(milliseconds: 500),
       curve: Curves.easeOutQuint,
       margin: EdgeInsets.only(top: top, bottom: bottom, right: 10, left: 10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(borderRadius),
         image: DecorationImage(
           image: NetworkImage(data['imageUrl']),
           fit: BoxFit.cover,
@@ -79,9 +79,28 @@ class _GalleryPageState extends State<GalleryPage> {
       ),
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: Text(
-          data['name'],
-          style: Theme.of(context).primaryTextTheme.display1,
+        child: Container(
+          width: double.infinity,
+          height: 50.0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(borderRadius),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: <Color>[
+                Colors.black.withAlpha(0),
+                Colors.black12,
+                Colors.black45,
+              ],
+            ),
+          ),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              data['name'],
+              style: Theme.of(context).primaryTextTheme.display1,
+            ),
+          ),
         ),
       ),
     );
