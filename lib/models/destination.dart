@@ -9,6 +9,6 @@ class Destination {
 
 const List<Destination> allDestinations = <Destination>[
   Destination('Appointments', Icons.people, Colors.teal),
-  Destination('News', Icons.list, Colors.cyan),
+  Destination('Gallery', Icons.image, Colors.cyan),
   Destination('Contacts', Icons.location_on, Colors.orange),
 ];

@@ -3,6 +3,7 @@ import 'package:only_kids/main.dart';
 import 'package:only_kids/screens/appointment_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:only_kids/widgets/spinner.dart';
 
 class LoginPage extends StatelessWidget {
   final bool goToAppointmentAfterLogin;
@@ -26,11 +27,7 @@ class LoginPage extends StatelessWidget {
       stream: _authService.loading$,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data) {
-          return Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-            ),
-          );
+          return Spinner();
         } else {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,

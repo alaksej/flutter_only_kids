@@ -8,7 +8,6 @@ import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/widgets/appointments_list.dart';
 import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/screens/login_page.dart';
-import 'package:only_kids/widgets/bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:only_kids/main.dart';
 

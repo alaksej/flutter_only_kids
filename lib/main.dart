@@ -4,10 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:only_kids/models/destination.dart';
 import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/screens/contacts_page.dart';
-import 'package:only_kids/screens/news_page.dart';
+import 'package:only_kids/screens/gallery_page.dart';
 import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/services/calendar_service.dart';
 import 'package:only_kids/services/auth_service.dart';
+import 'package:only_kids/services/hairstyles_service.dart';
 
 import 'blocs/nav_bar_bloc.dart';
 import 'screens/appointments_page.dart';
@@ -23,6 +24,7 @@ void main() {
   getIt.registerSingleton<AuthService>(AuthService());
   getIt.registerSingleton<AppointmentService>(AppointmentService());
   getIt.registerSingleton<CalendarService>(CalendarService());
+  getIt.registerSingleton<HairstylesService>(HairstylesService());
   runApp(MyApp());
 }
 
@@ -74,7 +76,7 @@ class _MyAppState extends State<MyApp> {
                 index: _currentIndex,
                 children: <Widget>[
                   AppointmentsPage(),
-                  NewsPage(),
+                  GalleryPage(),
                   ContactsPage(),
                 ],
               ),

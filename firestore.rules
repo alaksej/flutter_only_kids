@@ -21,5 +21,10 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+    
+    match /hairstyles/{hairstyle} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }
