@@ -95,41 +95,23 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   },
                   isReadonly: widget.mode == AppointmentMode.readonly,
                 ),
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: StreamBuilder<List<TimeSlot>>(
-                      stream: _calendarService.getTimeSlots(_selectedDate),
-                      builder: (context, snapshot) {
-                        final timeSlots = snapshot.data;
-                        return snapshot.hasData
-                            ? TimePicker(
-                                timeSlots: timeSlots,
-                                selected: _selectedTimeSlot,
-                                select: (TimeSlot time) {
-                                  setState(() {
-                                    _selectedTimeSlot = time;
-                                  });
-                                },
-                                isReadonly: widget.mode == AppointmentMode.readonly,
-                              )
-                            : Spinner();
-                      }),
-                ),
-                SizedBox(height: 20.0),
-                Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: TextFormField(
-                    controller: commentController,
-                    minLines: 1,
-                    maxLines: 5,
-                    readOnly: widget.mode == AppointmentMode.readonly,
-                    enabled: widget.mode != AppointmentMode.readonly,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Comment',
-                      hintText: 'Write a comment...',
-                    ),
-                  ),
+                StreamBuilder<List<TimeSlot>>(
+                  stream: _calendarService.getTimeSlots(_selectedDate),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Spinner();
+                    }
+
+                    final timeSlots = snapshot.data;
+                    return timeSlots.any((slot) => slot.isSelectable)
+                        ? _buildContentForDate(timeSlots)
+                        : Center(
+                            child: Text(
+                              'No time slots available for this date. \nPlease select a different date.',
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                  },
                 ),
               ],
             ),
@@ -154,6 +136,46 @@ class _AppointmentPageState extends State<AppointmentPage> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildContentForDate(List<TimeSlot> timeSlots) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TimePicker(
+            timeSlots: timeSlots,
+            selected: _selectedTimeSlot,
+            select: (TimeSlot time) {
+              setState(() {
+                _selectedTimeSlot = time;
+              });
+            },
+            isReadonly: widget.mode == AppointmentMode.readonly,
+          ),
+        ),
+        SizedBox(height: 20.0),
+        _buildComment(),
+      ],
+    );
+  }
+
+  Container _buildComment() {
+    return Container(
+      padding: const EdgeInsets.all(10.0),
+      child: TextFormField(
+        controller: commentController,
+        minLines: 1,
+        maxLines: 5,
+        readOnly: widget.mode == AppointmentMode.readonly,
+        enabled: widget.mode != AppointmentMode.readonly,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Comment',
+          hintText: 'Write a comment...',
+        ),
       ),
     );
   }
