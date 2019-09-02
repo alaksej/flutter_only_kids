@@ -58,7 +58,7 @@ class _GalleryPageState extends State<GalleryPage> {
     final double blur = active ? 20 : 0;
     final double top = active ? 50 : 100;
     final double bottom = active ? 50 : 100;
-    final double borderRadius = 20;
+    final double borderRadius = 0;
 
     return AnimatedContainer(
       duration: Duration(milliseconds: 500),
