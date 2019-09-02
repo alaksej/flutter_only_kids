@@ -6,6 +6,7 @@ import 'package:only_kids/widgets/date_picker.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/services/appointment_service.dart';
+import 'package:only_kids/widgets/spinner.dart';
 import 'package:only_kids/widgets/time_picker.dart';
 
 enum AppointmentMode {
@@ -111,11 +112,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                 },
                                 isReadonly: widget.mode == AppointmentMode.readonly,
                               )
-                            : Center(
-                                child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-                                ),
-                              );
+                            : Spinner();
                       }),
                 ),
                 SizedBox(height: 20.0),
