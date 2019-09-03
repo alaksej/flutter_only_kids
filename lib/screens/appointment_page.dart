@@ -76,7 +76,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
             IconButton(
               icon: Icon(Icons.delete),
               tooltip: 'Delete',
-              onPressed: _cancelAppointment,
+              onPressed: () => _cancelAppointment(context),
             ),
         ],
       ),
@@ -128,7 +128,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     RaisedButton(
                       color: Theme.of(context).primaryColor,
                       textColor: Theme.of(context).primaryTextTheme.button.color,
-                      onPressed: canSubmit ? _save : null,
+                      onPressed: canSubmit ? () => _save(context) : null,
                       child: Text(widget.mode == AppointmentMode.edit ? 'Save' : 'Book'),
                     ),
                   ],
@@ -182,7 +182,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   bool get canSubmit => _selectedDate != null && _selectedTimeSlot != null;
 
-  Future<void> _save() async {
+  Future<void> _save(BuildContext context) async {
     assert(widget.mode != AppointmentMode.readonly);
 
     final picked = fromDateAndTime(
@@ -191,8 +191,18 @@ class _AppointmentPageState extends State<AppointmentPage> {
     );
 
     final confirmed = widget.mode == AppointmentMode.edit
-        ? await _showDialog('Update appointment', 'New appointment date: ${dayDateTime(picked)}', 'OK')
-        : await _showDialog('Create appointment', 'Add appointment on: ${dayDateTime(picked)}', 'OK');
+        ? await showConfirmationDialog(
+            context,
+            'Update appointment',
+            'New appointment date: ${dayDateTime(picked)}',
+            'OK',
+          )
+        : await showConfirmationDialog(
+            context,
+            'Create appointment',
+            'Add appointment on: ${dayDateTime(picked)}',
+            'OK',
+          );
 
     if (!confirmed) {
       return;
@@ -213,15 +223,17 @@ class _AppointmentPageState extends State<AppointmentPage> {
     Navigator.pop(context);
   }
 
-  _cancelAppointment() async {
+  _cancelAppointment(BuildContext context) async {
     final confirmed = widget.mode == AppointmentMode.edit
-        ? await _showDialog(
+        ? await showConfirmationDialog(
+            context,
             'Cancel Appointment',
             'Are you sure you want to cancel this appointment?',
             'Yes',
             'No',
           )
-        : await _showDialog(
+        : await showConfirmationDialog(
+            context,
             'Remove Appointment',
             'Are you sure you want to remove this past appointment?',
             'Yes',
@@ -234,31 +246,5 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
     await _appointmentService.delete(widget.appointment.id);
     Navigator.pop(context);
-  }
-
-  Future<bool> _showDialog(String title, String content, String confirmButton, [String closeButtton = 'Close']) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text(title),
-          content: new Text(content),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text(closeButtton.toUpperCase()),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            new FlatButton(
-              child: new Text(confirmButton.toUpperCase()),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

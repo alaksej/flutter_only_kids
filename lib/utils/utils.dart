@@ -27,3 +27,30 @@ int compareTimeOfDay(TimeOfDay a, TimeOfDay b) {
   final int minutesB = b.hour * 60 + b.minute;
   return minutesA > minutesB ? 1 : minutesA < minutesB ? -1 : 0;
 }
+
+Future<bool> showConfirmationDialog(BuildContext context, String title, String content, String confirmButton,
+    [String closeButtton = 'Close']) {
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: new Text(title),
+        content: new Text(content),
+        actions: <Widget>[
+          new FlatButton(
+            child: new Text(closeButtton.toUpperCase()),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          new FlatButton(
+            child: new Text(confirmButton.toUpperCase()),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
