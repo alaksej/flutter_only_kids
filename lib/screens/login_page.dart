@@ -6,9 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
 class LoginPage extends StatelessWidget {
-  final bool goToAppointmentAfterLogin;
+  final bool goToCreateAppointmentAfterLogin;
 
-  LoginPage({this.goToAppointmentAfterLogin = false});
+  LoginPage({this.goToCreateAppointmentAfterLogin = false});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
                 onPressed: () async {
                   try {
                     await _authService.googleSignIn()
-                        ? goToAppointmentAfterLogin ? await _openAppointment(context) : _navigateBack(context)
+                        ? goToCreateAppointmentAfterLogin ? await _openAppointment(context) : _navigateBack(context)
                         : _showSignInError(context);
                   } on Exception catch (error) {
                     print(error);
@@ -80,7 +80,7 @@ class LoginPage extends StatelessWidget {
     await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => AppointmentPage(),
+        builder: (BuildContext context) => AppointmentPage(mode: AppointmentMode.create,),
       ),
     );
   }

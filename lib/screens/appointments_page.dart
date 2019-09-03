@@ -8,6 +8,7 @@ import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/widgets/appointments_list.dart';
 import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/screens/login_page.dart';
+import 'package:only_kids/widgets/spinner.dart';
 import 'package:provider/provider.dart';
 import 'package:only_kids/main.dart';
 
@@ -27,7 +28,7 @@ class AppointmentsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserProfile _userProfile = Provider.of<UserProfile>(context);
     final AuthService _authService = getIt.get<AuthService>();
-    final isLoggedIn = _userProfile != null;
+    final bool isLoggedIn = _userProfile != null;
     final AppointmentService _appointmentService = getIt.get<AppointmentService>();
 
     return DefaultTabController(
@@ -37,42 +38,42 @@ class AppointmentsPage extends StatelessWidget {
         builder: (context, snapshot) {
           return Scaffold(
             appBar: AppBar(
-              bottom: TabBar(
-                tabs: myTabs,
-              ),
+              bottom: isLoggedIn
+                  ? TabBar(
+                      tabs: myTabs,
+                    )
+                  : null,
               title: Text('Appointments'),
               actions: !snapshot.hasData || snapshot.data
                   ? []
                   : isLoggedIn ? _buildUserActions(context, _authService, _userProfile) : _buildLogInActions(context),
             ),
-            body: TabBarView(
-              children: [
-                _buildTab(
-                  _userProfile,
-                  _authService,
-                  _appointmentService.getUpcomingAll(),
-                  _appointmentService.getUpcomingByCurrentUser(),
-                  'You have no upcoming appointments',
-                  AppointmentMode.edit,
-                ),
-                _buildTab(
-                  _userProfile,
-                  _authService,
-                  _appointmentService.getPastAll(),
-                  _appointmentService.getPastByCurrentUser(),
-                  'You have no past appointments',
-                  AppointmentMode.readonly,
-                ),
-              ],
-            ),
+            body: !isLoggedIn
+                ? _buildLoginMessage(_authService)
+                : TabBarView(
+                    children: [
+                      _buildTab(
+                        _userProfile,
+                        _appointmentService.getUpcomingAll(),
+                        _appointmentService.getUpcomingByCurrentUser(),
+                        'You have no upcoming appointments',
+                        AppointmentMode.edit,
+                      ),
+                      _buildTab(
+                        _userProfile,
+                        _appointmentService.getPastAll(),
+                        _appointmentService.getPastByCurrentUser(),
+                        'You have no past appointments',
+                        AppointmentMode.readonly,
+                      ),
+                    ],
+                  ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                _userProfile == null
-                    ? Navigator.push(
+                !isLoggedIn
+                    ? _redirectToLoginPage(
                         context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => LoginPage(goToAppointmentAfterLogin: true),
-                        ),
+                        goToCreateAppointmentAfterLogin: true,
                       )
                     : Navigator.push(
                         context,
@@ -91,17 +92,23 @@ class AppointmentsPage extends StatelessWidget {
     );
   }
 
+  Future _redirectToLoginPage(BuildContext context, {bool goToCreateAppointmentAfterLogin = false}) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => LoginPage(goToCreateAppointmentAfterLogin: goToCreateAppointmentAfterLogin),
+      ),
+    );
+  }
+
   StreamBuilder<Object> _buildTab(
     UserProfile _userProfile,
-    AuthService _authService,
     Stream<List<Appointment>> appointmentsAll,
     Stream<List<Appointment>> appointmentsUser,
     String emptyMessage,
     AppointmentMode mode,
   ) {
-    return _userProfile == null
-        ? _buildLoginMessage(_authService)
-        : _buildAppointmentsList(_userProfile.admin ? appointmentsAll : appointmentsUser, emptyMessage, mode);
+    return _buildAppointmentsList(_userProfile.admin ? appointmentsAll : appointmentsUser, emptyMessage, mode);
   }
 
   StreamBuilder<List<Appointment>> _buildAppointmentsList(
@@ -111,26 +118,36 @@ class AppointmentsPage extends StatelessWidget {
   ) {
     return StreamBuilder<List<Appointment>>(
       stream: appointmentsStream,
-      builder: (context, snapshot) => !snapshot.hasData
-          ? Center(child: _buildCircularProgressIndicator(context))
-          : AppointmentsList(snapshot.data, emptyMessage, mode),
+      builder: (context, snapshot) =>
+          !snapshot.hasData ? Spinner() : AppointmentsList(snapshot.data, emptyMessage, mode),
     );
   }
 
   StreamBuilder<bool> _buildLoginMessage(AuthService _authService) {
     return StreamBuilder<bool>(
       stream: _authService.loading$,
-      builder: (context, snapshot) => Center(
-        child: !snapshot.hasData || snapshot.data
-            ? _buildCircularProgressIndicator(context)
-            : Text('Please log in to manage your appointments'),
-      ),
-    );
-  }
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data) {
+          return Spinner();
+        }
 
-  Widget _buildCircularProgressIndicator(BuildContext context) {
-    return CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('Please log in to manage your appointments'),
+              RaisedButton(
+                color: Theme.of(context).primaryColor,
+                textColor: Theme.of(context).primaryTextTheme.button.color,
+                onPressed: () {
+                  _redirectToLoginPage(context);
+                },
+                child: Text('Log in'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -212,12 +229,7 @@ class AppointmentsPage extends StatelessWidget {
         icon: Icon(Icons.account_circle),
         tooltip: 'Log in',
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => LoginPage(),
-            ),
-          );
+          _redirectToLoginPage(context);
         },
       )
     ];
