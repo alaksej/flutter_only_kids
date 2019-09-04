@@ -36,6 +36,8 @@
 **/android/local.properties
 **/android/key.properties
 **/android/key.jks
+**/android/keystore.pwd
+**/android/key.pwd
 **/android/**/GeneratedPluginRegistrant.java
 **/android/app/google-services.json
 **/android/bundletool.jar
