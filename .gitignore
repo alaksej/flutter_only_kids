@@ -35,6 +35,7 @@
 **/android/gradlew.bat
 **/android/local.properties
 **/android/key.properties
+**/android/key.jks
 **/android/**/GeneratedPluginRegistrant.java
 **/android/app/google-services.json
 **/android/bundletool.jar
