@@ -1,4 +1,4 @@
-package com.example.only_kids;
+package by.onlykids.flutter_only_kids;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
