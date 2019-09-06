@@ -29,34 +29,36 @@ class LoginPage extends StatelessWidget {
         if (!snapshot.hasData || snapshot.data) {
           return Spinner();
         } else {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(30),
-                child: const Text(
-                  'Please, sign in using one of the methods below:',
-                  textAlign: TextAlign.center,
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.all(30),
+                  child: const Text(
+                    'Please, sign in using one of the methods below:',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              RaisedButton.icon(
-                icon: SvgPicture.asset(
-                  'assets/icons8-google.svg',
-                  height: 30.0,
+                RaisedButton.icon(
+                  icon: SvgPicture.asset(
+                    'assets/icons8-google.svg',
+                    height: 30.0,
+                  ),
+                  label: const Text('Sign In with Google'),
+                  onPressed: () async {
+                    try {
+                      await _authService.googleSignIn()
+                          ? goToCreateAppointmentAfterLogin ? await _openAppointment(context) : _navigateBack(context)
+                          : _showSignInError(context);
+                    } on Exception catch (error) {
+                      print(error);
+                      _showSignInError(context);
+                    }
+                  },
                 ),
-                label: const Text('Sign In with Google'),
-                onPressed: () async {
-                  try {
-                    await _authService.googleSignIn()
-                        ? goToCreateAppointmentAfterLogin ? await _openAppointment(context) : _navigateBack(context)
-                        : _showSignInError(context);
-                  } on Exception catch (error) {
-                    print(error);
-                    _showSignInError(context);
-                  }
-                },
-              ),
-            ],
+              ],
+            ),
           );
         }
       },
