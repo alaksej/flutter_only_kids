@@ -69,35 +69,34 @@ class AppointmentsPage extends StatelessWidget {
                       ),
                     ],
                   ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                !isLoggedIn
-                    ? _redirectToLoginPage(
-                        context,
-                        goToCreateAppointmentAfterLogin: true,
-                      )
-                    : Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => AppointmentPage(mode: AppointmentMode.create),
-                        ),
-                      );
-                // analytics.setCurrentScreen(screenName: 'Appointment');
-              },
-              tooltip: 'Add an appointment',
-              child: Icon(Icons.add),
-            ),
+            floatingActionButton: isLoggedIn
+                ? FloatingActionButton(
+                    onPressed: () {
+                      !isLoggedIn
+                          ? _redirectToLoginPage(context)
+                          : Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => AppointmentPage(mode: AppointmentMode.create),
+                              ),
+                            );
+                      // analytics.setCurrentScreen(screenName: 'Appointment');
+                    },
+                    tooltip: 'Add an appointment',
+                    child: Icon(Icons.add),
+                  )
+                : null,
           );
         },
       ),
     );
   }
 
-  Future _redirectToLoginPage(BuildContext context, {bool goToCreateAppointmentAfterLogin = false}) {
+  Future _redirectToLoginPage(BuildContext context) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => LoginPage(goToCreateAppointmentAfterLogin: goToCreateAppointmentAfterLogin),
+        builder: (BuildContext context) => LoginPage(),
       ),
     );
   }

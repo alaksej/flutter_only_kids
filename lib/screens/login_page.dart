@@ -6,9 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
 class LoginPage extends StatelessWidget {
-  final bool goToCreateAppointmentAfterLogin;
-
-  LoginPage({this.goToCreateAppointmentAfterLogin = false});
+  LoginPage();
 
   @override
   Widget build(BuildContext context) {
@@ -43,19 +41,22 @@ class LoginPage extends StatelessWidget {
                 RaisedButton.icon(
                   icon: SvgPicture.asset(
                     'assets/icons8-google.svg',
-                    height: 30.0,
+                    height: 20.0,
                   ),
-                  label: const Text('Sign In with Google'),
+                  label: const Text('Continue with Google'),
                   onPressed: () async {
                     try {
-                      await _authService.googleSignIn()
-                          ? goToCreateAppointmentAfterLogin ? await _openAppointment(context) : _navigateBack(context)
-                          : _showSignInError(context);
+                      await _authService.googleSignIn() ? _navigateBack(context) : _showSignInError(context);
                     } on Exception catch (error) {
                       print(error);
                       _showSignInError(context);
                     }
                   },
+                ),
+                RaisedButton.icon(
+                  icon: Icon(Icons.mail),
+                  label: const Text('Continue with Email'),
+                  onPressed: () {},
                 ),
               ],
             ),
@@ -76,14 +77,5 @@ class LoginPage extends StatelessWidget {
 
   void _navigateBack(BuildContext context) {
     Navigator.pop(context);
-  }
-
-  Future<void> _openAppointment(BuildContext context) async {
-    await Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => AppointmentPage(mode: AppointmentMode.create,),
-      ),
-    );
   }
 }
