@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:only_kids/screens/map_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContactsContentsPage extends StatelessWidget {
@@ -18,7 +19,12 @@ class ContactsContentsPage extends StatelessWidget {
               padding: const EdgeInsets.all(3.0),
               child: InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, '/map');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => MapPage(),
+                    ),
+                  );
                 },
                 child: ListTile(
                   title: Text('Ulitsa Rogachovskaya 2a, Homieĺ 246000'),
