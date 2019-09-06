@@ -103,7 +103,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     }
 
                     final timeSlots = snapshot.data;
-                    return timeSlots.any((slot) => slot.isSelectable)
+                    return timeSlots.any((slot) => slot.isSelectable) || widget.mode == AppointmentMode.readonly
                         ? _buildContentForDate(timeSlots)
                         : Center(
                             child: Text(
