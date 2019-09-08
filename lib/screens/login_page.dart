@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:only_kids/main.dart';
-import 'package:only_kids/screens/appointment_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:only_kids/widgets/spinner.dart';
@@ -80,7 +79,7 @@ class LoginPage extends StatelessWidget {
     final SnackBar snackBar = SnackBar(
       duration: Duration(seconds: 3),
       content: const Text('Could not sign in.\n'
-          'Is the Google Services file missing?'),
+          'Check your internet connection and try again'),
     );
     Scaffold.of(context).showSnackBar(snackBar);
   }
