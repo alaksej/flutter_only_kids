@@ -76,7 +76,12 @@ class AuthService {
 
   Future<void> updateCurrentUserPhone(String phoneNumber) async {
     DocumentReference ref = _db.collection('users').document(currentUser.uid);
-    return ref.setData({'phoneNumber': phoneNumber}, merge: true);
+    try {
+      loading$.add(true);
+      return await ref.setData({'phoneNumber': phoneNumber}, merge: true);
+    } finally {
+      loading$.add(false);
+    }
   }
 
   Future<String> signOut() async {
