@@ -63,7 +63,7 @@ class AuthService {
 
       FirebaseUser user = await _auth.signInWithCredential(credential);
       await updateUserData(user);
-      UserProfile userProfile = await _db.collection('users').document(user.uid).get().then((value) => UserProfile.fromMap(value.data);
+      UserProfile userProfile = await _db.collection('users').document(user.uid).get().then((value) => UserProfile.fromMap(value.data));
 
       return userProfile;
     } catch (error) {
