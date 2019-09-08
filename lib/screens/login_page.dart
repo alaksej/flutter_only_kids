@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:only_kids/main.dart';
+import 'package:only_kids/screens/phone_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:only_kids/widgets/spinner.dart';
@@ -47,13 +48,12 @@ class LoginPage extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 _buildButton(
-                  icon: Icon(
-                    Icons.mail,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  text: 'Continue with Email',
-                  action: () {}
-                ),
+                    icon: Icon(
+                      Icons.mail,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    text: 'Continue with Email',
+                    action: () {}),
               ],
             ),
           );
@@ -90,10 +90,15 @@ class LoginPage extends StatelessWidget {
 
   void _onContinueWithGoogle(BuildContext context, AuthService _authService) async {
     try {
-      await _authService.googleSignIn() ? _navigateBack(context) : _showSignInError(context);
+      bool signedIn = await _authService.googleSignIn();
+      if (!signedIn) {
+        _showSignInError(context);
+      }
     } on Exception catch (error) {
       print(error);
       _showSignInError(context);
     }
+
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PhonePage()));
   }
 }
