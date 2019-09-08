@@ -4,6 +4,7 @@ import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/screens/phone_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/spinner.dart';
 import 'package:provider/provider.dart';
 
@@ -21,11 +22,11 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    final AuthService _authService = getIt.get<AuthService>();
+    final AuthService authService = getIt.get<AuthService>();
     final UserProfile userProfile = Provider.of<UserProfile>(context);
 
     return StreamBuilder<bool>(
-      stream: _authService.loading$,
+      stream: authService.loading$,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data) {
           return Spinner();
@@ -47,7 +48,7 @@ class LoginPage extends StatelessWidget {
                     height: 20.0,
                   ),
                   text: 'Connect with Google',
-                  action: () => _onContinueWithGoogle(context, _authService, userProfile.phoneNumber),
+                  action: () => _onContinueWithGoogle(context, authService, userProfile?.phoneNumber),
                 ),
                 SizedBox(height: 10),
                 _buildButton(
@@ -79,12 +80,11 @@ class LoginPage extends StatelessWidget {
   }
 
   void _showSignInError(BuildContext context) {
-    final SnackBar snackBar = SnackBar(
-      duration: Duration(seconds: 3),
-      content: const Text('Could not sign in.\n'
-          'Check your internet connection and try again'),
+    showSnackBar(
+      context,
+      text: 'Could not sign in.\n'
+          'Check your internet connection and try again',
     );
-    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   void _onContinueWithGoogle(

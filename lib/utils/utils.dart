@@ -54,3 +54,11 @@ Future<bool> showConfirmationDialog(BuildContext context, String title, String c
     },
   );
 }
+
+void showSnackBar(BuildContext context, {durationSeconds = 3, String text}) {
+  final SnackBar snackBar = SnackBar(
+    duration: Duration(seconds: durationSeconds),
+    content: Text(text),
+  );
+  Scaffold.of(context).showSnackBar(snackBar);
+}

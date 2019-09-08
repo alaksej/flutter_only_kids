@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:only_kids/services/auth_service.dart';
+import 'package:only_kids/utils/utils.dart';
 
 import '../main.dart';
 
@@ -76,7 +77,12 @@ class _PhonePageState extends State<PhonePage> {
   }
 
   _onClose(BuildContext context, AuthService authService) async {
-    await authService.updateCurrentUserPhone(textController.text);
+    try {
+      await authService.updateCurrentUserPhone(textController.text);
+    } catch (e) {
+      showSnackBar(context, text: 'Failed to update phone number');
+    }
+
     Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
   }
 }
