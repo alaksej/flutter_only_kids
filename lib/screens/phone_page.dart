@@ -34,7 +34,6 @@ class _PhonePageState extends State<PhonePage> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: Text('Phone number'),
       ),
       body: Container(
@@ -83,6 +82,6 @@ class _PhonePageState extends State<PhonePage> {
       showSnackBar(context, text: 'Failed to update phone number');
     }
 
-    Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+    Navigator.pop(context);
   }
 }

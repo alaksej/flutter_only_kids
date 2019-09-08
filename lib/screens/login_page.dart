@@ -102,7 +102,9 @@ class LoginPage extends StatelessWidget {
       _showSignInError(context);
     }
 
-    Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => PhonePage(initialPhoneNumber: initialPhoneNumber)));
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => PhonePage(initialPhoneNumber: initialPhoneNumber)),
+    );
   }
 }
