@@ -34,7 +34,7 @@ class AuthService {
           (FirebaseUser u) {
             if (u != null) {
               // TODO: get rid of second network request
-              return _db.collection('users').document(u.uid).snapshots().map((snap) => UserProfile.fromMap(snap.data));
+              return getUserProfile((u.uid));
             } else {
               return Observable.just(null);
             }
@@ -46,7 +46,11 @@ class AuthService {
     )).shareReplay(maxSize: 1);
   }
 
-  Future<bool> googleSignIn() async {
+  Stream<UserProfile> getUserProfile(String uid) {
+    return _db.collection('users').document(uid).snapshots().map((snap) => UserProfile.fromMap(snap.data));
+  }
+
+  Future<UserProfile> googleSignIn() async {
     try {
       loading$.add(true);
       GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
@@ -58,12 +62,13 @@ class AuthService {
       );
 
       FirebaseUser user = await _auth.signInWithCredential(credential);
-      updateUserData(user);
+      await updateUserData(user);
+      UserProfile userProfile = await _db.collection('users').document(user.uid).get().then((value) => UserProfile.fromMap(value.data);
 
-      return true;
+      return userProfile;
     } catch (error) {
       print("Google sign in error: $error");
-      return false;
+      return null;
     } finally {
       loading$.add(false);
     }

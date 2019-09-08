@@ -23,7 +23,6 @@ class LoginPage extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     final AuthService authService = getIt.get<AuthService>();
-    final UserProfile userProfile = Provider.of<UserProfile>(context);
 
     return StreamBuilder<bool>(
       stream: authService.loading$,
@@ -48,7 +47,7 @@ class LoginPage extends StatelessWidget {
                     height: 20.0,
                   ),
                   text: 'Connect with Google',
-                  action: () => _onContinueWithGoogle(context, authService, userProfile?.phoneNumber),
+                  action: () => _onContinueWithGoogle(context, authService),
                 ),
                 SizedBox(height: 10),
                 _buildButton(
@@ -90,21 +89,26 @@ class LoginPage extends StatelessWidget {
   void _onContinueWithGoogle(
     BuildContext context,
     AuthService authService,
-    String initialPhoneNumber,
   ) async {
+    UserProfile userProfile;
     try {
-      bool signedIn = await authService.googleSignIn();
-      if (!signedIn) {
+      userProfile = await authService.googleSignIn();
+      if (userProfile == null) {
         _showSignInError(context);
       }
     } on Exception catch (error) {
       print(error);
       _showSignInError(context);
+      return;
     }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) => PhonePage(initialPhoneNumber: initialPhoneNumber)),
-    );
+    if (userProfile.phoneNumber == null || userProfile.phoneNumber.isEmpty) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => PhonePage(initialPhoneNumber: userProfile.phoneNumber)),
+      );
+    } else {
+      Navigator.pop(context);
+    }
   }
 }

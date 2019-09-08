@@ -28,7 +28,6 @@ class UserProfile {
       'email': user.email,
       'photoUrl': user.photoUrl,
       'displayName': user.displayName,
-      'phoneNumber': user.phoneNumber,
       'lastSeen': DateTime.now(),
     };
   }
