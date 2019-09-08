@@ -1,13 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:only_kids/models/user_profile.dart';
-import 'package:provider/provider.dart';
+import 'package:only_kids/services/auth_service.dart';
 
-class PhonePage extends StatelessWidget {
-  const PhonePage({Key key}) : super(key: key);
+import '../main.dart';
+
+class PhonePage extends StatefulWidget {
+  PhonePage({Key key, this.initialPhoneNumber}) : super(key: key);
+
+  final String initialPhoneNumber;
+
+  @override
+  _PhonePageState createState() => _PhonePageState();
+}
+
+class _PhonePageState extends State<PhonePage> {
+  final TextEditingController textController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    textController.text = widget.initialPhoneNumber;
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final UserProfile userProfile = Provider.of<UserProfile>(context);
+    final AuthService _authService = getIt.get<AuthService>();
 
     return Scaffold(
       appBar: AppBar(
@@ -35,8 +57,8 @@ class PhonePage extends StatelessWidget {
               ),
             ),
             TextFormField(
+              controller: textController,
               keyboardType: TextInputType.phone,
-              initialValue: userProfile.phoneNumber,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 icon: Icon(Icons.phone_android),
@@ -45,11 +67,16 @@ class PhonePage extends StatelessWidget {
             ),
             RaisedButton(
               child: Text('Close'),
-              onPressed: () => Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName)),
+              onPressed: () => _onClose(context, _authService),
             ),
           ],
         ),
       ),
     );
+  }
+
+  _onClose(BuildContext context, AuthService authService) async {
+    await authService.updateCurrentUserPhone(textController.text);
+    Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
   }
 }
