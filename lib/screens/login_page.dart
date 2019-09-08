@@ -38,45 +38,41 @@ class LoginPage extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(
-                  width: 200,
-                  height: 50,
-                  child: RaisedButton.icon(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                    icon: SvgPicture.asset(
-                      'assets/icons8-google.svg',
-                      height: 20.0,
-                    ),
-                    label: const Text('Continue with Google'),
-                    onPressed: () async {
-                      try {
-                        await _authService.googleSignIn() ? _navigateBack(context) : _showSignInError(context);
-                      } on Exception catch (error) {
-                        print(error);
-                        _showSignInError(context);
-                      }
-                    },
+                _buildButton(
+                  icon: SvgPicture.asset(
+                    'assets/icons8-google.svg',
+                    height: 20.0,
                   ),
+                  text: 'Connect with Google',
+                  action: () => _onContinueWithGoogle(context, _authService),
                 ),
                 SizedBox(height: 10),
-                SizedBox(
-                  width: 200,
-                  height: 50,
-                  child: RaisedButton.icon(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                    icon: Icon(
-                      Icons.mail,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    label: const Text('Continue with Email'),
-                    onPressed: () {},
+                _buildButton(
+                  icon: Icon(
+                    Icons.mail,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
+                  text: 'Continue with Email',
+                  action: () {}
                 ),
               ],
             ),
           );
         }
       },
+    );
+  }
+
+  Widget _buildButton({Widget icon, String text, Function action}) {
+    return SizedBox(
+      width: 200,
+      height: 50,
+      child: RaisedButton.icon(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        icon: icon,
+        label: Text(text),
+        onPressed: action,
+      ),
     );
   }
 
@@ -91,5 +87,14 @@ class LoginPage extends StatelessWidget {
 
   void _navigateBack(BuildContext context) {
     Navigator.pop(context);
+  }
+
+  void _onContinueWithGoogle(BuildContext context, AuthService _authService) async {
+    try {
+      await _authService.googleSignIn() ? _navigateBack(context) : _showSignInError(context);
+    } on Exception catch (error) {
+      print(error);
+      _showSignInError(context);
+    }
   }
 }
