@@ -38,25 +38,39 @@ class LoginPage extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                RaisedButton.icon(
-                  icon: SvgPicture.asset(
-                    'assets/icons8-google.svg',
-                    height: 20.0,
+                SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: RaisedButton.icon(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                    icon: SvgPicture.asset(
+                      'assets/icons8-google.svg',
+                      height: 20.0,
+                    ),
+                    label: const Text('Continue with Google'),
+                    onPressed: () async {
+                      try {
+                        await _authService.googleSignIn() ? _navigateBack(context) : _showSignInError(context);
+                      } on Exception catch (error) {
+                        print(error);
+                        _showSignInError(context);
+                      }
+                    },
                   ),
-                  label: const Text('Continue with Google'),
-                  onPressed: () async {
-                    try {
-                      await _authService.googleSignIn() ? _navigateBack(context) : _showSignInError(context);
-                    } on Exception catch (error) {
-                      print(error);
-                      _showSignInError(context);
-                    }
-                  },
                 ),
-                RaisedButton.icon(
-                  icon: Icon(Icons.mail),
-                  label: const Text('Continue with Email'),
-                  onPressed: () {},
+                SizedBox(height: 10),
+                SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: RaisedButton.icon(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                    icon: Icon(
+                      Icons.mail,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    label: const Text('Continue with Email'),
+                    onPressed: () {},
+                  ),
                 ),
               ],
             ),
