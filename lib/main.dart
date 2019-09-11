@@ -20,30 +20,34 @@ import 'package:get_it/get_it.dart';
 
 GetIt getIt = GetIt();
 
-void main() {
+void registerServiceProviders() {
   getIt.registerSingleton<AuthService>(AuthService());
   getIt.registerSingleton<AppointmentService>(AppointmentService());
   getIt.registerSingleton<CalendarService>(CalendarService());
   getIt.registerSingleton<HairstylesService>(HairstylesService());
-  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+void main() {
+  registerServiceProviders();
+  runApp(OnlyKidsApp());
+}
+
+class OnlyKidsApp extends StatefulWidget {
   static FirebaseAnalytics analytics = FirebaseAnalytics();
   static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  _OnlyKidsAppState createState() => _OnlyKidsAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _OnlyKidsAppState extends State<OnlyKidsApp> {
   final Color primaryColor = Colors.blue;
   final Color accentColor = Colors.pink;
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    MyApp.analytics.logAppOpen();
+    OnlyKidsApp.analytics.logAppOpen();
 
     final appTitle = 'Only Kids';
 
@@ -62,7 +66,7 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: primaryColor,
           accentColor: accentColor,
         ),
-        navigatorObservers: <NavigatorObserver>[MyApp.observer],
+        navigatorObservers: <NavigatorObserver>[OnlyKidsApp.observer],
         home: BlocProviderTree(
           blocProviders: [
             BlocProvider<NavBarBloc>(
