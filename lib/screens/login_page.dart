@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/user_profile.dart';
+import 'package:only_kids/screens/enter_email_page.dart';
 import 'package:only_kids/screens/phone_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -50,12 +51,13 @@ class LoginPage extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 _buildButton(
-                    icon: Icon(
-                      Icons.mail,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    text: 'Continue with Email',
-                    action: () {}),
+                  icon: Icon(
+                    Icons.mail,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  text: 'Continue with Email',
+                  action: () => _onContinueWithEmail(context),
+                ),
               ],
             ),
           );
@@ -109,5 +111,9 @@ class LoginPage extends StatelessWidget {
     } else {
       Navigator.pop(context);
     }
+  }
+
+  void _onContinueWithEmail(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EnterEmailPage()));
   }
 }
