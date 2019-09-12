@@ -1,6 +1,6 @@
-# Only Kids (Flutter)
+[![Codemagic build status](https://api.codemagic.io/apps/5d713c68166ac9000c357197/5d713c68166ac9000c357196/status_badge.svg)](https://codemagic.io/app/5d713c68166ac9000c357197)
 
-[Codemagic build status](https://api.codemagic.io/apps/5d713c68166ac9000c357197/5d713c68166ac9000c357196/status_badge.svg)
+# Only Kids (Flutter)
 
 A Flutter project for the Only Kids hairdressing salon.
 
