@@ -98,6 +98,7 @@ class LoginPage extends StatelessWidget {
       userProfile = await authService.googleSignIn();
       if (userProfile == null) {
         _showSignInError(context);
+        return;
       }
     } on Exception catch (error) {
       print(error);
