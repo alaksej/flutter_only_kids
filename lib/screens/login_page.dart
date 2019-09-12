@@ -6,7 +6,6 @@ import 'package:only_kids/services/auth_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/spinner.dart';
-import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage();
