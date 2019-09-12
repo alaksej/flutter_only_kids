@@ -29,7 +29,6 @@ class EnterEmailPage extends StatelessWidget {
             ),
             SizedBox(height: 20.0),
             Align(
-              alignment: Alignment.center,
               child: RaisedButton(
                 child: Text('Next'),
                 onPressed: () {},

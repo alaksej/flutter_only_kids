@@ -31,14 +31,14 @@ class LoginPage extends StatelessWidget {
           return Spinner();
         } else {
           return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: ListView(
               children: <Widget>[
                 Container(
                   padding: const EdgeInsets.all(30),
-                  child: const Text(
-                    'Please, sign in using one of the methods below:',
+                  child: Text(
+                    'Only Kids',
                     textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline,
                   ),
                 ),
                 _buildButton(
@@ -67,14 +67,16 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildButton({Widget icon, String text, Function action}) {
-    return SizedBox(
-      width: 200,
-      height: 50,
-      child: RaisedButton.icon(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        icon: icon,
-        label: Text(text),
-        onPressed: action,
+    return Align(
+      child: SizedBox(
+        width: 200,
+        height: 50,
+        child: RaisedButton.icon(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          icon: icon,
+          label: Text(text),
+          onPressed: action,
+        ),
       ),
     );
   }
