@@ -46,7 +46,7 @@ class LoginPage extends StatelessWidget {
                     'assets/icons8-google.svg',
                     height: 20.0,
                   ),
-                  text: 'Connect with Google',
+                  text: 'Continue with Google',
                   action: () => _onContinueWithGoogle(context, authService),
                 ),
                 SizedBox(height: 10),
