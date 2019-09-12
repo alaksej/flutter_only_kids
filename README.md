@@ -44,10 +44,9 @@ Make keytool available in the path: `C:\"Program Files"\Android\"Android Studio"
   1. Encode google-services.json to base64: `certutil -encode google-services.json google-services-base64.json`
   1. Add ANDROID_FIREBASE_JSON environment variable to the [codemagic](https://codemagic.io) workflow and paste the base64 encoded file contents as a value
   1. Add prebuild script:
-```
-  bash
-    #!/bin/sh
-    echo $ANDROID_FIREBASE_JSON | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
+```bash
+#!/bin/sh
+echo $ANDROID_FIREBASE_JSON | base64 --decode > $FCI_BUILD_DIR/android/app/google-services.json
 ```
 
   > **Fix: base64 command not found.** Clear the spaces between base64 and --decode(by using the backspace key until the 4 in base64 deletes — as this signals that all Unicode characters are deleted) then add the 4 and the space back in again
