@@ -18,6 +18,8 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 
+import 'services/cloud_functions_service.dart';
+
 GetIt getIt = GetIt();
 
 void registerServiceProviders() {
@@ -25,6 +27,7 @@ void registerServiceProviders() {
   getIt.registerSingleton<AppointmentService>(AppointmentService());
   getIt.registerSingleton<CalendarService>(CalendarService());
   getIt.registerSingleton<HairstylesService>(HairstylesService());
+  getIt.registerSingleton<CloudFunctionsService>(CloudFunctionsService());
 }
 
 void main() {

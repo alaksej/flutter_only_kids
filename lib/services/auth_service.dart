@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:only_kids/main.dart';
 import 'package:only_kids/models/user_profile.dart';
+import 'package:only_kids/services/cloud_functions_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AuthService {
@@ -12,7 +14,7 @@ class AuthService {
   Observable<FirebaseUser> user$; // firebase user
   Stream<UserProfile> userProfile$; // custom user data in Firestore
   // TODO: add loading service. Fix loading indicator by using counter
-  BehaviorSubject<bool> loading$ = BehaviorSubject.seeded(false); 
+  BehaviorSubject<bool> loading$ = BehaviorSubject.seeded(false);
 
   FirebaseUser _user;
   FirebaseUser get currentUser => _user;
@@ -92,10 +94,9 @@ class AuthService {
   }
 
   Future<bool> userExists(String email) async {
-    return Future.value(true);
-    // TODO: use cloud function to check if the user exists
-    // QuerySnapshot users = await _db.collection('users').where('email', isEqualTo: email).getDocuments();
-    // return users.documents.length > 0;
+    final cloudFunctionsService = getIt.get<CloudFunctionsService>();
+    final result = await cloudFunctionsService.call('userExists', {'email': email});
+    return result['userExists'];
   }
 
   Future<String> signOut() async {
