@@ -11,7 +11,7 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
-  final LoadingService loadingService = getIt.get<LoadingService>();
+  final LoadingService _loadingService = getIt.get<LoadingService>();
 
   Observable<FirebaseUser> user$; // firebase user
   Stream<UserProfile> userProfile$; // custom user data in Firestore
@@ -33,59 +33,44 @@ class AuthService {
 
   Future<UserProfile> googleSignIn() async {
     try {
-      loadingService.begin();
-      GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
-      GoogleSignInAuthentication googleAuth = await googleSignInAccount.authentication;
+      GoogleSignInAccount googleSignInAccount = await _loadingService.wrap(_googleSignIn.signIn());
+      GoogleSignInAuthentication googleAuth = await _loadingService.wrap(googleSignInAccount.authentication);
 
       final AuthCredential credential = GoogleAuthProvider.getCredential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      FirebaseUser user = await _auth.signInWithCredential(credential);
+      FirebaseUser user = await _loadingService.wrap(_auth.signInWithCredential(credential));
       await updateUserData(user);
-      UserProfile userProfile =
-          await _db.collection('users').document(user.uid).get().then((value) => UserProfile.fromMap(value.data));
+      UserProfile userProfile = await _loadingService.wrap(
+        _db.collection('users').document(user.uid).get().then((value) => UserProfile.fromMap(value.data)),
+      );
 
       return userProfile;
     } catch (error) {
       print("Google sign in error: $error");
       return null;
-    } finally {
-      loadingService.end();
     }
   }
 
   Future<void> updateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
-    return ref.setData(UserProfile.firebaseUserToMap(user), merge: true);
+    return await _loadingService.wrap(ref.setData(UserProfile.firebaseUserToMap(user), merge: true));
   }
 
   Future<void> updateCurrentUserPhone(String phoneNumber) async {
     DocumentReference ref = _db.collection('users').document(currentUser.uid);
-    try {
-      loadingService.begin();
-      return await ref.setData({'phoneNumber': phoneNumber}, merge: true);
-    } finally {
-      loadingService.end();
-    }
+    return await _loadingService.wrap(ref.setData({'phoneNumber': phoneNumber}, merge: true));
   }
 
   Future<bool> userExists(String email) async {
     final cloudFunctionsService = getIt.get<CloudFunctionsService>();
-    final result = await cloudFunctionsService.call('userExists', {'email': email});
+    final result = await _loadingService.wrap(cloudFunctionsService.call('userExists', {'email': email}));
     return result['userExists'];
   }
 
-  Future<String> signOut() async {
-    try {
-      loadingService.begin();
-      await _auth.signOut();
-      return 'SignOut';
-    } catch (e) {
-      return e.toString();
-    } finally {
-      loadingService.end();
-    }
+  Future signOut() async {
+    await _loadingService.wrap(_auth.signOut());
   }
 }

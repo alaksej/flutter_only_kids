@@ -9,12 +9,21 @@ class LoadingService {
   int get count => _counter$.value;
   Stream<bool> loading$;
 
-  begin() {
+  _begin() {
     _counter$.add(count + 1);
   }
 
-  end() {
+  _end() {
     assert(count > 0);
     _counter$.add(count - 1);
+  }
+
+  Future<dynamic> wrap(Future<dynamic> future) async {
+    try {
+      _begin();
+      return await future;
+    } finally {
+      _end();
+    }
   }
 }
