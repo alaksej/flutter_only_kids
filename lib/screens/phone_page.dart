@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:only_kids/services/auth_service.dart';
+import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
@@ -17,6 +18,8 @@ class PhonePage extends StatefulWidget {
 
 class _PhonePageState extends State<PhonePage> {
   final TextEditingController textController = TextEditingController();
+  final LoadingService loadingService = getIt.get<LoadingService>();
+  final AuthService authService = getIt.get<AuthService>();
 
   @override
   void initState() {
@@ -32,14 +35,12 @@ class _PhonePageState extends State<PhonePage> {
 
   @override
   Widget build(BuildContext context) {
-    final AuthService authService = getIt.get<AuthService>();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Phone number'),
       ),
       body: StreamBuilder<bool>(
-          stream: authService.loading$,
+          stream: loadingService.loading$,
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data) {
               return Spinner();
@@ -76,7 +77,7 @@ class _PhonePageState extends State<PhonePage> {
                   ),
                   RaisedButton(
                     child: Text('Close'),
-                    onPressed: () => _onClose(context, authService),
+                    onPressed: () => _onClose(context),
                   ),
                 ],
               ),
@@ -85,7 +86,7 @@ class _PhonePageState extends State<PhonePage> {
     );
   }
 
-  _onClose(BuildContext context, AuthService authService) async {
+  _onClose(BuildContext context) async {
     try {
       await authService.updateCurrentUserPhone(textController.text);
     } catch (e) {

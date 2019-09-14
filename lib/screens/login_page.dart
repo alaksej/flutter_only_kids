@@ -5,11 +5,13 @@ import 'package:only_kids/screens/enter_email_page.dart';
 import 'package:only_kids/screens/phone_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
 class LoginPage extends StatelessWidget {
-  LoginPage();
+  final AuthService authService = getIt.get<AuthService>();
+  final LoadingService loadingService = getIt.get<LoadingService>();
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +24,8 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    final AuthService authService = getIt.get<AuthService>();
-
     return StreamBuilder<bool>(
-      stream: authService.loading$,
+      stream: loadingService.loading$,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data) {
           return Spinner();
@@ -47,7 +47,7 @@ class LoginPage extends StatelessWidget {
                     height: 20.0,
                   ),
                   text: 'Continue with Google',
-                  action: () => _onContinueWithGoogle(context, authService),
+                  action: () => _onContinueWithGoogle(context),
                 ),
                 SizedBox(height: 10),
                 _buildButton(
@@ -89,10 +89,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  void _onContinueWithGoogle(
-    BuildContext context,
-    AuthService authService,
-  ) async {
+  void _onContinueWithGoogle(BuildContext context) async {
     UserProfile userProfile;
     try {
       userProfile = await authService.googleSignIn();

@@ -19,10 +19,12 @@ import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 
 import 'services/cloud_functions_service.dart';
+import 'services/loading_service.dart';
 
 GetIt getIt = GetIt();
 
 void registerServiceProviders() {
+  getIt.registerSingleton<LoadingService>(LoadingService());
   getIt.registerSingleton<AuthService>(AuthService());
   getIt.registerSingleton<AppointmentService>(AppointmentService());
   getIt.registerSingleton<CalendarService>(CalendarService());

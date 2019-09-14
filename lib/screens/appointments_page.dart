@@ -5,6 +5,7 @@ import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/screens/profile_page.dart';
 import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/services/auth_service.dart';
+import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/widgets/appointments_list.dart';
 import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/screens/login_page.dart';
@@ -24,18 +25,19 @@ class AppointmentsPage extends StatelessWidget {
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
+  final LoadingService loadingService = getIt.get<LoadingService>();
+  final AuthService authService = getIt.get<AuthService>();
+  final AppointmentService appointmentService = getIt.get<AppointmentService>();
 
   @override
   Widget build(BuildContext context) {
     final UserProfile userProfile = Provider.of<UserProfile>(context);
-    final AuthService authService = getIt.get<AuthService>();
     final bool isLoggedIn = userProfile != null;
-    final AppointmentService appointmentService = getIt.get<AppointmentService>();
 
     return DefaultTabController(
       length: myTabs.length,
       child: StreamBuilder<bool>(
-        stream: authService.loading$,
+        stream: loadingService.loading$,
         builder: (context, snapshot) {
           return Scaffold(
             appBar: AppBar(
@@ -47,10 +49,10 @@ class AppointmentsPage extends StatelessWidget {
               title: Text('Appointments'),
               actions: !snapshot.hasData || snapshot.data
                   ? []
-                  : isLoggedIn ? _buildUserActions(context, authService, userProfile) : _buildLogInActions(context),
+                  : isLoggedIn ? _buildUserActions(context, userProfile) : _buildLogInActions(context),
             ),
             body: !isLoggedIn
-                ? _buildLoginMessage(authService)
+                ? _buildLoginMessage()
                 : TabBarView(
                     children: [
                       _buildTab(
@@ -135,9 +137,9 @@ class AppointmentsPage extends StatelessWidget {
     );
   }
 
-  StreamBuilder<bool> _buildLoginMessage(AuthService _authService) {
+  StreamBuilder<bool> _buildLoginMessage() {
     return StreamBuilder<bool>(
-      stream: _authService.loading$,
+      stream: loadingService.loading$,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data) {
           return Spinner();
@@ -165,7 +167,6 @@ class AppointmentsPage extends StatelessWidget {
 
   List<Widget> _buildUserActions(
     BuildContext context,
-    AuthService authService,
     UserProfile userProfile,
   ) {
     final double avatarSize = 30.0;
