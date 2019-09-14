@@ -25,7 +25,7 @@ class UserProfile {
     assert(user != null);
     return {
       'uid': user.uid,
-      'email': user.email,
+      'email': user.email.toLowerCase(),
       'photoUrl': user.photoUrl,
       'displayName': user.displayName,
       'lastSeen': DateTime.now(),
@@ -47,7 +47,7 @@ class UserProfile {
 
   Map<String, dynamic> toMap() => {
         'uid': uid,
-        'email': email,
+        'email': email.toLowerCase(),
         'photoURL': photoUrl,
         'displayName': displayName,
         'phoneNumber': phoneNumber,

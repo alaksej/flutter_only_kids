@@ -111,7 +111,7 @@ class AuthService {
   Future<bool> userExists(String email) async {
     final cloudFunctionsService = getIt.get<CloudFunctionsService>();
     final result = await _loadingService.wrap(cloudFunctionsService.call('userExists', {'email': email}));
-    return result['userExists'];
+    return result;
   }
 
   Future signOut() async {
