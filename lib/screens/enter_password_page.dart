@@ -129,6 +129,9 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     final user = await authService.passwordSignIn(email, password);
     if (user == null) {
       showSnackBar(scaffoldState: _scaffoldKey.currentState, text: 'Bad username or password');
+      return;
     }
+
+    Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
   }
 }

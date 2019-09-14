@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:only_kids/screens/create_account_page.dart';
 import 'package:only_kids/screens/enter_password_page.dart';
 import 'package:only_kids/services/auth_service.dart';
+import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/utils/validators.dart';
+import 'package:only_kids/widgets/spinner.dart';
 
 import '../main.dart';
 
@@ -18,6 +20,7 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
   bool _autovalidate = false;
   final TextEditingController textController = TextEditingController();
   final AuthService authService = getIt.get<AuthService>();
+  final LoadingService _loadingService = getIt.get<LoadingService>();
 
   @override
   void dispose() {
@@ -29,42 +32,50 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.0),
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40.0),
-              child: Text(
-                'Use the Only Kids account by entering your email address',
-                style: Theme.of(context).textTheme.headline,
-                textAlign: TextAlign.center,
+      body: StreamBuilder<bool>(
+          stream: _loadingService.loading$,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || snapshot.data) {
+              return Spinner();
+            }
+
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: ListView(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40.0),
+                    child: Text(
+                      'Use the Only Kids account by entering your email address',
+                      style: Theme.of(context).textTheme.headline,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Form(
+                    key: _formKey,
+                    autovalidate: _autovalidate,
+                    child: TextFormField(
+                      controller: textController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        icon: Icon(Icons.email),
+                        hintText: 'Your e-mail address',
+                      ),
+                      validator: validateEmail,
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  Align(
+                    child: RaisedButton(
+                      child: Text('Next'),
+                      onPressed: () => _onNext(context),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Form(
-              key: _formKey,
-              autovalidate: _autovalidate,
-              child: TextFormField(
-                controller: textController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  icon: Icon(Icons.email),
-                  hintText: 'Your e-mail address',
-                ),
-                validator: validateEmail,
-              ),
-            ),
-            SizedBox(height: 20.0),
-            Align(
-              child: RaisedButton(
-                child: Text('Next'),
-                onPressed: () => _onNext(context),
-              ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 

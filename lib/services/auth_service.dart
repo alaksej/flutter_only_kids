@@ -99,7 +99,7 @@ class AuthService {
     }
 
     return await _loadingService.wrap(
-      ref.setData(UserProfile.firebaseUserToMap(user), merge: true),
+      ref.setData(map, merge: true),
     );
   }
 

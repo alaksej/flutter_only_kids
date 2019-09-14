@@ -152,9 +152,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
     if (user == null) {
       showSnackBar(scaffoldState: _scaffoldKey.currentState, text: 'Failed to create user');
+      return;
     }
 
-    // TODO: pop to the home page
-    Navigator.pop(context);
+    Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
   }
 }
