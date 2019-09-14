@@ -55,6 +55,24 @@ class AuthService {
     }
   }
 
+  Future<UserProfile> createUserWithPassword(String email, String password, String name) async {
+    try {
+      FirebaseUser user = await _loadingService.wrap(
+        _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
+      );
+
+      await updateUserData(user, name);
+      UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
+      return userProfile;
+    } catch (error) {
+      print("Create user error: $error");
+      return null;
+    }
+  }
+
   Future<UserProfile> passwordSignIn(String email, String password) async {
     try {
       FirebaseUser user = await _loadingService.wrap(
@@ -64,7 +82,6 @@ class AuthService {
         ),
       );
 
-      await updateUserData(user);
       UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
       return userProfile;
     } catch (error) {
@@ -73,9 +90,17 @@ class AuthService {
     }
   }
 
-  Future<void> updateUserData(FirebaseUser user) async {
+  Future<void> updateUserData(FirebaseUser user, [String displayName]) async {
+    // TODO: refactor the mess:
     DocumentReference ref = _db.collection('users').document(user.uid);
-    return await _loadingService.wrap(ref.setData(UserProfile.firebaseUserToMap(user), merge: true));
+    final map = UserProfile.firebaseUserToMap(user);
+    if (displayName != null && displayName.isNotEmpty) {
+      map['displayName'] = displayName;
+    }
+
+    return await _loadingService.wrap(
+      ref.setData(UserProfile.firebaseUserToMap(user), merge: true),
+    );
   }
 
   Future<void> updateCurrentUserPhone(String phoneNumber) async {

@@ -37,7 +37,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    userProfile.displayName,
+                    userProfile.displayName ?? '',
                     style: Theme.of(context).textTheme.headline,
                   ),
                   Text(userProfile.email),

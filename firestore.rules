@@ -26,5 +26,9 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+
+    match /users {
+    	allow create: if true;
+    }
   }
 }

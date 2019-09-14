@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:only_kids/screens/create_account_page.dart';
 import 'package:only_kids/screens/enter_password_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/utils/validators.dart';
@@ -79,10 +80,9 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
     final String email = textController.text;
     final bool userExists = await authService.userExists(email);
     if (userExists) {
-      print('open enter password page');
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => EnterPasswordPage(email: email)));
     } else {
-      print('open create user page');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CreateAccountPage(email: email)));
     }
   }
 }
