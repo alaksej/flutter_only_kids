@@ -11,7 +11,8 @@ class AuthService {
 
   Observable<FirebaseUser> user$; // firebase user
   Stream<UserProfile> userProfile$; // custom user data in Firestore
-  BehaviorSubject<bool> loading$ = BehaviorSubject.seeded(false);
+  // TODO: add loading service. Fix loading indicator by using counter
+  BehaviorSubject<bool> loading$ = BehaviorSubject.seeded(false); 
 
   FirebaseUser _user;
   FirebaseUser get currentUser => _user;
@@ -34,7 +35,7 @@ class AuthService {
           (FirebaseUser u) {
             if (u != null) {
               // TODO: get rid of second network request
-              return getUserProfile((u.uid));
+              return getUserProfile(u.uid);
             } else {
               return Observable.just(null);
             }
@@ -63,7 +64,8 @@ class AuthService {
 
       FirebaseUser user = await _auth.signInWithCredential(credential);
       await updateUserData(user);
-      UserProfile userProfile = await _db.collection('users').document(user.uid).get().then((value) => UserProfile.fromMap(value.data));
+      UserProfile userProfile =
+          await _db.collection('users').document(user.uid).get().then((value) => UserProfile.fromMap(value.data));
 
       return userProfile;
     } catch (error) {
@@ -87,6 +89,13 @@ class AuthService {
     } finally {
       loading$.add(false);
     }
+  }
+
+  Future<bool> userExists(String email) async {
+    return Future.value(true);
+    // TODO: use cloud function to check if the user exists
+    // QuerySnapshot users = await _db.collection('users').where('email', isEqualTo: email).getDocuments();
+    // return users.documents.length > 0;
   }
 
   Future<String> signOut() async {
