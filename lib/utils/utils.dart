@@ -55,10 +55,15 @@ Future<bool> showConfirmationDialog(BuildContext context, String title, String c
   );
 }
 
-void showSnackBar(BuildContext context, {durationSeconds = 3, String text}) {
+void showSnackBar({BuildContext context, ScaffoldState scaffoldState, durationSeconds = 3, String text}) {
+  assert((scaffoldState != null) ^ (context != null));
   final SnackBar snackBar = SnackBar(
     duration: Duration(seconds: durationSeconds),
     content: Text(text),
   );
-  Scaffold.of(context).showSnackBar(snackBar);
+  if (scaffoldState != null) {
+    scaffoldState.showSnackBar(snackBar);
+  } else if (context != null) {
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
 }

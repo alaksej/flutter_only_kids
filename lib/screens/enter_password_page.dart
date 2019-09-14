@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:only_kids/services/auth_service.dart';
+import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/utils/validators.dart';
 
 import '../main.dart';
@@ -15,6 +16,7 @@ class EnterPasswordPage extends StatefulWidget {
 
 class _EnterPasswordPageState extends State<EnterPasswordPage> {
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _autovalidate = false;
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
@@ -35,6 +37,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -86,7 +89,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
             Align(
               child: RaisedButton(
                 child: Text('Log in'),
-                onPressed: () => _onLogIn(),
+                onPressed: () => _onLogIn(context),
               ),
             ),
             Align(
@@ -101,7 +104,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     );
   }
 
-  _onLogIn() async {
+  _onLogIn(BuildContext context) async {
     setState(() {
       _autovalidate = true;
     });
@@ -110,6 +113,11 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
       return;
     }
 
-    print('logging in...');
+    final String email = emailTextController.text;
+    final String password = passwordTextController.text;
+    final user = await authService.passwordSignIn(email, password);
+    if (user == null) {
+      showSnackBar(scaffoldState: _scaffoldKey.currentState, text: 'Bad username or password');
+    }
   }
 }

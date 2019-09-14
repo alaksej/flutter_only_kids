@@ -59,7 +59,7 @@ class _OnlyKidsAppState extends State<OnlyKidsApp> {
     return MultiProvider(
       providers: [
         StreamProvider<FirebaseUser>.value(
-          value: getIt.get<AuthService>().user$,
+          value: getIt.get<AuthService>().firebaseUser$,
         ),
         StreamProvider<UserProfile>.value(
           value: getIt.get<AuthService>().userProfile$,

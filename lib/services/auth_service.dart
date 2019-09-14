@@ -13,22 +13,26 @@ class AuthService {
   final Firestore _db = Firestore.instance;
   final LoadingService _loadingService = getIt.get<LoadingService>();
 
-  Observable<FirebaseUser> user$; // firebase user
+  Observable<FirebaseUser> firebaseUser$; // firebase user
   Stream<UserProfile> userProfile$; // custom user data in Firestore
 
-  FirebaseUser _user;
-  FirebaseUser get currentUser => _user;
-  bool get isLoggedIn => _user != null;
+  FirebaseUser _firebaseUser;
+  FirebaseUser get currentUser => _firebaseUser;
+  bool get isLoggedIn => _firebaseUser != null;
 
   AuthService() {
-    user$ = Observable(_auth.onAuthStateChanged).doOnData((u) => _user = u).shareReplay(maxSize: 1);
-    userProfile$ = user$
-        .switchMap((FirebaseUser u) => u != null ? _getUserProfile(u.uid) : Observable.just(null))
+    firebaseUser$ = Observable(_auth.onAuthStateChanged).doOnData((u) => _firebaseUser = u).shareReplay(maxSize: 1);
+    userProfile$ = firebaseUser$
+        .switchMap((FirebaseUser u) => u != null ? _getUserProfileStream(u.uid) : Observable.just(null))
         .shareReplay(maxSize: 1);
   }
 
-  Stream<UserProfile> _getUserProfile(String uid) {
+  Stream<UserProfile> _getUserProfileStream(String uid) {
     return _db.collection('users').document(uid).snapshots().map((snap) => UserProfile.fromMap(snap.data));
+  }
+
+  Future<UserProfile> _getUserProfile(String uid) {
+    return _db.collection('users').document(uid).get().then((value) => UserProfile.fromMap(value.data));
   }
 
   Future<UserProfile> googleSignIn() async {
@@ -43,13 +47,28 @@ class AuthService {
 
       FirebaseUser user = await _loadingService.wrap(_auth.signInWithCredential(credential));
       await updateUserData(user);
-      UserProfile userProfile = await _loadingService.wrap(
-        _db.collection('users').document(user.uid).get().then((value) => UserProfile.fromMap(value.data)),
-      );
-
+      UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
       return userProfile;
     } catch (error) {
       print("Google sign in error: $error");
+      return null;
+    }
+  }
+
+  Future<UserProfile> passwordSignIn(String email, String password) async {
+    try {
+      FirebaseUser user = await _loadingService.wrap(
+        _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
+      );
+
+      await updateUserData(user);
+      UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
+      return userProfile;
+    } catch (error) {
+      print("Password sign in error: $error");
       return null;
     }
   }

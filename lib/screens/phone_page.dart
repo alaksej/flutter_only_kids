@@ -90,7 +90,7 @@ class _PhonePageState extends State<PhonePage> {
     try {
       await authService.updateCurrentUserPhone(textController.text);
     } catch (e) {
-      showSnackBar(context, text: 'Failed to update phone number');
+      showSnackBar(context: context, text: 'Failed to update phone number');
     }
 
     Navigator.pop(context);

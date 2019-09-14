@@ -83,7 +83,7 @@ class LoginPage extends StatelessWidget {
 
   void _showSignInError(BuildContext context) {
     showSnackBar(
-      context,
+      context: context,
       text: 'Could not sign in.\n'
           'Check your internet connection and try again',
     );
