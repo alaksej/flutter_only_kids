@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:only_kids/services/auth_service.dart';
+import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/utils/validators.dart';
+import 'package:only_kids/widgets/spinner.dart';
 
 import '../main.dart';
 
@@ -21,6 +23,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
   final AuthService authService = getIt.get<AuthService>();
+  final LoadingService _loadingService = getIt.get<LoadingService>();
 
   @override
   void initState() {
@@ -39,68 +42,76 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.0),
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40.0),
-              child: Text(
-                'Welcome back!\n'
-                'Log in to your Only Kids account',
-                style: Theme.of(context).textTheme.headline,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Form(
-              key: _formKey,
-              autovalidate: _autovalidate,
-              child: Column(
+      body: StreamBuilder<bool>(
+          stream: _loadingService.loading$,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || snapshot.data) {
+              return Spinner();
+            }
+
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: ListView(
                 children: <Widget>[
-                  TextFormField(
-                    controller: emailTextController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Your e-mail address',
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40.0),
+                    child: Text(
+                      'Welcome back!\n'
+                      'Log in to your Only Kids account',
+                      style: Theme.of(context).textTheme.headline,
+                      textAlign: TextAlign.center,
                     ),
-                    validator: validateEmail,
                   ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    controller: passwordTextController,
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Password',
+                  Form(
+                    key: _formKey,
+                    autovalidate: _autovalidate,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          controller: emailTextController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Your e-mail address',
+                          ),
+                          validator: validateEmail,
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: passwordTextController,
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Password',
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Enter password';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Enter password';
-                      }
-                      return null;
-                    },
+                  ),
+                  SizedBox(height: 20.0),
+                  Align(
+                    child: RaisedButton(
+                      child: Text('Log in'),
+                      onPressed: () => _onLogIn(context),
+                    ),
+                  ),
+                  Align(
+                    child: MaterialButton(
+                      child: Text('Forgot password?'),
+                      onPressed: () => {},
+                    ),
                   ),
                 ],
               ),
-            ),
-            SizedBox(height: 20.0),
-            Align(
-              child: RaisedButton(
-                child: Text('Log in'),
-                onPressed: () => _onLogIn(context),
-              ),
-            ),
-            Align(
-              child: MaterialButton(
-                child: Text('Forgot password?'),
-                onPressed: () => {},
-              ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 
