@@ -51,3 +51,6 @@ echo $ANDROID_FIREBASE_JSON | base64 --decode > $FCI_BUILD_DIR/android/app/goo
 
   > **Fix: base64 command not found.** Clear the spaces between base64 and --decode(by using the backspace key until the 4 in base64 deletes — as this signals that all Unicode characters are deleted) then add the 4 and the space back in again
 * [Publish To Google Play](https://docs.codemagic.io/publishing/publishing-to-google-play/)
+
+## Cloud Functions
+* `firebase deploy --only functions`
