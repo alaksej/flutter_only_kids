@@ -103,16 +103,11 @@ class AppointmentsPage extends StatelessWidget {
     );
   }
 
-  Future _redirectToProfilePage(BuildContext context, UserProfile userProfile,
-      {bool goToCreateAppointmentAfterLogin = false}) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => ProfilePage(
-          userProfile: userProfile,
-        ),
-      ),
-    );
+  Future _redirectToProfilePage(
+    BuildContext context,
+    UserProfile userProfile,
+  ) {
+    return Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ProfilePage()));
   }
 
   StreamBuilder<Object> _buildTab(

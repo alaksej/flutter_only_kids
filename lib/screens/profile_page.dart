@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:only_kids/models/user_profile.dart';
+import 'package:only_kids/screens/phone_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/avatar.dart';
+import 'package:provider/provider.dart';
 
 import '../main.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key key, @required this.userProfile}) : super(key: key);
-
-  final UserProfile userProfile;
-
   @override
   Widget build(BuildContext context) {
     final AuthService authService = getIt.get<AuthService>();
+    final UserProfile userProfile = Provider.of<UserProfile>(context);
 
     assert(userProfile != null);
 
@@ -22,11 +21,10 @@ class ProfilePage extends StatelessWidget {
         title: Text('Profile'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: ListView(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+              padding: const EdgeInsets.symmetric(vertical: 30.0),
               child: Column(
                 children: <Widget>[
                   Padding(
@@ -41,16 +39,40 @@ class ProfilePage extends StatelessWidget {
                     style: Theme.of(context).textTheme.headline,
                   ),
                   Text(userProfile.email),
+                  SizedBox(height: 20.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          leading: Icon(Icons.phone),
+                          title: Text(userProfile.phoneNumber),
+                          trailing: Icon(Icons.edit),
+                          onTap: () => _onPhoneEdit(context, userProfile.phoneNumber),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            RaisedButton(
-              onPressed: () => _signOut(context, authService),
-              child: Text('Sign out'),
+            Center(
+              child: RaisedButton(
+                onPressed: () => _signOut(context, authService),
+                child: Text('Sign out'),
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  _onPhoneEdit(BuildContext context, String phoneNumber) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => PhonePage(initialPhoneNumber: phoneNumber)),
     );
   }
 
