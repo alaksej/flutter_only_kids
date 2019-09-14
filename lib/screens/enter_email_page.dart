@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:only_kids/screens/enter_password_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/utils/validators.dart';
 
@@ -57,7 +58,7 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
             Align(
               child: RaisedButton(
                 child: Text('Next'),
-                onPressed: () => _onNext(),
+                onPressed: () => _onNext(context),
               ),
             ),
           ],
@@ -66,7 +67,7 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
     );
   }
 
-  _onNext() async {
+  _onNext(BuildContext context) async {
     setState(() {
       _autovalidate = true;
     });
@@ -79,6 +80,7 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
     final bool userExists = await authService.userExists(email);
     if (userExists) {
       print('open enter password page');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => EnterPasswordPage(email: email)));
     } else {
       print('open create user page');
     }
