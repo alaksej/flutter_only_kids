@@ -5,7 +5,6 @@ import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/avatar.dart';
 import 'package:only_kids/widgets/spinner.dart';
-import 'package:provider/provider.dart';
 
 import '../main.dart';
 
@@ -13,61 +12,66 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthService authService = getIt.get<AuthService>();
-    final UserProfile userProfile = Provider.of<UserProfile>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-      ),
-      body: userProfile == null
-          ? Spinner()
-          : Center(
-              child: ListView(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 30.0),
-                    child: Column(
+    return StreamBuilder<UserProfile>(
+        stream: authService.userProfile$,
+        builder: (context, snapshot) {
+          final userProfile = snapshot.data;
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Profile'),
+            ),
+            body: userProfile == null
+                ? Spinner()
+                : Center(
+                    child: ListView(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Avatar(
-                            avatarSize: 80.0,
-                            userProfile: userProfile,
+                          padding: const EdgeInsets.symmetric(vertical: 30.0),
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Avatar(
+                                  avatarSize: 80.0,
+                                  userProfile: userProfile,
+                                ),
+                              ),
+                              Text(
+                                userProfile.displayName ?? '',
+                                style: Theme.of(context).textTheme.headline,
+                              ),
+                              Text(userProfile.email),
+                              SizedBox(height: 20.0),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ListTile(
+                                      leading: Icon(Icons.phone),
+                                      title: Text(userProfile.phoneNumber ?? 'No phone number'),
+                                      trailing: Icon(Icons.edit),
+                                      onTap: () => _onPhoneEdit(context, userProfile.phoneNumber),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Text(
-                          userProfile.displayName ?? '',
-                          style: Theme.of(context).textTheme.headline,
-                        ),
-                        Text(userProfile.email),
-                        SizedBox(height: 20.0),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListTile(
-                                leading: Icon(Icons.phone),
-                                title: Text(userProfile.phoneNumber ?? 'No phone number'),
-                                trailing: Icon(Icons.edit),
-                                onTap: () => _onPhoneEdit(context, userProfile.phoneNumber),
-                              ),
-                            ),
+                        Center(
+                          child: RaisedButton(
+                            onPressed: () => _signOut(context, authService),
+                            child: Text('Sign out'),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Center(
-                    child: RaisedButton(
-                      onPressed: () => _signOut(context, authService),
-                      child: Text('Sign out'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-    );
+          );
+        });
   }
 
   _onPhoneEdit(BuildContext context, String phoneNumber) {

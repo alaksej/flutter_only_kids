@@ -47,6 +47,7 @@ class AuthService {
 
       FirebaseUser user = await _loadingService.wrap(_auth.signInWithCredential(credential));
       await updateUserData(user);
+      userProfile$ = _getUserProfileStream(user.uid);
       UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
       return userProfile;
     } catch (error) {
@@ -65,6 +66,7 @@ class AuthService {
       );
 
       await updateUserData(user, name);
+      userProfile$ = _getUserProfileStream(user.uid);
       UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
       return userProfile;
     } catch (error) {
@@ -82,6 +84,7 @@ class AuthService {
         ),
       );
 
+      userProfile$ = _getUserProfileStream(user.uid);
       UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
       return userProfile;
     } catch (error) {
