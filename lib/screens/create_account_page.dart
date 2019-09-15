@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:only_kids/screens/phone_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/utils/constants.dart';
@@ -156,5 +157,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     }
 
     Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => PhonePage()),
+    );
   }
 }
