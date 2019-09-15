@@ -28,12 +28,16 @@ class Avatar extends StatelessWidget {
     ];
     final String placeholderChar = getPlaceholderChar(placeholderCharSources);
 
-    return CircleAvatar(
+    return InkWell(
+      onTap: onTap == null ? null : () => onTap(context),
       radius: avatarSize / 2,
-      child: InkWell(
-        onTap: onTap == null ? null : () => onTap(context),
+      child: CircleAvatar(
+        radius: avatarSize / 2,
         child: userProfile.photoUrl == null
-            ? Text(placeholderChar)
+            ? Text(
+                placeholderChar,
+                style: TextStyle(fontSize: avatarSize / 2),
+              )
             : Container(
                 width: avatarSize,
                 height: avatarSize,
