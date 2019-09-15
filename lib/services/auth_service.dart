@@ -117,6 +117,10 @@ class AuthService {
     return result;
   }
 
+  Future sendPasswordResetEmail(String email) async {
+    return await _loadingService.wrap(_auth.sendPasswordResetEmail(email: email));
+  }
+
   Future signOut() async {
     await _loadingService.wrap(_auth.signOut());
   }

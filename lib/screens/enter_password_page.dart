@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:only_kids/screens/password_reset_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/utils/utils.dart';
@@ -24,6 +25,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
   final TextEditingController passwordTextController = TextEditingController();
   final AuthService authService = getIt.get<AuthService>();
   final LoadingService _loadingService = getIt.get<LoadingService>();
+  String get email => emailTextController.text;
 
   @override
   void initState() {
@@ -105,7 +107,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                   Align(
                     child: MaterialButton(
                       child: Text('Forgot password?'),
-                      onPressed: () => {},
+                      onPressed: () => _onForgotPassword(context),
                     ),
                   ),
                 ],
@@ -124,7 +126,6 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
       return;
     }
 
-    final String email = emailTextController.text;
     final String password = passwordTextController.text;
     final user = await authService.passwordSignIn(email, password);
     if (user == null) {
@@ -133,5 +134,9 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     }
 
     Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+  }
+
+  _onForgotPassword(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordResetPage(email: email)));
   }
 }
