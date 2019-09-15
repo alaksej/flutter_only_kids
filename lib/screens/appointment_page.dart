@@ -6,6 +6,7 @@ import 'package:only_kids/widgets/date_picker.dart';
 import 'package:only_kids/main.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/services/appointment_service.dart';
+import 'package:only_kids/widgets/overlay.dart';
 import 'package:only_kids/widgets/spinner.dart';
 import 'package:only_kids/widgets/time_picker.dart';
 
@@ -221,6 +222,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
         : await _appointmentService.addForCurrentUser(newAppointment);
 
     Navigator.pop(context);
+
+    showToast('Appointment saved');
   }
 
   _cancelAppointment(BuildContext context) async {
@@ -246,5 +249,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
     await _appointmentService.delete(widget.appointment.id);
     Navigator.pop(context);
+    showToast('Appointment deleted');
   }
 }

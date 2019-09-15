@@ -9,6 +9,7 @@ import 'package:only_kids/services/appointment_service.dart';
 import 'package:only_kids/services/calendar_service.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/services/hairstyles_service.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 import 'blocs/nav_bar_bloc.dart';
 import 'screens/appointments_page.dart';
@@ -65,45 +66,47 @@ class _OnlyKidsAppState extends State<OnlyKidsApp> {
           value: getIt.get<AuthService>().userProfile$,
         ),
       ],
-      child: MaterialApp(
-        title: appTitle,
-        theme: ThemeData(
-          primarySwatch: primaryColor,
-          accentColor: accentColor,
-        ),
-        navigatorObservers: <NavigatorObserver>[OnlyKidsApp.observer],
-        home: BlocProviderTree(
-          blocProviders: [
-            BlocProvider<NavBarBloc>(
-              builder: (BuildContext context) => NavBarBloc(),
-            ),
-          ],
-          child: Scaffold(
-            body: SafeArea(
-              top: false,
-              child: IndexedStack(
-                index: _currentIndex,
-                children: <Widget>[
-                  AppointmentsPage(),
-                  GalleryPage(),
-                  ContactsPage(),
-                ],
+      child: OverlaySupport(
+        child: MaterialApp(
+          title: appTitle,
+          theme: ThemeData(
+            primarySwatch: primaryColor,
+            accentColor: accentColor,
+          ),
+          navigatorObservers: <NavigatorObserver>[OnlyKidsApp.observer],
+          home: BlocProviderTree(
+            blocProviders: [
+              BlocProvider<NavBarBloc>(
+                builder: (BuildContext context) => NavBarBloc(),
               ),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (int index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              items: allDestinations.map((Destination destination) {
-                return BottomNavigationBarItem(
-                  icon: Icon(destination.icon),
-                  title: Text(destination.title),
-                );
-              }).toList(),
-              selectedItemColor: Colors.pink,
+            ],
+            child: Scaffold(
+              body: SafeArea(
+                top: false,
+                child: IndexedStack(
+                  index: _currentIndex,
+                  children: <Widget>[
+                    AppointmentsPage(),
+                    GalleryPage(),
+                    ContactsPage(),
+                  ],
+                ),
+              ),
+              bottomNavigationBar: BottomNavigationBar(
+                currentIndex: _currentIndex,
+                onTap: (int index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                items: allDestinations.map((Destination destination) {
+                  return BottomNavigationBarItem(
+                    icon: Icon(destination.icon),
+                    title: Text(destination.title),
+                  );
+                }).toList(),
+                selectedItemColor: Colors.pink,
+              ),
             ),
           ),
         ),

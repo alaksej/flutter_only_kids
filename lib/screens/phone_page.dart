@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/utils/utils.dart';
+import 'package:only_kids/widgets/overlay.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
 import '../main.dart';
@@ -94,5 +95,6 @@ class _PhonePageState extends State<PhonePage> {
     }
 
     Navigator.pop(context);
+    showToast('Changes saved');
   }
 }
