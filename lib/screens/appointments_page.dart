@@ -36,10 +36,7 @@ class AppointmentsPage extends StatelessWidget {
 
     return DefaultTabController(
       length: myTabs.length,
-      child: StreamBuilder<bool>(
-        stream: loadingService.loading$,
-        builder: (context, snapshot) {
-          return Scaffold(
+      child: Scaffold(
             appBar: AppBar(
               bottom: isLoggedIn
                   ? TabBar(
@@ -47,9 +44,7 @@ class AppointmentsPage extends StatelessWidget {
                     )
                   : null,
               title: Text('Appointments'),
-              actions: !snapshot.hasData || snapshot.data
-                  ? []
-                  : isLoggedIn ? _buildUserActions(context, userProfile) : _buildLogInActions(context),
+          actions: isLoggedIn ? _buildUserActions(context, userProfile) : _buildLogInActions(context),
             ),
             body: !isLoggedIn
                 ? _buildLoginMessage()
@@ -88,8 +83,6 @@ class AppointmentsPage extends StatelessWidget {
                     child: Icon(Icons.add),
                   )
                 : null,
-          );
-        },
       ),
     );
   }

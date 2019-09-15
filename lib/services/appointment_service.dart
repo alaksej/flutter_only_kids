@@ -22,15 +22,12 @@ class AppointmentService {
   }
 
   Stream<List<Appointment>> getUpcomingByCurrentUser() {
-    var stream = _authService.firebaseUser$.switchMap((user) {
+    final user = _authService.currentUser;
       if (user == null) {
         return Observable.just(List<Appointment>());
       }
 
       return getUpcomingByUser(user);
-    });
-
-    return stream;
   }
 
   Stream<List<Appointment>> getPastByCurrentUser() {
