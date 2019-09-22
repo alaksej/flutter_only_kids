@@ -1,0 +1,27 @@
+{
+  "@@last_modified": "2019-09-22T15:13:35.554885",
+  "title": "Only Kids",
+  "@title": {
+    "description": "Title for the OnlyKids application",
+    "type": "text",
+    "placeholders": {}
+  },
+  "appointments": "Appointments_en",
+  "@appointments": {
+    "description": "Title for the Appointments bottom bar item",
+    "type": "text",
+    "placeholders": {}
+  },
+  "contacts": "Contacts",
+  "@contacts": {
+    "description": "Title for the Contacts bottom bar item",
+    "type": "text",
+    "placeholders": {}
+  },
+  "gallery": "Gallery",
+  "@gallery": {
+    "description": "Title for the Gallery bottom bar item",
+    "type": "text",
+    "placeholders": {}
+  }
+}

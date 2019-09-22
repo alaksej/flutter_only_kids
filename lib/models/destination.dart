@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:only_kids/localizations.dart';
 
 class Destination {
   const Destination(this.title, this.icon, this.color);
@@ -7,8 +8,11 @@ class Destination {
   final MaterialColor color;
 }
 
-const List<Destination> allDestinations = <Destination>[
-  Destination('Appointments', Icons.people, Colors.teal),
-  Destination('Gallery', Icons.image, Colors.cyan),
-  Destination('Contacts', Icons.location_on, Colors.orange),
-];
+List<Destination> getAllDestinations(BuildContext context) {
+  OnlyKidsLocalizations l10n = OnlyKidsLocalizations.of(context);
+  return <Destination>[
+    Destination(l10n.appointments(), Icons.people, Colors.teal),
+    Destination(l10n.gallery(), Icons.image, Colors.cyan),
+    Destination(l10n.contacts(), Icons.location_on, Colors.orange),
+  ];
+}

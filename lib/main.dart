@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:only_kids/models/destination.dart';
 import 'package:only_kids/models/user_profile.dart';
 import 'package:only_kids/screens/contacts_page.dart';
@@ -12,6 +13,7 @@ import 'package:only_kids/services/hairstyles_service.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 import 'blocs/nav_bar_bloc.dart';
+import 'localizations.dart';
 import 'screens/appointments_page.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -49,13 +51,10 @@ class OnlyKidsApp extends StatefulWidget {
 class _OnlyKidsAppState extends State<OnlyKidsApp> {
   final Color primaryColor = Colors.blue;
   final Color accentColor = Colors.pink;
-  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     OnlyKidsApp.analytics.logAppOpen();
-
-    final appTitle = 'Only Kids';
 
     return MultiProvider(
       providers: [
@@ -68,7 +67,17 @@ class _OnlyKidsAppState extends State<OnlyKidsApp> {
       ],
       child: OverlaySupport(
         child: MaterialApp(
-          title: appTitle,
+          onGenerateTitle: (BuildContext context) => OnlyKidsLocalizations.of(context).title,
+          localizationsDelegates: [
+            const OnlyKidsLocalizationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en', ''),
+            const Locale('ru', ''),
+          ],
           theme: ThemeData(
             primarySwatch: primaryColor,
             accentColor: accentColor,
@@ -80,36 +89,50 @@ class _OnlyKidsAppState extends State<OnlyKidsApp> {
                 builder: (BuildContext context) => NavBarBloc(),
               ),
             ],
-            child: Scaffold(
-              body: SafeArea(
-                top: false,
-                child: IndexedStack(
-                  index: _currentIndex,
-                  children: <Widget>[
-                    AppointmentsPage(),
-                    GalleryPage(),
-                    ContactsPage(),
-                  ],
-                ),
-              ),
-              bottomNavigationBar: BottomNavigationBar(
-                currentIndex: _currentIndex,
-                onTap: (int index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                items: allDestinations.map((Destination destination) {
-                  return BottomNavigationBarItem(
-                    icon: Icon(destination.icon),
-                    title: Text(destination.title),
-                  );
-                }).toList(),
-                selectedItemColor: Colors.pink,
-              ),
-            ),
+            child: new MaterialAppChild(),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MaterialAppChild extends StatefulWidget {
+  @override
+  _MaterialAppChildState createState() => _MaterialAppChildState();
+}
+
+class _MaterialAppChildState extends State<MaterialAppChild> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        top: false,
+        child: IndexedStack(
+          index: _currentIndex,
+          children: <Widget>[
+            AppointmentsPage(),
+            GalleryPage(),
+            ContactsPage(),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (int index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: getAllDestinations(context).map((Destination destination) {
+          return BottomNavigationBarItem(
+            icon: Icon(destination.icon),
+            title: Text(destination.title),
+          );
+        }).toList(),
+        selectedItemColor: Colors.pink,
       ),
     );
   }

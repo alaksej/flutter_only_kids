@@ -1,0 +1,26 @@
+{
+  "title": "Only Kids",
+  "@title": {
+    "description": "Title for the OnlyKids application",
+    "type": "text",
+    "placeholders": {}
+  },
+  "appointments": "Записи",
+  "@appointments": {
+    "description": "Title for the Appointments bottom bar item",
+    "type": "text",
+    "placeholders": {}
+  },
+  "contacts": "Контакты",
+  "@contacts": {
+    "description": "Title for the Contacts bottom bar item",
+    "type": "text",
+    "placeholders": {}
+  },
+  "gallery": "Галерея",
+  "@gallery": {
+    "description": "Title for the Gallery bottom bar item",
+    "type": "text",
+    "placeholders": {}
+  }
+}
