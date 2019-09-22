@@ -153,7 +153,7 @@ class OnlyKidsLocalizations {
       'create': 'Создать',
       'forgotPassword': 'Забыли пароль?',
       'failedToCreateUser': 'Ошибка при создании пользователя',
-      'useAccountViaEmail': 'Войдите в учетную запись Only Kids используя свой электронный адрес',
+      'useAccountViaEmail': 'Войдите в учетную запись \nOnly Kids используя свой электронный адрес',
       'next': 'Далее',
       'welcomeBack': 'Мы рады снова видеть Вас!\n'
           'Войдите в свою учетную запись Only Kids',
