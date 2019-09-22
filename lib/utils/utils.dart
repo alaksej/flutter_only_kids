@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-String dayDateTime(DateTime date) => DateFormat.EEEE().add_yMMMd().add_jm().format(date);
+String dayDateTime(BuildContext context, DateTime date) {
+  final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+  return '${localizations.formatFullDate(date)} ${localizations.formatTimeOfDay(TimeOfDay.fromDateTime(date))}';
+}
+
 String dayDate(DateTime date) => DateFormat.EEEE().add_yMMMd().format(date);
 String day(DateTime date) => DateFormat.EEEE().format(date);
 String shortDate(DateTime date) => DateFormat.yMMMd().format(date);
@@ -14,6 +18,8 @@ DateTime fromDateAndTime(DateTime date, TimeOfDay time) => DateTime(
       time.hour,
       time.minute,
     );
+
+String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
 TimeOfDay stringToTime(String s) {
   final int hour = int.parse(s.split(":")[0]);

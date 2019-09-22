@@ -200,14 +200,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
         ? await showConfirmationDialog(
             context,
             l10ns.editAppointment,
-            l10ns.areYouSureToUpdate.replaceFirst(r'$date', dayDateTime(picked)),
+            l10ns.areYouSureToUpdate.replaceFirst(r'$date', dayDateTime(context, picked)),
             l10ns.ok,
             l10ns.close,
           )
         : await showConfirmationDialog(
             context,
             l10ns.createAppointment,
-            l10ns.areYouSureToAdd.replaceFirst(r'$date', dayDateTime(picked)),
+            l10ns.areYouSureToAdd.replaceFirst(r'$date', dayDateTime(context, picked)),
             l10ns.ok,
             l10ns.close,
           );

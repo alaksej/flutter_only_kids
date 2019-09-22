@@ -37,6 +37,7 @@ class AppointmentsList extends StatelessWidget {
   }
 
   Widget _buildAppointmentsListItem(BuildContext context, Appointment appointment, bool admin) {
+    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -45,12 +46,12 @@ class AppointmentsList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                dayDate(appointment.dateTime),
+                capitalize(localizations.formatFullDate(appointment.dateTime)),
                 style: Theme.of(context).textTheme.subhead,
               ),
               SizedBox(height: 5.0),
               Text(
-                time(appointment.dateTime),
+                localizations.formatTimeOfDay(TimeOfDay.fromDateTime(appointment.dateTime)),
                 style: Theme.of(context).textTheme.subtitle,
               ),
               if (admin) ...[

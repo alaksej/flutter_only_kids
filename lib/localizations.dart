@@ -121,7 +121,7 @@ class OnlyKidsLocalizations {
       'areYouSureToUpdate': r'Перенести запись на $date?',
       'ok': 'OK',
       'createAppointment': 'Создать запись',
-      'areYouSureToAdd': r'Добавить запись на $date',
+      'areYouSureToAdd': r'Добавить запись на $date?',
       'appointmentSaved': 'Запись сохранена',
       'cancelAppointment': 'Отменить запись',
       'areYouSureToCancel': 'Вы уверены что хотите отменить запись?',
