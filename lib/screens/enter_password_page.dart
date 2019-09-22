@@ -6,6 +6,7 @@ import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/utils/validators.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
+import '../localizations.dart';
 import '../main.dart';
 
 class EnterPasswordPage extends StatefulWidget {
@@ -41,6 +42,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(),
@@ -58,8 +60,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Text(
-                      'Welcome back!\n'
-                      'Log in to your Only Kids account',
+                      l10ns.welcomeBack,
                       style: Theme.of(context).textTheme.headline,
                       textAlign: TextAlign.center,
                     ),
@@ -74,7 +75,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
-                            hintText: 'Your e-mail address',
+                            hintText: l10ns.yourEmailAddress,
                           ),
                           validator: validateEmail,
                         ),
@@ -85,11 +86,11 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                           obscureText: true,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
-                            hintText: 'Password',
+                            hintText: l10ns.password,
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Enter password';
+                              return l10ns.enterPassword;
                             }
                             return null;
                           },
@@ -100,13 +101,13 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                   SizedBox(height: 20.0),
                   Align(
                     child: RaisedButton(
-                      child: Text('Log in'),
+                      child: Text(l10ns.logIn),
                       onPressed: () => _onLogIn(context),
                     ),
                   ),
                   Align(
                     child: MaterialButton(
-                      child: Text('Forgot password?'),
+                      child: Text(l10ns.forgotPassword),
                       onPressed: () => _onForgotPassword(context),
                     ),
                   ),
@@ -129,7 +130,10 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     final String password = passwordTextController.text;
     final user = await authService.passwordSignIn(email, password);
     if (user == null) {
-      showSnackBar(scaffoldState: _scaffoldKey.currentState, text: 'Bad username or password');
+      showSnackBar(
+        scaffoldState: _scaffoldKey.currentState,
+        text: OnlyKidsLocalizations.of(context).badUsernameOrPassword,
+      );
       return;
     }
 

@@ -6,6 +6,7 @@ import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/utils/validators.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
+import '../localizations.dart';
 import '../main.dart';
 
 class PasswordResetPage extends StatefulWidget {
@@ -40,6 +41,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
 
   @override
   Widget build(BuildContext context) {
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(),
@@ -57,7 +59,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Text(
-                      'Password Reset',
+                      l10ns.passwordReset,
                       style: Theme.of(context).textTheme.headline,
                       textAlign: TextAlign.center,
                     ),
@@ -71,7 +73,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         icon: Icon(Icons.email),
-                        hintText: 'Your e-mail address',
+                        hintText: l10ns.yourEmailAddress,
                       ),
                       validator: validateEmail,
                     ),
@@ -79,7 +81,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                   SizedBox(height: 20.0),
                   Align(
                     child: RaisedButton(
-                      child: Text('Next'),
+                      child: Text(l10ns.next),
                       onPressed: () => _onNext(context),
                     ),
                   ),
@@ -99,11 +101,12 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
       return;
     }
 
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     try {
       await authService.sendPasswordResetEmail(email);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckEmailPage()));
     } catch (e) {
-      showSnackBar(scaffoldState: _scaffoldKey.currentState, text: 'Error resetting password');
+      showSnackBar(scaffoldState: _scaffoldKey.currentState, text: l10ns.errorResettingPassword);
     }
   }
 }

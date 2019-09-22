@@ -7,6 +7,7 @@ import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/utils/validators.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
+import '../localizations.dart';
 import '../main.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -42,6 +43,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(),
@@ -59,7 +61,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Text(
-                      'Create new Only Kids account',
+                      l10ns.createNewAccount,
                       style: Theme.of(context).textTheme.headline,
                       textAlign: TextAlign.center,
                     ),
@@ -74,11 +76,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
-                            hintText: 'Full name',
+                            hintText: l10ns.fullName,
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Enter your name';
+                              return l10ns.enterYourName;
                             }
                             return null;
                           },
@@ -89,7 +91,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
-                            hintText: 'Your e-mail address',
+                            hintText: l10ns.yourEmailAddress,
                           ),
                           validator: validateEmail,
                         ),
@@ -100,15 +102,16 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           obscureText: true,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
-                            hintText: 'Password',
+                            hintText: l10ns.password,
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Enter password';
+                              return l10ns.enterPassword;
                             }
 
                             if (value.length < minPasswordLength) {
-                              return 'Password should be at least 6 characters';
+                              return l10ns.passwordLengthValidation
+                                  .replaceFirst(r'$minPasswordLength', minPasswordLength.toString());
                             }
 
                             return null;
@@ -120,13 +123,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   SizedBox(height: 20.0),
                   Align(
                     child: RaisedButton(
-                      child: Text('Create'),
+                      child: Text(l10ns.create),
                       onPressed: () => _onCreate(context),
                     ),
                   ),
                   Align(
                     child: MaterialButton(
-                      child: Text('Forgot password?'),
+                      child: Text(l10ns.forgotPassword),
                       onPressed: () => {},
                     ),
                   ),
@@ -152,7 +155,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     final user = await authService.createUserWithPassword(email, password, name);
 
     if (user == null) {
-      showSnackBar(scaffoldState: _scaffoldKey.currentState, text: 'Failed to create user');
+      showSnackBar(
+          scaffoldState: _scaffoldKey.currentState, text: OnlyKidsLocalizations.of(context).failedToCreateUser);
       return;
     }
 

@@ -6,6 +6,7 @@ import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/overlay.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
+import '../localizations.dart';
 import '../main.dart';
 
 class PhonePage extends StatefulWidget {
@@ -36,9 +37,10 @@ class _PhonePageState extends State<PhonePage> {
 
   @override
   Widget build(BuildContext context) {
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Phone number'),
+        title: Text(l10ns.phoneNumber),
       ),
       body: StreamBuilder<bool>(
           stream: loadingService.loading$,
@@ -55,15 +57,14 @@ class _PhonePageState extends State<PhonePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Please provide your phone number',
+                      l10ns.providePhone,
                       style: Theme.of(context).textTheme.headline,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'In case there is any issue with your appointment '
-                      'we may contact you using this phone number:',
+                      l10ns.whyProvidePhone,
                       style: Theme.of(context).textTheme.subtitle,
                     ),
                   ),
@@ -73,11 +74,11 @@ class _PhonePageState extends State<PhonePage> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       icon: Icon(Icons.phone_android),
-                      hintText: 'e.g., +375 29 111 11 11',
+                      hintText: l10ns.phoneExample,
                     ),
                   ),
                   RaisedButton(
-                    child: Text('Close'),
+                    child: Text(l10ns.next),
                     onPressed: () => _onClose(context),
                   ),
                 ],

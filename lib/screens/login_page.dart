@@ -9,21 +9,25 @@ import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
+import '../localizations.dart';
+
 class LoginPage extends StatelessWidget {
   final AuthService authService = getIt.get<AuthService>();
   final LoadingService loadingService = getIt.get<LoadingService>();
 
   @override
   Widget build(BuildContext context) {
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log In'),
+        title: Text(l10ns.logIn),
       ),
       body: _buildBody(context),
     );
   }
 
   Widget _buildBody(BuildContext context) {
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     return StreamBuilder<bool>(
       stream: loadingService.loading$,
       builder: (context, snapshot) {
@@ -36,7 +40,7 @@ class LoginPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(30),
                   child: Text(
-                    'Only Kids',
+                    l10ns.title,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headline,
                   ),
@@ -46,7 +50,7 @@ class LoginPage extends StatelessWidget {
                     'assets/icons8-google.svg',
                     height: 20.0,
                   ),
-                  text: 'Continue with Google',
+                  text: l10ns.continueWithGoogle,
                   action: () => _onContinueWithGoogle(context),
                 ),
                 SizedBox(height: 10),
@@ -55,7 +59,7 @@ class LoginPage extends StatelessWidget {
                     Icons.mail,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
-                  text: 'Continue with Email',
+                  text: l10ns.continueWithEmail,
                   action: () => _onContinueWithEmail(context),
                 ),
               ],
@@ -82,10 +86,10 @@ class LoginPage extends StatelessWidget {
   }
 
   void _showSignInError(BuildContext context) {
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     showSnackBar(
       context: context,
-      text: 'Could not sign in.\n'
-          'Check your internet connection and try again',
+      text: l10ns.signInFailedCheckInternet,
     );
   }
 

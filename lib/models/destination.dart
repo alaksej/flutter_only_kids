@@ -11,8 +11,8 @@ class Destination {
 List<Destination> getAllDestinations(BuildContext context) {
   OnlyKidsLocalizations l10n = OnlyKidsLocalizations.of(context);
   return <Destination>[
-    Destination(l10n.appointments(), Icons.people, Colors.teal),
-    Destination(l10n.gallery(), Icons.image, Colors.cyan),
-    Destination(l10n.contacts(), Icons.location_on, Colors.orange),
+    Destination(l10n.appointments, Icons.people, Colors.teal),
+    Destination(l10n.gallery, Icons.image, Colors.cyan),
+    Destination(l10n.contacts, Icons.location_on, Colors.orange),
   ];
 }

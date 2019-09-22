@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:only_kids/localizations.dart';
 import 'package:only_kids/models/appointment.dart';
 import 'package:only_kids/screens/profile_page.dart';
 import 'package:only_kids/services/appointment_service.dart';
@@ -18,10 +19,6 @@ import 'appointment_page.dart';
 
 class AppointmentsPage extends StatelessWidget {
   AppointmentsPage({Key key, this.analytics, this.observer}) : super(key: key);
-  final List<Tab> myTabs = <Tab>[
-    Tab(text: 'UPCOMING'),
-    Tab(text: 'PAST'),
-  ];
 
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
@@ -33,56 +30,60 @@ class AppointmentsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserProfile userProfile = Provider.of<UserProfile>(context);
     final bool isLoggedIn = userProfile != null;
+    OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final List<Tab> myTabs = <Tab>[
+      Tab(text: l10ns.upcoming.toUpperCase()),
+      Tab(text: l10ns.past.toUpperCase()),
+    ];
 
     return DefaultTabController(
       length: myTabs.length,
       child: Scaffold(
-            appBar: AppBar(
-              bottom: isLoggedIn
-                  ? TabBar(
-                      tabs: myTabs,
-                    )
-                  : null,
-              title: Text('Appointments'),
+        appBar: AppBar(
+          bottom: isLoggedIn
+              ? TabBar(
+                  tabs: myTabs,
+                )
+              : null,
+          title: Text(l10ns.appointments),
           actions: isLoggedIn ? _buildUserActions(context, userProfile) : _buildLogInActions(context),
-            ),
-            body: !isLoggedIn
-                ? _buildLoginMessage()
-                : TabBarView(
-                    children: [
-                      _buildTab(
-                        userProfile,
-                        appointmentService.getUpcomingAll(),
-                        appointmentService.getUpcomingByCurrentUser(),
-                        'You have no upcoming appointments',
-                        AppointmentMode.edit,
-                      ),
-                      _buildTab(
-                        userProfile,
-                        appointmentService.getPastAll(),
-                        appointmentService.getPastByCurrentUser(),
-                        'You have no past appointments',
-                        AppointmentMode.readonly,
-                      ),
-                    ],
+        ),
+        body: !isLoggedIn
+            ? _buildLoginMessage(context)
+            : TabBarView(
+                children: [
+                  _buildTab(
+                    userProfile,
+                    appointmentService.getUpcomingAll(),
+                    appointmentService.getUpcomingByCurrentUser(),
+                    l10ns.upcomingListEmpty,
+                    AppointmentMode.edit,
                   ),
-            floatingActionButton: isLoggedIn
-                ? FloatingActionButton(
-                    onPressed: () {
-                      !isLoggedIn
-                          ? _redirectToLoginPage(context)
-                          : Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => AppointmentPage(mode: AppointmentMode.create),
-                              ),
-                            );
-                      // analytics.setCurrentScreen(screenName: 'Appointment');
-                    },
-                    tooltip: 'Add an appointment',
-                    child: Icon(Icons.add),
-                  )
-                : null,
+                  _buildTab(
+                    userProfile,
+                    appointmentService.getPastAll(),
+                    appointmentService.getPastByCurrentUser(),
+                    l10ns.pastListEmpty,
+                    AppointmentMode.readonly,
+                  ),
+                ],
+              ),
+        floatingActionButton: isLoggedIn
+            ? FloatingActionButton(
+                onPressed: () {
+                  !isLoggedIn
+                      ? _redirectToLoginPage(context)
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => AppointmentPage(mode: AppointmentMode.create),
+                          ),
+                        );
+                  // analytics.setCurrentScreen(screenName: 'Appointment');
+                },
+                child: Icon(Icons.add),
+              )
+            : null,
       ),
     );
   }
@@ -125,7 +126,7 @@ class AppointmentsPage extends StatelessWidget {
     );
   }
 
-  StreamBuilder<bool> _buildLoginMessage() {
+  StreamBuilder<bool> _buildLoginMessage(BuildContext context) {
     return StreamBuilder<bool>(
       stream: loadingService.loading$,
       builder: (context, snapshot) {
@@ -137,14 +138,14 @@ class AppointmentsPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Please log in to manage your appointments'),
+              Text(OnlyKidsLocalizations.of(context).logInToManage),
               RaisedButton(
                 color: Theme.of(context).primaryColor,
                 textColor: Theme.of(context).primaryTextTheme.button.color,
                 onPressed: () {
                   _redirectToLoginPage(context);
                 },
-                child: Text('Log in'),
+                child: Text(OnlyKidsLocalizations.of(context).logIn),
               ),
             ],
           ),
@@ -175,7 +176,7 @@ class AppointmentsPage extends StatelessWidget {
     return [
       IconButton(
         icon: Icon(Icons.account_circle),
-        tooltip: 'Log in',
+        tooltip: OnlyKidsLocalizations.of(context).logIn,
         onPressed: () {
           _redirectToLoginPage(context);
         },

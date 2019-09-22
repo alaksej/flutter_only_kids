@@ -6,12 +6,14 @@ import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/avatar.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
+import '../localizations.dart';
 import '../main.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthService authService = getIt.get<AuthService>();
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
 
     return StreamBuilder<UserProfile>(
         stream: authService.userProfile$,
@@ -20,7 +22,7 @@ class ProfilePage extends StatelessWidget {
 
           return Scaffold(
             appBar: AppBar(
-              title: Text('Profile'),
+              title: Text(l10ns.profile),
             ),
             body: userProfile == null
                 ? Spinner()
@@ -51,7 +53,7 @@ class ProfilePage extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     child: ListTile(
                                       leading: Icon(Icons.phone),
-                                      title: Text(userProfile.phoneNumber ?? 'No phone number'),
+                                      title: Text(userProfile.phoneNumber ?? l10ns.noPhoneNumber),
                                       trailing: Icon(Icons.edit),
                                       onTap: () => _onPhoneEdit(context, userProfile.phoneNumber),
                                     ),
@@ -64,7 +66,7 @@ class ProfilePage extends StatelessWidget {
                         Center(
                           child: RaisedButton(
                             onPressed: () => _signOut(context, authService),
-                            child: Text('Sign out'),
+                            child: Text(l10ns.signOut),
                           ),
                         ),
                       ],
@@ -82,12 +84,13 @@ class ProfilePage extends StatelessWidget {
   }
 
   _signOut(BuildContext context, AuthService authService) async {
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     bool confirmed = await showConfirmationDialog(
       context,
-      'Log out',
-      'Are you sure you want to log out?',
-      'Yes',
-      'No',
+      l10ns.signOut,
+      l10ns.areYouSureToSignOut,
+      l10ns.yes,
+      l10ns.no,
     );
     if (!confirmed) {
       return;

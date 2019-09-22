@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:only_kids/services/hairstyles_service.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
+import '../localizations.dart';
 import '../main.dart';
 
 class GalleryPage extends StatefulWidget {
@@ -29,10 +30,11 @@ class _GalleryPageState extends State<GalleryPage> {
   @override
   Widget build(BuildContext context) {
     final HairstylesService _hairstylesService = getIt.get<HairstylesService>();
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gallery'),
+        title: Text(l10ns.gallery),
       ),
       body: StreamBuilder<List>(
           stream: _hairstylesService.getHairstyles(),
