@@ -27,7 +27,7 @@ class AppointmentsList extends StatelessWidget {
 
   Widget _buildAppointmentsList(List<Appointment> appointments, BuildContext context, bool admin) {
     if (appointments.length == 0) {
-      return Text(_emptyMessage, style: Theme.of(context).textTheme.subhead);
+      return Center(child: Text(_emptyMessage, style: Theme.of(context).textTheme.subhead));
     }
     return ListView(
       scrollDirection: Axis.vertical,
