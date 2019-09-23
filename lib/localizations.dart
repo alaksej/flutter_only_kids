@@ -158,8 +158,8 @@ class OnlyKidsLocalizations {
       'welcomeBack': 'Мы рады снова видеть Вас!\n'
           'Войдите в свою учетную запись Only Kids',
       'badUsernameOrPassword': 'Неверное имя пользователя или пароль',
-      'continueWithGoogle': 'Продолжить с Google',
-      'continueWithEmail': 'Продолжить с Email',
+      'continueWithGoogle': 'Войти через Google',
+      'continueWithEmail': 'Войти через Email',
       'signInFailedCheckInternet': 'Ошибка авторизации.\n'
           'Проверьте подключение к интернету и попробуйте снова.',
       'ourLocation': 'Наше расположение',
