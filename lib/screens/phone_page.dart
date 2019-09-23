@@ -75,7 +75,7 @@ class _PhonePageState extends State<PhonePage> {
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      icon: Icon(Icons.phone_android),
+                      icon: Icon(Icons.phone),
                       hintText: l10ns.phoneExample,
                     ),
                   ),
