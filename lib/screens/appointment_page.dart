@@ -57,7 +57,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   }
 
   String _getTitle(BuildContext context) {
-    OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     switch (widget.mode) {
       case AppointmentMode.create:
         return l10ns.newAppointment;

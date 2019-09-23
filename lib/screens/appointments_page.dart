@@ -30,7 +30,7 @@ class AppointmentsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserProfile userProfile = Provider.of<UserProfile>(context);
     final bool isLoggedIn = userProfile != null;
-    OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     final List<Tab> myTabs = <Tab>[
       Tab(text: l10ns.upcoming.toUpperCase()),
       Tab(text: l10ns.past.toUpperCase()),
