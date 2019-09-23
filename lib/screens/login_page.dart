@@ -73,7 +73,7 @@ class LoginPage extends StatelessWidget {
   Widget _buildButton({Widget icon, String text, Function action}) {
     return Align(
       child: SizedBox(
-        width: 200,
+        width: 250,
         height: 50,
         child: RaisedButton.icon(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
