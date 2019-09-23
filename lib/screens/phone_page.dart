@@ -59,6 +59,7 @@ class _PhonePageState extends State<PhonePage> {
                     child: Text(
                       l10ns.providePhone,
                       style: Theme.of(context).textTheme.headline,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   Padding(
@@ -66,6 +67,7 @@ class _PhonePageState extends State<PhonePage> {
                     child: Text(
                       l10ns.whyProvidePhone,
                       style: Theme.of(context).textTheme.subtitle,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   TextFormField(
