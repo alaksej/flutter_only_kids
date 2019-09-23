@@ -138,7 +138,14 @@ class AppointmentsPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(OnlyKidsLocalizations.of(context).logInToManage),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  OnlyKidsLocalizations.of(context).logInToManage,
+                  style: Theme.of(context).textTheme.headline,
+                  textAlign: TextAlign.center,
+                ),
+              ),
               RaisedButton(
                 color: Theme.of(context).primaryColor,
                 textColor: Theme.of(context).primaryTextTheme.button.color,
