@@ -5,6 +5,7 @@ import 'package:only_kids/services/loading_service.dart';
 import 'package:only_kids/utils/constants.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/utils/validators.dart';
+import 'package:only_kids/widgets/password_text_form_field.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
 import '../localizations.dart';
@@ -96,14 +97,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           validator: validateEmail,
                         ),
                         SizedBox(height: 20),
-                        TextFormField(
-                          controller: passwordTextController,
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: l10ns.password,
-                          ),
+                        PasswordTextFormField(
+                          passwordTextController: passwordTextController,
+                          hintText: l10ns.password,
                           validator: (value) {
                             if (value.isEmpty) {
                               return l10ns.enterPassword;
