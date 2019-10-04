@@ -91,13 +91,14 @@ class _PhonePageState extends State<PhonePage> {
   }
 
   _onClose(BuildContext context) async {
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
     try {
       await authService.updateCurrentUserPhone(textController.text);
     } catch (e) {
-      showSnackBar(context: context, text: 'Failed to update phone number');
+      showSnackBar(context: context, text: l10ns.failedToUpdatePhone);
     }
 
     Navigator.pop(context);
-    showToast('Changes saved');
+    showToast(l10ns.changesSaved);
   }
 }

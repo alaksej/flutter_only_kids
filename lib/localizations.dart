@@ -85,8 +85,7 @@ class OnlyKidsLocalizations {
       'errorResettingPassword': 'Error resetting password',
       'phoneNumber': 'Phone Number',
       'providePhone': 'Please provide your phone number',
-      'whyProvidePhone': 'In case there is any issue with your appointment '
-          'we may contact you using this phone number:',
+      'whyProvidePhone': 'We may contact you in case there is any issue with your appointment',
       'phoneExample': 'e.g., +375 29 111 11 11',
       'close': 'Close',
       'failedToUpdatePhone': 'Failed to update phone number',
