@@ -98,9 +98,25 @@ class _GalleryPageState extends State<GalleryPage> {
           ),
           child: Align(
             alignment: Alignment.bottomCenter,
-            child: Text(
-              data['name'],
-              style: Theme.of(context).primaryTextTheme.display1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    data['name'],
+                    style: Theme.of(context).primaryTextTheme.display1,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      data['price'] ?? '',
+                      style: Theme.of(context).primaryTextTheme.body1,
+                    ),
+                  ),
+                ],
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+              ),
             ),
           ),
         ),
