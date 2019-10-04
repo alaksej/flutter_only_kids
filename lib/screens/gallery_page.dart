@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:only_kids/models/hairstyle.dart';
+import 'package:only_kids/models/user_profile.dart';
+import 'package:only_kids/screens/edit_gallery_page.dart';
 import 'package:only_kids/services/hairstyles_service.dart';
 import 'package:only_kids/widgets/spinner.dart';
+import 'package:provider/provider.dart';
 
 import '../localizations.dart';
 import '../main.dart';
@@ -11,6 +15,7 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> {
+  final HairstylesService _hairstylesService = getIt.get<HairstylesService>();
   final PageController ctrl = PageController(viewportFraction: 0.8);
   int currentPage = 0;
 
@@ -29,14 +34,27 @@ class _GalleryPageState extends State<GalleryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final HairstylesService _hairstylesService = getIt.get<HairstylesService>();
     final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final UserProfile userProfile = Provider.of<UserProfile>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10ns.gallery),
+        actions: <Widget>[
+          if (userProfile != null && userProfile.admin)
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => EditGalleryPage(),
+                    ));
+              },
+            )
+        ],
       ),
-      body: StreamBuilder<List>(
+      body: StreamBuilder<List<Hairstyle>>(
           stream: _hairstylesService.getHairstyles(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -56,7 +74,7 @@ class _GalleryPageState extends State<GalleryPage> {
     );
   }
 
-  Widget _buildHairstylePage(BuildContext context, Map data, bool active) {
+  Widget _buildHairstylePage(BuildContext context, Hairstyle data, bool active) {
     final double blur = active ? 20 : 0;
     final double top = active ? 50 : 100;
     final double bottom = active ? 50 : 100;
@@ -69,7 +87,7 @@ class _GalleryPageState extends State<GalleryPage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         image: DecorationImage(
-          image: NetworkImage(data['imageUrl']),
+          image: NetworkImage(data.imageUrl),
           fit: BoxFit.cover,
         ),
         boxShadow: [
@@ -103,13 +121,13 @@ class _GalleryPageState extends State<GalleryPage> {
               child: Row(
                 children: <Widget>[
                   Text(
-                    data['name'],
+                    data.name,
                     style: Theme.of(context).primaryTextTheme.display1,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Text(
-                      data['price'] ?? '',
+                      data.price ?? '',
                       style: Theme.of(context).primaryTextTheme.body1,
                     ),
                   ),

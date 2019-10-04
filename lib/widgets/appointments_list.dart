@@ -63,7 +63,7 @@ class AppointmentsList extends StatelessWidget {
                       size: 15.0,
                     ),
                     SizedBox(width: 5.0),
-                    Text(appointment.username, style: Theme.of(context).textTheme.subtitle),
+                    Text(appointment?.username ?? '', style: Theme.of(context).textTheme.subtitle),
                   ],
                 ),
               ]
