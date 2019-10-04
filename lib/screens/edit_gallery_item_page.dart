@@ -90,16 +90,43 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: SizedBox(
-              height: 200,
-              child: isNew
-                  ? RaisedButton(
-                      child: Text('Upload an image'),
-                      onPressed: () {},
-                    )
-                  : CachedNetworkImage(
-                      imageUrl: imageUrl,
-                    ),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 200,
+                  child: isNew
+                      ? RaisedButton(
+                          onPressed: () {},
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Icon(Icons.file_upload),
+                              Text('Upload an image'),
+                            ],
+                          ),
+                        )
+                      : Stack(
+                          children: <Widget>[
+                            Center(
+                              child: CachedNetworkImage(
+                                imageUrl: imageUrl,
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Colors.black54,
+                                ),
+                                onPressed: () {},
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              ),
             ),
           ),
         ],
