@@ -1,19 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:only_kids/models/hairstyle.dart';
+import 'package:only_kids/screens/edit_gallery_item_page.dart';
 import 'package:only_kids/services/hairstyles_service.dart';
 import 'package:only_kids/utils/utils.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
 import '../main.dart';
 
-class EditGalleryPage extends StatefulWidget {
-  EditGalleryPage({Key key}) : super(key: key);
-
-  _EditGalleryPageState createState() => _EditGalleryPageState();
-}
-
-class _EditGalleryPageState extends State<EditGalleryPage> {
+class EditGalleryPage extends StatelessWidget {
   final HairstylesService _hairstylesService = getIt.get<HairstylesService>();
 
   @override
@@ -35,6 +30,12 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => EditGalleryItemPage()));
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
@@ -50,6 +51,12 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
         trailing: IconButton(
           icon: Icon(Icons.delete),
           onPressed: () async {
+            final confirmed =
+                await showConfirmationDialog(context, 'Delete', 'Are you sure you want to delete?', 'Delete');
+            if (!confirmed) {
+              return;
+            }
+
             try {
               await _hairstylesService.delete(item.id);
             } catch (e) {
@@ -59,7 +66,8 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
           },
         ),
         onTap: () {
-          print('editing');
+          Navigator.push(
+              context, MaterialPageRoute(builder: (BuildContext context) => EditGalleryItemPage(hairstyle: item)));
         },
       ),
     );
