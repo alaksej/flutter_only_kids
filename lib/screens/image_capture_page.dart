@@ -38,11 +38,6 @@ class _ImageCapturePageState extends State<ImageCapturePage> {
     });
   }
 
-  /// Remove image
-  void _clear() {
-    setState(() => _imageFile = null);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,11 +50,17 @@ class _ImageCapturePageState extends State<ImageCapturePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.photo_camera),
+              icon: Icon(
+                Icons.photo_camera,
+                color: Colors.black45,
+              ),
               onPressed: () => _pickImage(ImageSource.camera),
             ),
             IconButton(
-              icon: Icon(Icons.photo_library),
+              icon: Icon(
+                Icons.photo_library,
+                color: Colors.black45,
+              ),
               onPressed: () => _pickImage(ImageSource.gallery),
             ),
           ],
@@ -69,26 +70,27 @@ class _ImageCapturePageState extends State<ImageCapturePage> {
       // Preview the image and crop it
       body: ListView(
         children: <Widget>[
-          if (_imageFile != null) ...[
-            Card(
-              child: SizedBox(
-                width: 200,
-                height: 300,
-                child: Image.file(_imageFile),
+          if (_imageFile == null) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 40.0),
+              child: Center(
+                child: Text(
+                  'No image is selected',
+                  style: Theme.of(context).textTheme.title,
+                ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                RaisedButton(
-                  child: Icon(Icons.crop),
-                  onPressed: _cropImage,
+          ],
+          if (_imageFile != null) ...[
+            GestureDetector(
+              onTap: _cropImage,
+              child: Card(
+                child: SizedBox(
+                  width: 300,
+                  height: 450,
+                  child: Image.file(_imageFile),
                 ),
-                RaisedButton(
-                  child: Icon(Icons.delete),
-                  onPressed: _clear,
-                ),
-              ],
+              ),
             ),
             // Uploader(file: _imageFile)
           ]

@@ -107,6 +107,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
                               Icon(
                                 Icons.image,
                                 size: 80,
+                                color: Colors.black45,
                               ),
                               Text('Select an image'),
                             ],
