@@ -5,12 +5,22 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageCapturePage extends StatefulWidget {
+  ImageCapturePage({this.imageFile});
+
+  final File imageFile;
+
   createState() => _ImageCapturePageState();
 }
 
 class _ImageCapturePageState extends State<ImageCapturePage> {
   /// Active image file
   File _imageFile;
+
+  @override
+  initState() {
+    _imageFile = widget.imageFile;
+    super.initState();
+  }
 
   /// Cropper plugin
   Future<void> _cropImage() async {
@@ -43,6 +53,16 @@ class _ImageCapturePageState extends State<ImageCapturePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Select an image'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: _imageFile != null
+                ? () {
+                    Navigator.pop(context, _imageFile);
+                  }
+                : null,
+          )
+        ],
       ),
       // Select an image from the camera or gallery
       bottomNavigationBar: BottomAppBar(
@@ -92,8 +112,7 @@ class _ImageCapturePageState extends State<ImageCapturePage> {
                 ),
               ),
             ),
-            // Uploader(file: _imageFile)
-          ]
+          ],
         ],
       ),
     );

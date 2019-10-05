@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:only_kids/models/hairstyle.dart';
@@ -22,6 +24,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
   final TextEditingController nameTextController = TextEditingController();
   final TextEditingController priceTextController = TextEditingController();
   String imageUrl;
+  File _imageFile;
 
   @override
   void initState() {
@@ -98,8 +101,16 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
                   height: 200,
                   child: isNew
                       ? FlatButton(
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ImageCapturePage()));
+                          onPressed: () async {
+                            final file = await Navigator.push<File>(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ImageCapturePage(
+                                          imageFile: _imageFile,
+                                        )));
+                            setState(() {
+                              _imageFile = file ?? _imageFile;
+                            });
                           },
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
