@@ -92,7 +92,7 @@ class ProfilePage extends StatelessWidget {
       l10ns.yes,
       l10ns.no,
     );
-    if (!confirmed) {
+    if (confirmed == null || !confirmed) {
       return;
     }
 

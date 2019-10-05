@@ -53,7 +53,7 @@ class EditGalleryPage extends StatelessWidget {
           onPressed: () async {
             final confirmed =
                 await showConfirmationDialog(context, 'Delete', 'Are you sure you want to delete?', 'Delete');
-            if (!confirmed) {
+            if (confirmed == null || !confirmed) {
               return;
             }
 

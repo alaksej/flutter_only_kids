@@ -89,20 +89,20 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(8.0),
             child: Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   height: 200,
                   child: isNew
-                      ? RaisedButton(
+                      ? FlatButton(
                           onPressed: () {},
-                          child: Row(
+                          child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Icon(Icons.file_upload),
-                              Text('Upload an image'),
+                              Icon(Icons.image, size: 80,),
+                              Text('Select an image'),
                             ],
                           ),
                         )
@@ -114,7 +114,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
                               ),
                             ),
                             Align(
-                              alignment: Alignment.bottomRight,
+                              alignment: Alignment.topRight,
                               child: IconButton(
                                 icon: Icon(
                                   Icons.edit,

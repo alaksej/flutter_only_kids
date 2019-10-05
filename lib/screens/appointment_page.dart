@@ -212,7 +212,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
             l10ns.close,
           );
 
-    if (!confirmed) {
+    if (confirmed == null || !confirmed) {
       return;
     }
 
@@ -251,7 +251,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
             l10ns.no,
           );
 
-    if (!confirmed) {
+    if (confirmed == null || !confirmed) {
       return;
     }
 
