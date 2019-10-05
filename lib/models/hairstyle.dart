@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:only_kids/models/time_slot.dart';
 
 class Hairstyle {
   final String id;
