@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:only_kids/models/hairstyle.dart';
+import 'package:only_kids/screens/image_capture_page.dart';
 import 'package:only_kids/services/hairstyles_service.dart';
 
 import '../main.dart';
@@ -97,11 +98,16 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
                   height: 200,
                   child: isNew
                       ? FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ImageCapturePage()));
+                          },
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Icon(Icons.image, size: 80,),
+                              Icon(
+                                Icons.image,
+                                size: 80,
+                              ),
                               Text('Select an image'),
                             ],
                           ),
