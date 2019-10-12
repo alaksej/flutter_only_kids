@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:only_kids/models/image_uploader_result.dart';
 
 class Uploader extends StatefulWidget {
-  Uploader(this.file, {this.onCompleted}) : assert(file != null);
+  Uploader(this.file, this.filePath, {this.onCompleted}) : assert(file != null);
 
   final File file;
-  final Function onCompleted;
+  final String filePath;
+  final Function(ImageUploaderResult) onCompleted;
 
   @override
   State<StatefulWidget> createState() => _UploaderState();
@@ -24,10 +26,8 @@ class _UploaderState extends State<Uploader> {
     super.initState();
   }
 
-  /// Starts an upload task
   void _startUpload() {
-    /// Unique file name for the file
-    String filePath = 'images/${DateTime.now()}.jpg';
+    String filePath = widget.filePath ?? 'hairstyles/${DateTime.now()}.jpg';
 
     setState(() {
       _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
@@ -37,14 +37,13 @@ class _UploaderState extends State<Uploader> {
       final url = await e.ref.getDownloadURL();
       print(url);
       if (widget.onCompleted != null) {
-        widget.onCompleted(url);
+        widget.onCompleted(ImageUploaderResult(downloadUrl: url, imageStoragePath: filePath));
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    /// Manage the task state and event subscription with a StreamBuilder
     return StreamBuilder<StorageTaskEvent>(
       stream: _uploadTask.events,
       builder: (_, snapshot) {

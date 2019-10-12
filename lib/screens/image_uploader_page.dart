@@ -1,15 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:only_kids/models/image_uploader_result.dart';
 import 'package:only_kids/widgets/uploader.dart';
 
 class ImageUploaderPage extends StatelessWidget {
-  const ImageUploaderPage(this.image, {Key key}) : super(key: key);
+  const ImageUploaderPage(this.image, this.imageStoragePath, {Key key}) : super(key: key);
 
   final File image;
+  final String imageStoragePath;
 
-  onCompleted(BuildContext context, String downloadUrl) {
-    Navigator.pop(context, downloadUrl);
+  onCompleted(BuildContext context, ImageUploaderResult result) {
+    Navigator.pop(context, result);
   }
 
   @override
@@ -20,7 +22,8 @@ class ImageUploaderPage extends StatelessWidget {
       ),
       body: Uploader(
         image,
-        onCompleted: (downloadUrl) => onCompleted(context, downloadUrl),
+        imageStoragePath,
+        onCompleted: (result) => onCompleted(context, result),
       ),
     );
   }

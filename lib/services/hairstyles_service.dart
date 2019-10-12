@@ -9,11 +9,17 @@ class HairstylesService {
     return query.snapshots().map((list) => list.documents.map((snapshot) => Hairstyle.fromSnapshot(snapshot)).toList());
   }
 
-  Future<String> add({String name, String price, String imageUrl}) async {
+  Future<String> add({
+    String name,
+    String price,
+    String imageUrl,
+    String imageStoragePath,
+  }) async {
     final hairstyle = Hairstyle(
       name: name,
       price: price,
       imageUrl: imageUrl,
+      imageStoragePath: imageStoragePath,
     );
 
     final docRef = await _collectionRef.add(hairstyle.toMap());

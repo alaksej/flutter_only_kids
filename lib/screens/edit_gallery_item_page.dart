@@ -5,6 +5,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:only_kids/models/hairstyle.dart';
+import 'package:only_kids/models/image_uploader_result.dart';
 import 'package:only_kids/screens/image_uploader_page.dart';
 import 'package:only_kids/services/hairstyles_service.dart';
 import 'package:only_kids/widgets/spinner.dart';
@@ -26,7 +27,6 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
   bool _autovalidate = false;
   final TextEditingController nameTextController = TextEditingController();
   final TextEditingController priceTextController = TextEditingController();
-  String imageUrl;
   File _savedImageFile;
   File _imageFile;
   bool errorLoadingImage = false;
@@ -35,7 +35,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
   void initState() {
     nameTextController.text = widget.hairstyle?.name;
     priceTextController.text = widget.hairstyle?.price;
-    imageUrl = widget.hairstyle?.imageUrl;
+    final imageUrl = widget.hairstyle?.imageUrl;
     if (imageUrl != null) {
       DefaultCacheManager().getSingleFile(imageUrl).then((file) {
         _savedImageFile = file;
@@ -52,7 +52,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
     super.initState();
   }
 
-  bool get isLoadingImage => !errorLoadingImage && imageUrl != null && _imageFile == null;
+  bool get isLoadingImage => !errorLoadingImage && widget.hairstyle?.imageUrl != null && _imageFile == null;
   bool get shouldUploadImage => _imageFile != null && _imageFile != _savedImageFile;
 
   /// Select an image via gallery or camera
@@ -190,21 +190,32 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
   }
 
   handleSave(BuildContext context, bool isNew) async {
+    String imageUrl = widget.hairstyle?.imageUrl;
+    String imageStoragePath = widget.hairstyle?.imageStoragePath;
+
     if (shouldUploadImage) {
-      final String downloadUrl =
-          await Navigator.push<String>(context, MaterialPageRoute(builder: (context) => ImageUploaderPage(_imageFile)));
-      imageUrl = downloadUrl ?? imageUrl;
+      final ImageUploaderResult uploadResult = await Navigator.push<ImageUploaderResult>(context,
+          MaterialPageRoute(builder: (context) => ImageUploaderPage(_imageFile, widget.hairstyle?.imageStoragePath)));
+      imageUrl = uploadResult?.downloadUrl ?? imageUrl;
+      imageStoragePath = uploadResult?.imageStoragePath;
     }
+
+    assert(imageUrl != null && imageStoragePath != null);
 
     isNew && imageUrl != null
         ? await _hairstylesService.add(
-            name: nameTextController.text, price: priceTextController.text, imageUrl: imageUrl)
+            name: nameTextController.text,
+            price: priceTextController.text,
+            imageUrl: imageUrl,
+            imageStoragePath: imageStoragePath,
+          )
         : await _hairstylesService.update(
             Hairstyle(
               id: widget.hairstyle.id,
               name: nameTextController.text,
               price: priceTextController.text,
               imageUrl: imageUrl,
+              imageStoragePath: imageStoragePath,
             ),
           );
     Navigator.pop(context);
