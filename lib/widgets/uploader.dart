@@ -50,30 +50,41 @@ class _UploaderState extends State<Uploader> {
       builder: (_, snapshot) {
         var event = snapshot?.data?.snapshot;
 
-        double progressPercent = event != null ? event.bytesTransferred / event.totalByteCount : 0;
+        double progressFraction = event != null ? event.bytesTransferred / event.totalByteCount : 0;
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (_uploadTask.isComplete) Text('Upload completed! 🎉🎉🎉'),
-
-            if (_uploadTask.isPaused)
-              FlatButton(
-                child: Icon(Icons.play_arrow),
-                onPressed: _uploadTask.resume,
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (_uploadTask.isComplete) Text('Upload completed! 🎉🎉🎉'),
+              if (_uploadTask.isPaused)
+                SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: IconButton(
+                    icon: Icon(Icons.play_arrow),
+                    onPressed: _uploadTask.resume,
+                  ),
+                ),
+              if (_uploadTask.isInProgress)
+                SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: IconButton(
+                    icon: Icon(Icons.pause),
+                    onPressed: _uploadTask.pause,
+                  ),
+                ),
+              LinearProgressIndicator(
+                value: progressFraction,
+                backgroundColor: Theme.of(context).colorScheme.background,
+                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primaryVariant),
               ),
-
-            if (_uploadTask.isInProgress)
-              FlatButton(
-                child: Icon(Icons.pause),
-                onPressed: _uploadTask.pause,
-              ),
-
-            // Progress bar
-            LinearProgressIndicator(value: progressPercent),
-            Text('${(progressPercent * 100).toStringAsFixed(2)} % '),
-          ],
+              Text('${(progressFraction * 100).toStringAsFixed(2)} % '),
+            ],
+          ),
         );
       },
     );
