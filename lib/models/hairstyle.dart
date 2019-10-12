@@ -20,7 +20,7 @@ class Hairstyle {
   Hairstyle.fromMap(this.id, Map<String, dynamic> map)
       : imageUrl = map['imageUrl'],
         imageStoragePath = map['imageStoragePath'],
-        order = map['order'],
+        order = map['order'].toDouble(),
         name = map['name'],
         price = map['price'];
 

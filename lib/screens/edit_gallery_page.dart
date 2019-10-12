@@ -26,9 +26,7 @@ class EditGalleryPage extends StatelessWidget {
 
           final List<Hairstyle> items = snapshot.data;
           return ReorderableListView(
-            onReorder: (oldIndex, newIndex) {
-              print('oldIndex: $oldIndex, newIndex: $newIndex');
-            },
+            onReorder: (oldIndex, newIndex) => _onReorder(oldIndex, newIndex, items),
             children: items.map((item) => _buildItem(context, item)).toList(),
           );
         },
@@ -77,5 +75,56 @@ class EditGalleryPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  double _calculateNewOrder(int oldIndex, int newIndex, List<Hairstyle> items) {
+    if (oldIndex < newIndex) {
+      // removing the item at oldIndex will shorten the list by 1.
+      newIndex -= 1;
+    }
+
+    final newIndexOrder = items[newIndex].order;
+    final minOrder = 0.0;
+    double newOrder;
+
+    if (newIndex == 0) {
+      // if moving to the first place
+      // take the middle between the minOrder and the first item order
+      newOrder = _interpolate(minOrder, newIndexOrder);
+    } else if (newIndex == items.length - 1) {
+      // if moving to the last place
+      // assign the order to be 1 greater than the last item's order
+      newOrder = newIndexOrder.ceil() + 1.0;
+    } else {
+      // if moving somewhere in the middle of the list
+      // take newIndex item's order and the one's before it
+      // interpolate between them and assign to the item being reordered
+      if (oldIndex < newIndex) {
+        newOrder = _interpolate(newIndexOrder, items[newIndex + 1].order);
+      } else {
+        newOrder = _interpolate(newIndexOrder, items[newIndex - 1].order);
+      }
+    }
+
+    return newOrder;
+  }
+
+  void _onReorder(int oldIndex, int newIndex, List<Hairstyle> items) async {
+    final itemBeingMoved = items[oldIndex];
+    double newOrder = _calculateNewOrder(oldIndex, newIndex, items);
+    final updatedItem = Hairstyle(
+      id: itemBeingMoved.id,
+      imageStoragePath: itemBeingMoved.imageStoragePath,
+      imageUrl: itemBeingMoved.imageUrl,
+      name: itemBeingMoved.name,
+      order: newOrder,
+      price: itemBeingMoved.price,
+    );
+
+    await _hairstylesService.update(updatedItem);
+  }
+
+  double _interpolate(double n1, double n2) {
+    return (n1 + n2) / 2;
   }
 }
