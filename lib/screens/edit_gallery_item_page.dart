@@ -5,6 +5,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:only_kids/models/hairstyle.dart';
+import 'package:only_kids/screens/image_uploader_page.dart';
 import 'package:only_kids/services/hairstyles_service.dart';
 import 'package:only_kids/widgets/spinner.dart';
 
@@ -26,6 +27,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
   final TextEditingController nameTextController = TextEditingController();
   final TextEditingController priceTextController = TextEditingController();
   String imageUrl;
+  File _savedImageFile;
   File _imageFile;
   bool errorLoadingImage = false;
 
@@ -36,6 +38,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
     imageUrl = widget.hairstyle?.imageUrl;
     if (imageUrl != null) {
       DefaultCacheManager().getSingleFile(imageUrl).then((file) {
+        _savedImageFile = file;
         setState(() {
           _imageFile = file;
         });
@@ -50,6 +53,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
   }
 
   bool get isLoadingImage => !errorLoadingImage && imageUrl != null && _imageFile == null;
+  bool get shouldUploadImage => _imageFile != null && _imageFile != _savedImageFile;
 
   /// Select an image via gallery or camera
   Future<void> _pickImage(ImageSource source) async {
@@ -88,22 +92,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.check),
-            onPressed: imageUrl != null
-                ? () async {
-                    isNew
-                        ? await _hairstylesService.add(
-                            name: nameTextController.text, price: priceTextController.text, imageUrl: imageUrl)
-                        : await _hairstylesService.update(
-                            Hairstyle(
-                              id: widget.hairstyle.id,
-                              name: nameTextController.text,
-                              price: priceTextController.text,
-                              imageUrl: imageUrl,
-                            ),
-                          );
-                    Navigator.pop(context);
-                  }
-                : null,
+            onPressed: _imageFile != null ? () => handleSave(context, isNew) : null,
           )
         ],
       ),
@@ -198,5 +187,26 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
         ],
       ),
     );
+  }
+
+  handleSave(BuildContext context, bool isNew) async {
+    if (shouldUploadImage) {
+      final String downloadUrl =
+          await Navigator.push<String>(context, MaterialPageRoute(builder: (context) => ImageUploaderPage(_imageFile)));
+      imageUrl = downloadUrl ?? imageUrl;
+    }
+
+    isNew && imageUrl != null
+        ? await _hairstylesService.add(
+            name: nameTextController.text, price: priceTextController.text, imageUrl: imageUrl)
+        : await _hairstylesService.update(
+            Hairstyle(
+              id: widget.hairstyle.id,
+              name: nameTextController.text,
+              price: priceTextController.text,
+              imageUrl: imageUrl,
+            ),
+          );
+    Navigator.pop(context);
   }
 }

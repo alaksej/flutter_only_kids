@@ -14,8 +14,7 @@ class Hairstyle {
   });
 
   Hairstyle.fromMap(this.id, Map<String, dynamic> map)
-      : assert(map['imageUrl'] != null),
-        imageUrl = map['imageUrl'],
+      : imageUrl = map['imageUrl'],
         name = map['name'],
         price = map['price'];
 

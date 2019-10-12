@@ -87,7 +87,7 @@ class _GalleryPageState extends State<GalleryPage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         image: DecorationImage(
-          image: NetworkImage(data.imageUrl),
+          image: data.imageUrl != null ? NetworkImage(data.imageUrl) : AssetImage('assets/only_kids_logo.png'),
           fit: BoxFit.cover,
         ),
         boxShadow: [

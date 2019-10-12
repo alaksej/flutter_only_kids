@@ -42,9 +42,11 @@ class EditGalleryPage extends StatelessWidget {
   Widget _buildItem(BuildContext context, Hairstyle item) {
     return Card(
       child: ListTile(
-        leading: CachedNetworkImage(
-          imageUrl: item.imageUrl,
-        ),
+        leading: item.imageUrl != null
+            ? CachedNetworkImage(
+                imageUrl: item.imageUrl,
+              )
+            : Image.asset('assets/only_kids_logo.png'),
         contentPadding: EdgeInsets.all(10.0),
         title: Text(item.name),
         subtitle: Text(item.price),
