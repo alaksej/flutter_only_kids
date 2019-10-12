@@ -24,8 +24,11 @@ class EditGalleryPage extends StatelessWidget {
             return Spinner();
           }
 
-          final List items = snapshot.data;
-          return ListView(
+          final List<Hairstyle> items = snapshot.data;
+          return ReorderableListView(
+            onReorder: (oldIndex, newIndex) {
+              print('oldIndex: $oldIndex, newIndex: $newIndex');
+            },
             children: items.map((item) => _buildItem(context, item)).toList(),
           );
         },
@@ -41,6 +44,7 @@ class EditGalleryPage extends StatelessWidget {
 
   Widget _buildItem(BuildContext context, Hairstyle item) {
     return Card(
+      key: ValueKey(item.id),
       child: ListTile(
         leading: item.imageUrl != null
             ? CachedNetworkImage(

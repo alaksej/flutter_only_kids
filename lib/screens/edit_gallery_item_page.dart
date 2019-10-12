@@ -202,22 +202,30 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
 
     assert(imageUrl != null && imageStoragePath != null);
 
-    isNew && imageUrl != null
-        ? await _hairstylesService.add(
-            name: nameTextController.text,
-            price: priceTextController.text,
-            imageUrl: imageUrl,
-            imageStoragePath: imageStoragePath,
-          )
-        : await _hairstylesService.update(
-            Hairstyle(
-              id: widget.hairstyle.id,
-              name: nameTextController.text,
-              price: priceTextController.text,
-              imageUrl: imageUrl,
-              imageStoragePath: imageStoragePath,
-            ),
-          );
+    if (isNew) {
+      final double maxOrder = await _hairstylesService.getMaxOrder();
+      final double nextOrder = maxOrder == null ? 0 : maxOrder.ceil() + 1.0;
+
+      await _hairstylesService.add(
+        nameTextController.text,
+        priceTextController.text,
+        imageUrl,
+        imageStoragePath,
+        nextOrder,
+      );
+    } else {
+      await _hairstylesService.update(
+        Hairstyle(
+          id: widget.hairstyle.id,
+          name: nameTextController.text,
+          price: priceTextController.text,
+          imageUrl: imageUrl,
+          imageStoragePath: imageStoragePath,
+          order: widget.hairstyle.order,
+        ),
+      );
+    }
+
     Navigator.pop(context);
   }
 }

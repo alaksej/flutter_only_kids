@@ -5,21 +5,36 @@ class HairstylesService {
   final CollectionReference _collectionRef = Firestore.instance.collection('hairstyles');
 
   Stream<List<Hairstyle>> getHairstyles() {
-    Query query = _collectionRef.orderBy('name');
+    Query query = _collectionRef.orderBy('order');
     return query.snapshots().map((list) => list.documents.map((snapshot) => Hairstyle.fromSnapshot(snapshot)).toList());
   }
 
-  Future<String> add({
+  Future<double> getMaxOrder() async {
+    final query = _collectionRef.orderBy('order', descending: true).limit(1);
+    final querySnapshot = await query.getDocuments();
+    final list = querySnapshot.documents.toList();
+    if (list.length == 0) {
+      return 0;
+    }
+
+    final documentSnapshot = list.first;
+    final double maxOrder = documentSnapshot.data['order'];
+    return maxOrder;
+  }
+
+  Future<String> add(
     String name,
     String price,
     String imageUrl,
     String imageStoragePath,
-  }) async {
+    double order,
+  ) async {
     final hairstyle = Hairstyle(
       name: name,
       price: price,
       imageUrl: imageUrl,
       imageStoragePath: imageStoragePath,
+      order: order,
     );
 
     final docRef = await _collectionRef.add(hairstyle.toMap());
