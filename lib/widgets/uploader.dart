@@ -46,35 +46,36 @@ class _UploaderState extends State<Uploader> {
   Widget build(BuildContext context) {
     /// Manage the task state and event subscription with a StreamBuilder
     return StreamBuilder<StorageTaskEvent>(
-        stream: _uploadTask.events,
-        builder: (_, snapshot) {
-          var event = snapshot?.data?.snapshot;
+      stream: _uploadTask.events,
+      builder: (_, snapshot) {
+        var event = snapshot?.data?.snapshot;
 
-          double progressPercent = event != null ? event.bytesTransferred / event.totalByteCount : 0;
+        double progressPercent = event != null ? event.bytesTransferred / event.totalByteCount : 0;
 
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (_uploadTask.isComplete) Text('Upload completed! 🎉🎉🎉'),
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (_uploadTask.isComplete) Text('Upload completed! 🎉🎉🎉'),
 
-              if (_uploadTask.isPaused)
-                FlatButton(
-                  child: Icon(Icons.play_arrow),
-                  onPressed: _uploadTask.resume,
-                ),
+            if (_uploadTask.isPaused)
+              FlatButton(
+                child: Icon(Icons.play_arrow),
+                onPressed: _uploadTask.resume,
+              ),
 
-              if (_uploadTask.isInProgress)
-                FlatButton(
-                  child: Icon(Icons.pause),
-                  onPressed: _uploadTask.pause,
-                ),
+            if (_uploadTask.isInProgress)
+              FlatButton(
+                child: Icon(Icons.pause),
+                onPressed: _uploadTask.pause,
+              ),
 
-              // Progress bar
-              LinearProgressIndicator(value: progressPercent),
-              Text('${(progressPercent * 100).toStringAsFixed(2)} % '),
-            ],
-          );
-        });
+            // Progress bar
+            LinearProgressIndicator(value: progressPercent),
+            Text('${(progressPercent * 100).toStringAsFixed(2)} % '),
+          ],
+        );
+      },
+    );
   }
 }
