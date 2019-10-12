@@ -1,10 +1,12 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:only_kids/models/hairstyle.dart';
-import 'package:only_kids/screens/image_capture_page.dart';
 import 'package:only_kids/services/hairstyles_service.dart';
+import 'package:only_kids/widgets/spinner.dart';
 
 import '../main.dart';
 
@@ -25,13 +27,54 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
   final TextEditingController priceTextController = TextEditingController();
   String imageUrl;
   File _imageFile;
+  bool errorLoadingImage = false;
 
   @override
   void initState() {
     nameTextController.text = widget.hairstyle?.name;
     priceTextController.text = widget.hairstyle?.price;
     imageUrl = widget.hairstyle?.imageUrl;
+    if (imageUrl != null) {
+      DefaultCacheManager().getSingleFile(imageUrl).then((file) {
+        setState(() {
+          _imageFile = file;
+        });
+      }).catchError((e) {
+        print(e);
+        setState(() {
+          errorLoadingImage = true;
+        });
+      });
+    }
     super.initState();
+  }
+
+  bool get isLoadingImage => !errorLoadingImage && imageUrl != null && _imageFile == null;
+
+  /// Select an image via gallery or camera
+  Future<void> _pickImage(ImageSource source) async {
+    File selected = await ImagePicker.pickImage(source: source);
+
+    setState(() {
+      _imageFile = selected;
+    });
+  }
+
+  /// Cropper plugin
+  Future<void> _cropImage() async {
+    File cropped = await ImageCropper.cropImage(
+      sourcePath: _imageFile.path,
+      aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 3),
+      androidUiSettings: AndroidUiSettings(
+        toolbarColor: Theme.of(context).primaryColor,
+        toolbarWidgetColor: Colors.white,
+        toolbarTitle: 'Crop It',
+      ),
+    );
+
+    setState(() {
+      _imageFile = cropped ?? _imageFile;
+    });
   }
 
   @override
@@ -97,53 +140,58 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
             child: Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  height: 200,
-                  child: isNew
-                      ? FlatButton(
-                          onPressed: () async {
-                            final file = await Navigator.push<File>(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ImageCapturePage(
-                                          imageFile: _imageFile,
-                                        )));
-                            setState(() {
-                              _imageFile = file ?? _imageFile;
-                            });
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                child: isLoadingImage
+                    ? Spinner()
+                    : errorLoadingImage
+                        ? Text('Error loading image')
+                        : Column(
                             children: <Widget>[
-                              Icon(
-                                Icons.image,
-                                size: 80,
-                                color: Colors.black45,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.photo_camera,
+                                      color: Colors.black45,
+                                    ),
+                                    onPressed: () => _pickImage(ImageSource.camera),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.photo_library,
+                                      color: Colors.black45,
+                                    ),
+                                    onPressed: () => _pickImage(ImageSource.gallery),
+                                  ),
+                                  if (_imageFile != null)
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.crop,
+                                        color: Colors.black54,
+                                      ),
+                                      onPressed: _cropImage,
+                                    ),
+                                ],
                               ),
-                              Text('Select an image'),
+                              SizedBox(
+                                height: 200,
+                                child: Center(
+                                  child: _imageFile != null
+                                      ? Image.file(_imageFile)
+                                      : Padding(
+                                          padding: const EdgeInsets.only(top: 40.0),
+                                          child: Center(
+                                            child: Text(
+                                              'Take a picture using camera or select from gallery',
+                                              style: Theme.of(context).textTheme.title,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ),
+                                ),
+                              ),
                             ],
                           ),
-                        )
-                      : Stack(
-                          children: <Widget>[
-                            Center(
-                              child: CachedNetworkImage(
-                                imageUrl: imageUrl,
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.edit,
-                                  color: Colors.black54,
-                                ),
-                                onPressed: () {},
-                              ),
-                            ),
-                          ],
-                        ),
-                ),
               ),
             ),
           ),
