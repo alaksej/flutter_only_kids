@@ -12,6 +12,10 @@ A Flutter project for the Only Kids hairdressing salon.
 ## Deploying Firestore security rules
 * `firebase deploy --only firestore:rules`
 
+
+## Deploying Storage security rules
+* `firebase deploy --only storage`
+
 ## Signing and building the app for Android
 ### Generating SHA certificate fingerprint
 Make keytool available in the path: `C:\"Program Files"\Android\"Android Studio"\jre\bin\`
