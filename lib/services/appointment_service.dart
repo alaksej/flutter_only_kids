@@ -12,7 +12,7 @@ class AppointmentService {
   Stream<List<Appointment>> getByCurrentUser() {
     var stream = _authService.firebaseUser$.switchMap((user) {
       if (user == null) {
-        return Observable.just(List<Appointment>());
+        return Stream.value(List<Appointment>());
       }
 
       return getByUser(user);
@@ -24,7 +24,7 @@ class AppointmentService {
   Stream<List<Appointment>> getUpcomingByCurrentUser() {
     final user = _authService.currentUser;
       if (user == null) {
-        return Observable.just(List<Appointment>());
+        return Stream.value(List<Appointment>());
       }
 
       return getUpcomingByUser(user);
@@ -33,7 +33,7 @@ class AppointmentService {
   Stream<List<Appointment>> getPastByCurrentUser() {
     var stream = _authService.firebaseUser$.switchMap((user) {
       if (user == null) {
-        return Observable.just(List<Appointment>());
+        return Stream.value(List<Appointment>());
       }
 
       return getPastByUser(user);

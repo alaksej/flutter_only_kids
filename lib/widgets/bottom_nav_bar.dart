@@ -29,10 +29,10 @@ class BottomNavBar extends StatelessWidget {
               title: Text('Contacts'),
             ),
           ],
-          currentIndex: _navBarBloc.currentState,
+          currentIndex: _navBarBloc.state,
           selectedItemColor: Theme.of(context).accentColor,
           onTap: (index) {
-            _navBarBloc.dispatch(NavBarEvent(index));
+            _navBarBloc.add(NavBarEvent(index));
           },
         );
       },

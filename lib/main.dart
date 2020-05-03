@@ -36,6 +36,7 @@ void registerServiceProviders() {
 }
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   registerServiceProviders();
   runApp(OnlyKidsApp());
 }
@@ -83,10 +84,10 @@ class _OnlyKidsAppState extends State<OnlyKidsApp> {
             accentColor: accentColor,
           ),
           navigatorObservers: <NavigatorObserver>[OnlyKidsApp.observer],
-          home: BlocProviderTree(
-            blocProviders: [
+          home: MultiBlocProvider(
+            providers: [
               BlocProvider<NavBarBloc>(
-                builder: (BuildContext context) => NavBarBloc(),
+                create: (BuildContext context) => NavBarBloc(),
               ),
             ],
             child: new MaterialAppChild(),

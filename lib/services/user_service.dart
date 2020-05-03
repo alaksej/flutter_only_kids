@@ -13,10 +13,10 @@ class UserService {
   final BehaviorSubject<User> _currentUser = BehaviorSubject.seeded(null);
   final AuthService _authService = AuthService(); // TODO: use provider or smth
 
-  Observable<User> get currentUser$ => _currentUser.stream;
+  Stream<User> get currentUser$ => _currentUser.stream;
   User get currentUser => _currentUser.value;
 
-  Observable<bool> get isLoggedIn$ => _currentUser.map((user) => user != null);
+  Stream<bool> get isLoggedIn$ => _currentUser.map((user) => user != null);
   bool get isLoggedIn => currentUser != null;
 
   setUser(User user) {

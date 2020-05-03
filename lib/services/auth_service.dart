@@ -13,7 +13,7 @@ class AuthService {
   final Firestore _db = Firestore.instance;
   final LoadingService _loadingService = getIt.get<LoadingService>();
 
-  Observable<FirebaseUser> firebaseUser$; // firebase user
+  Stream<FirebaseUser> firebaseUser$; // firebase user
   Stream<UserProfile> userProfile$; // custom user data in Firestore
 
   FirebaseUser _firebaseUser;
@@ -21,9 +21,9 @@ class AuthService {
   bool get isLoggedIn => _firebaseUser != null;
 
   AuthService() {
-    firebaseUser$ = Observable(_auth.onAuthStateChanged).doOnData((u) => _firebaseUser = u).shareReplay(maxSize: 1);
+    firebaseUser$ = _auth.onAuthStateChanged.doOnData((u) => _firebaseUser = u).shareReplay(maxSize: 1);
     userProfile$ = firebaseUser$
-        .switchMap((FirebaseUser u) => u != null ? _getUserProfileStream(u.uid) : Observable.just(null))
+        .switchMap((FirebaseUser u) => u != null ? _getUserProfileStream(u.uid) : Stream.value(null))
         .shareReplay(maxSize: 1);
   }
 
