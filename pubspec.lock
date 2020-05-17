@@ -91,7 +91,7 @@ packages:
       name: cloud_functions
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2+3"
+    version: "0.5.0"
   cloud_functions_platform_interface:
     dependency: transitive
     description:
