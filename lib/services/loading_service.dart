@@ -18,7 +18,7 @@ class LoadingService {
     _counter$.add(count - 1);
   }
 
-  Future<dynamic> wrap(Future<dynamic> future) async {
+  Future<T> wrap<T>(Future<T> future) async {
     try {
       _begin();
       return await future;
