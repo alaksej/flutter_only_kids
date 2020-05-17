@@ -21,9 +21,9 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  rxdart: ^0.24.0
+  rxdart: ^0.24.1
   flutter_bloc: ^4.0.0
-  intl: ^0.16.0
+  intl: ^0.16.1
   firebase_core: ^0.4.4+3
   firebase_analytics: ^5.0.11
   cloud_firestore: ^0.13.5
@@ -33,7 +33,7 @@ dependencies:
   firebase_auth: ^0.16.0
   get_it: ^1.0.3+2
   cached_network_image: ^2.2.0
-  google_maps_flutter: 0.5.16
+  google_maps_flutter: ^0.5.27+3
   url_launcher: ^5.1.2
   cloud_functions: ^0.4.1+1
   overlay_support: ^1.0.1
