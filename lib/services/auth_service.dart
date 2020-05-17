@@ -13,7 +13,7 @@ class AuthService {
   final Firestore _db = Firestore.instance;
   final LoadingService _loadingService = getIt.get<LoadingService>();
 
-  Observable<FirebaseUser> firebaseUser$; // firebase user
+  Stream<FirebaseUser> firebaseUser$; // firebase user
   Stream<UserProfile> userProfile$; // custom user data in Firestore
 
   FirebaseUser _firebaseUser;
@@ -21,9 +21,9 @@ class AuthService {
   bool get isLoggedIn => _firebaseUser != null;
 
   AuthService() {
-    firebaseUser$ = Observable(_auth.onAuthStateChanged).doOnData((u) => _firebaseUser = u).shareReplay(maxSize: 1);
+    firebaseUser$ = _auth.onAuthStateChanged.doOnData((u) => _firebaseUser = u).shareReplay(maxSize: 1);
     userProfile$ = firebaseUser$
-        .switchMap((FirebaseUser u) => u != null ? _getUserProfileStream(u.uid) : Observable.just(null))
+        .switchMap((FirebaseUser u) => u != null ? _getUserProfileStream(u.uid) : Stream.value(null))
         .shareReplay(maxSize: 1);
   }
 
@@ -45,7 +45,7 @@ class AuthService {
         idToken: googleAuth.idToken,
       );
 
-      FirebaseUser user = await _loadingService.wrap(_auth.signInWithCredential(credential));
+      FirebaseUser user = (await _loadingService.wrap(_auth.signInWithCredential(credential))).user;
       await updateUserData(user);
       userProfile$ = _getUserProfileStream(user.uid);
       UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
@@ -58,12 +58,12 @@ class AuthService {
 
   Future<UserProfile> createUserWithPassword(String email, String password, String name) async {
     try {
-      FirebaseUser user = await _loadingService.wrap(
+      FirebaseUser user = (await _loadingService.wrap(
         _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         ),
-      );
+      )).user;
 
       await updateUserData(user, name);
       userProfile$ = _getUserProfileStream(user.uid);
@@ -77,12 +77,14 @@ class AuthService {
 
   Future<UserProfile> passwordSignIn(String email, String password) async {
     try {
-      FirebaseUser user = await _loadingService.wrap(
+      final authResult = await _loadingService.wrap(
         _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
         ),
       );
+
+      FirebaseUser user = authResult.user;
 
       userProfile$ = _getUserProfileStream(user.uid);
       UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
