@@ -10,9 +10,9 @@ import '../localizations.dart';
 import '../main.dart';
 
 class PhonePage extends StatefulWidget {
-  PhonePage({Key key, this.initialPhoneNumber}) : super(key: key);
+  PhonePage({Key? key, this.initialPhoneNumber}) : super(key: key);
 
-  final String initialPhoneNumber;
+  final String? initialPhoneNumber;
 
   @override
   _PhonePageState createState() => _PhonePageState();
@@ -26,7 +26,7 @@ class _PhonePageState extends State<PhonePage> {
   @override
   void initState() {
     super.initState();
-    textController.text = widget.initialPhoneNumber;
+    textController.text = widget.initialPhoneNumber ?? "";
   }
 
   @override
@@ -37,7 +37,7 @@ class _PhonePageState extends State<PhonePage> {
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(l10ns.phoneNumber),
@@ -45,7 +45,7 @@ class _PhonePageState extends State<PhonePage> {
       body: StreamBuilder<bool>(
           stream: loadingService.loading$,
           builder: (context, snapshot) {
-            if (!snapshot.hasData || snapshot.data) {
+            if (!snapshot.hasData || snapshot.data!) {
               return Spinner();
             }
 
@@ -58,7 +58,7 @@ class _PhonePageState extends State<PhonePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       l10ns.providePhone,
-                      style: Theme.of(context).textTheme.headline,
+                      style: Theme.of(context).textTheme.headlineLarge,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -66,7 +66,7 @@ class _PhonePageState extends State<PhonePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       l10ns.whyProvidePhone,
-                      style: Theme.of(context).textTheme.subtitle,
+                      style: Theme.of(context).textTheme.titleMedium,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -79,7 +79,7 @@ class _PhonePageState extends State<PhonePage> {
                       hintText: l10ns.phoneExample,
                     ),
                   ),
-                  RaisedButton(
+                  ElevatedButton(
                     child: Text(l10ns.next),
                     onPressed: () => _onClose(context),
                   ),
@@ -91,7 +91,7 @@ class _PhonePageState extends State<PhonePage> {
   }
 
   _onClose(BuildContext context) async {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     try {
       await authService.updateCurrentUserPhone(textController.text);
     } catch (e) {

@@ -24,7 +24,7 @@ class EditGalleryPage extends StatelessWidget {
             return Spinner();
           }
 
-          final List<Hairstyle> items = snapshot.data;
+          final List<Hairstyle> items = snapshot.data!;
           return ReorderableListView(
             onReorder: (oldIndex, newIndex) => _onReorder(oldIndex, newIndex, items),
             children: items.map((item) => _buildItem(context, item)).toList(),
@@ -46,12 +46,12 @@ class EditGalleryPage extends StatelessWidget {
       child: ListTile(
         leading: item.imageUrl != null
             ? CachedNetworkImage(
-                imageUrl: item.imageUrl,
+                imageUrl: item.imageUrl!,
               )
             : Image.asset('assets/only_kids_logo.png'),
         contentPadding: EdgeInsets.all(10.0),
-        title: Text(item.name),
-        subtitle: Text(item.price),
+        title: Text(item.name!),
+        subtitle: Text(item.price!),
         trailing: IconButton(
           icon: Icon(Icons.delete),
           onPressed: () async {
@@ -62,7 +62,7 @@ class EditGalleryPage extends StatelessWidget {
             }
 
             try {
-              await _hairstylesService.delete(item.id);
+              await _hairstylesService.delete(item.id!);
             } catch (e) {
               print(e);
               showSnackBar(context: context, text: 'Error deleting the item');
@@ -90,19 +90,19 @@ class EditGalleryPage extends StatelessWidget {
     if (newIndex == 0) {
       // if moving to the first place
       // take the middle between the minOrder and the first item order
-      newOrder = _interpolate(minOrder, newIndexOrder);
+      newOrder = _interpolate(minOrder, newIndexOrder!);
     } else if (newIndex == items.length - 1) {
       // if moving to the last place
       // assign the order to be 1 greater than the last item's order
-      newOrder = newIndexOrder.ceil() + 1.0;
+      newOrder = newIndexOrder!.ceil() + 1.0;
     } else {
       // if moving somewhere in the middle of the list
       // take newIndex item's order and the one's before it
       // interpolate between them and assign to the item being reordered
       if (oldIndex < newIndex) {
-        newOrder = _interpolate(newIndexOrder, items[newIndex + 1].order);
+        newOrder = _interpolate(newIndexOrder!, items[newIndex + 1].order!);
       } else {
-        newOrder = _interpolate(newIndexOrder, items[newIndex - 1].order);
+        newOrder = _interpolate(newIndexOrder!, items[newIndex - 1].order!);
       }
     }
 

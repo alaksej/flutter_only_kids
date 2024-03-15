@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Hairstyle {
-  final String id;
-  final double order;
-  final String name;
-  final String price;
-  final String imageUrl;
-  final String imageStoragePath;
+  final String? id;
+  final double? order;
+  final String? name;
+  final String? price;
+  final String? imageUrl;
+  final String? imageStoragePath;
 
   const Hairstyle({
     this.id,
@@ -26,8 +26,8 @@ class Hairstyle {
 
   Hairstyle.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(
-          snapshot.documentID,
-          snapshot.data,
+          snapshot.id,
+          snapshot.data() as Map<String, dynamic>,
         );
 
   Map<String, dynamic> toMap() => {

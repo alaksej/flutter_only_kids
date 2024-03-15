@@ -3,7 +3,7 @@ import 'package:only_kids/models/time_slot.dart';
 
 class TimePicker extends StatelessWidget {
   const TimePicker({
-    Key key,
+    Key? key,
     this.timeSlots = const <TimeSlot>[],
     this.selected,
     this.select,
@@ -11,9 +11,9 @@ class TimePicker extends StatelessWidget {
   }) : super(key: key);
 
   final List<TimeSlot> timeSlots;
-  final TimeSlot selected;
-  final ValueChanged<TimeSlot> select;
-  final bool isReadonly;
+  final TimeSlot? selected;
+  final ValueChanged<TimeSlot>? select;
+  final bool? isReadonly;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +33,12 @@ class TimePicker extends StatelessWidget {
   }
 
   bool isSelected(TimeSlot slot) {
-    return selected != null && slot.equals(selected);
+    return selected != null && slot.equals(selected!);
   }
 
   Widget _buildTimeSlot(BuildContext context, TimeSlot slot) {
     final themeData = Theme.of(context);
-    final slotBgColor = isSelected(slot) ? themeData.accentColor : themeData.scaffoldBackgroundColor;
+    final slotBgColor = isSelected(slot) ? themeData.secondaryHeaderColor : themeData.scaffoldBackgroundColor;
 
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
@@ -49,9 +49,9 @@ class TimePicker extends StatelessWidget {
       ),
       child: InkWell(
         radius: 0,
-        onTap: slot.isSelectable && !isReadonly
+        onTap: slot.isSelectable && (isReadonly == null || !isReadonly!)
             ? () {
-                select(slot);
+                select!(slot);
               }
             : null,
         child: Column(
@@ -62,10 +62,10 @@ class TimePicker extends StatelessWidget {
                     slot.timeOfDay.format(context),
                     style: TextStyle(
                       color: themeData.colorScheme.onSecondary,
-                      fontSize: themeData.textTheme.subhead.fontSize,
+                      fontSize: themeData.textTheme.headlineMedium?.fontSize,
                     ),
                   )
-                : slot.isSelectable && !isReadonly
+                : slot.isSelectable && !isReadonly!
                     ? Text(
                         slot.timeOfDay.format(context),
                       )

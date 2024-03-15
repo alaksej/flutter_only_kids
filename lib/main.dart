@@ -24,7 +24,7 @@ import 'package:get_it/get_it.dart';
 import 'services/cloud_functions_service.dart';
 import 'services/loading_service.dart';
 
-GetIt getIt = GetIt();
+GetIt getIt = GetIt.instance;
 
 void registerServiceProviders() {
   getIt.registerSingleton<LoadingService>(LoadingService());
@@ -42,7 +42,7 @@ void main() {
 }
 
 class OnlyKidsApp extends StatefulWidget {
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
@@ -50,8 +50,8 @@ class OnlyKidsApp extends StatefulWidget {
 }
 
 class _OnlyKidsAppState extends State<OnlyKidsApp> {
-  final Color primaryColor = Colors.blue;
-  final Color accentColor = Colors.pink;
+  final MaterialColor primaryColor = Colors.blue;
+  final MaterialColor accentColor = Colors.pink;
 
   @override
   Widget build(BuildContext context) {
@@ -59,16 +59,18 @@ class _OnlyKidsAppState extends State<OnlyKidsApp> {
 
     return MultiProvider(
       providers: [
-        StreamProvider<FirebaseUser>.value(
+        StreamProvider<User?>.value(
           value: getIt.get<AuthService>().firebaseUser$,
+          initialData: null,
         ),
-        StreamProvider<UserProfile>.value(
+        StreamProvider<UserProfile?>.value(
           value: getIt.get<AuthService>().userProfile$,
+          initialData: null,
         ),
       ],
       child: OverlaySupport(
         child: MaterialApp(
-          onGenerateTitle: (BuildContext context) => OnlyKidsLocalizations.of(context).title,
+          onGenerateTitle: (BuildContext context) => OnlyKidsLocalizations.of(context)!.title,
           localizationsDelegates: [
             const OnlyKidsLocalizationsDelegate(),
             GlobalMaterialLocalizations.delegate,
@@ -81,13 +83,12 @@ class _OnlyKidsAppState extends State<OnlyKidsApp> {
           ],
           theme: ThemeData(
             primarySwatch: primaryColor,
-            accentColor: accentColor,
           ),
           navigatorObservers: <NavigatorObserver>[OnlyKidsApp.observer],
           home: MultiBlocProvider(
             providers: [
               BlocProvider<NavBarBloc>(
-                create: (BuildContext context) => NavBarBloc(),
+                create: (BuildContext context) => NavBarBloc(0),
               ),
             ],
             child: new MaterialAppChild(),
@@ -130,7 +131,7 @@ class _MaterialAppChildState extends State<MaterialAppChild> {
         items: getAllDestinations(context).map((Destination destination) {
           return BottomNavigationBarItem(
             icon: Icon(destination.icon),
-            title: Text(destination.title),
+            label: destination.title,
           );
         }).toList(),
         selectedItemColor: Colors.pink,

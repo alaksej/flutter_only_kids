@@ -27,7 +27,7 @@ class AppointmentsList extends StatelessWidget {
 
   Widget _buildAppointmentsList(List<Appointment> appointments, BuildContext context, bool admin) {
     if (appointments.length == 0) {
-      return Center(child: Text(_emptyMessage, style: Theme.of(context).textTheme.subhead));
+      return Center(child: Text(_emptyMessage, style: Theme.of(context).textTheme.titleMedium));
     }
     return ListView(
       scrollDirection: Axis.vertical,
@@ -46,13 +46,13 @@ class AppointmentsList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                capitalize(localizations.formatFullDate(appointment.dateTime)),
-                style: Theme.of(context).textTheme.subhead,
+                capitalize(localizations.formatFullDate(appointment.dateTime!)),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               SizedBox(height: 5.0),
               Text(
-                localizations.formatTimeOfDay(TimeOfDay.fromDateTime(appointment.dateTime)),
-                style: Theme.of(context).textTheme.subtitle,
+                localizations.formatTimeOfDay(TimeOfDay.fromDateTime(appointment.dateTime!)),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               if (admin) ...[
                 SizedBox(height: 5.0),
@@ -63,7 +63,7 @@ class AppointmentsList extends StatelessWidget {
                       size: 15.0,
                     ),
                     SizedBox(width: 5.0),
-                    Text(appointment?.username ?? '', style: Theme.of(context).textTheme.subtitle),
+                    Text(appointment?.username ?? '', style: Theme.of(context).textTheme.titleMedium),
                   ],
                 ),
               ]

@@ -6,6 +6,8 @@ class NavBarEvent {
 }
 
 class NavBarBloc extends Bloc<NavBarEvent, int> {
+  NavBarBloc(super.initialState);
+
   @override
   int get initialState => 0;
 

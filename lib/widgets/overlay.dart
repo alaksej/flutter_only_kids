@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 
-showToast(String text, {Duration duration}) {
+showToast(String text, {Duration? duration}) {
   showOverlay(
     (context, t) {
       return Opacity(
@@ -19,10 +19,10 @@ class OnlyKidsToast extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => OverlaySupportEntry.of(context).dismiss(),
+      onTap: () => OverlaySupportEntry.of(context)?.dismiss(),
       child: SafeArea(
         child: DefaultTextStyle(
-          style: Theme.of(context).textTheme.body1.copyWith(color: Colors.white),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Align(

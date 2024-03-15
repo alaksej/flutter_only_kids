@@ -13,16 +13,16 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthService authService = getIt.get<AuthService>();
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations? l10ns = OnlyKidsLocalizations.of(context);
 
     return StreamBuilder<UserProfile>(
-        stream: authService.userProfile$,
+        stream: authService.userProfile$.where((event) => event != null).map((event) => event!),
         builder: (context, snapshot) {
           final userProfile = snapshot.data;
 
           return Scaffold(
             appBar: AppBar(
-              title: Text(l10ns.profile),
+              title: Text(l10ns!.profile),
             ),
             body: userProfile == null
                 ? Spinner()
@@ -42,9 +42,9 @@ class ProfilePage extends StatelessWidget {
                               ),
                               Text(
                                 userProfile.displayName ?? '',
-                                style: Theme.of(context).textTheme.headline,
+                                style: Theme.of(context).textTheme.headlineLarge,
                               ),
-                              Text(userProfile.email),
+                              Text(userProfile.email ?? ""),
                               SizedBox(height: 20.0),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -55,7 +55,7 @@ class ProfilePage extends StatelessWidget {
                                       leading: Icon(Icons.phone),
                                       title: Text(userProfile.phoneNumber ?? l10ns.noPhoneNumber),
                                       trailing: Icon(Icons.edit),
-                                      onTap: () => _onPhoneEdit(context, userProfile.phoneNumber),
+                                      onTap: () => _onPhoneEdit(context, userProfile.phoneNumber ?? ""),
                                     ),
                                   ),
                                 ),
@@ -64,7 +64,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                         ),
                         Center(
-                          child: RaisedButton(
+                          child: ElevatedButton(
                             onPressed: () => _signOut(context, authService),
                             child: Text(l10ns.signOut),
                           ),
@@ -84,7 +84,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   _signOut(BuildContext context, AuthService authService) async {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     bool confirmed = await showConfirmationDialog(
       context,
       l10ns.signOut,

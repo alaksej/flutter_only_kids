@@ -10,7 +10,7 @@ import '../localizations.dart';
 import '../main.dart';
 
 class PasswordResetPage extends StatefulWidget {
-  const PasswordResetPage({Key key, this.email}) : super(key: key);
+  const PasswordResetPage({Key? key, required this.email}) : super(key: key);
 
   final String email;
 
@@ -21,7 +21,6 @@ class PasswordResetPage extends StatefulWidget {
 class _PasswordResetPageState extends State<PasswordResetPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _autovalidate = false;
   final TextEditingController emailTextController = TextEditingController();
   final AuthService authService = getIt.get<AuthService>();
   final LoadingService _loadingService = getIt.get<LoadingService>();
@@ -41,14 +40,14 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(),
       body: StreamBuilder<bool>(
           stream: _loadingService.loading$,
           builder: (context, snapshot) {
-            if (!snapshot.hasData || snapshot.data) {
+            if (!snapshot.hasData || snapshot.data!) {
               return Spinner();
             }
 
@@ -60,13 +59,13 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Text(
                       l10ns.passwordReset,
-                      style: Theme.of(context).textTheme.headline,
+                      style: Theme.of(context).textTheme.headlineLarge,
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Form(
                     key: _formKey,
-                    autovalidate: _autovalidate,
+                    autovalidateMode: AutovalidateMode.disabled,
                     child: TextFormField(
                       controller: emailTextController,
                       keyboardType: TextInputType.emailAddress,
@@ -80,7 +79,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                   ),
                   SizedBox(height: 20.0),
                   Align(
-                    child: RaisedButton(
+                    child: ElevatedButton(
                       child: Text(l10ns.next),
                       onPressed: () => _onNext(context),
                     ),
@@ -94,14 +93,13 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
 
   _onNext(BuildContext context) async {
     setState(() {
-      _autovalidate = true;
     });
 
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     try {
       await authService.sendPasswordResetEmail(email);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CheckEmailPage()));

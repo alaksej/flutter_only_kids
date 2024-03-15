@@ -17,7 +17,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(l10ns.logIn),
@@ -27,11 +27,11 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return StreamBuilder<bool>(
       stream: loadingService.loading$,
       builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data) {
+        if (!snapshot.hasData || snapshot.data!) {
           return Spinner();
         } else {
           return Center(
@@ -42,7 +42,7 @@ class LoginPage extends StatelessWidget {
                   child: Text(
                     l10ns.title,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline,
+                    style: Theme.of(context).textTheme.headlineLarge,
                   ),
                 ),
                 _buildButton(
@@ -70,13 +70,12 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildButton({Widget icon, String text, Function action}) {
+  Widget _buildButton({required Widget icon, required String text, required Function()? action}) {
     return Align(
       child: SizedBox(
         width: 250,
         height: 50,
-        child: RaisedButton.icon(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: ElevatedButton.icon(
           icon: icon,
           label: Text(text),
           onPressed: action,
@@ -86,7 +85,7 @@ class LoginPage extends StatelessWidget {
   }
 
   void _showSignInError(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     showSnackBar(
       context: context,
       text: l10ns.signInFailedCheckInternet,
@@ -94,7 +93,7 @@ class LoginPage extends StatelessWidget {
   }
 
   void _onContinueWithGoogle(BuildContext context) async {
-    UserProfile userProfile;
+    UserProfile? userProfile;
     try {
       userProfile = await authService.googleSignIn();
       if (userProfile == null) {
@@ -107,10 +106,10 @@ class LoginPage extends StatelessWidget {
       return;
     }
 
-    if (userProfile.phoneNumber == null || userProfile.phoneNumber.isEmpty) {
+    if (userProfile.phoneNumber == null || userProfile.phoneNumber!.isEmpty) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (BuildContext context) => PhonePage(initialPhoneNumber: userProfile.phoneNumber)),
+        MaterialPageRoute(builder: (BuildContext context) => PhonePage(initialPhoneNumber: userProfile!.phoneNumber)),
       );
     } else {
       Navigator.pop(context);

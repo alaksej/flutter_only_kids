@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:only_kids/models/time_slot.dart';
 
 class Appointment {
-  final String id;
-  final String uid;
-  final String username;
-  final DateTime dateTime;
-  final String comment;
+  final String? id;
+  final String? uid;
+  final String? username;
+  final DateTime? dateTime;
+  final String? comment;
 
   const Appointment({
     this.id,
@@ -26,8 +26,8 @@ class Appointment {
 
   Appointment.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(
-          snapshot.documentID,
-          snapshot.data,
+          snapshot.id,
+          snapshot.data() as Map<String, dynamic>,
         );
 
   Map<String, dynamic> toMap() => {
@@ -37,7 +37,7 @@ class Appointment {
         'comment': comment,
       };
 
-  TimeSlot get timeSlot => TimeSlot(dateTime: dateTime);
+  TimeSlot? get timeSlot => dateTime == null ? null : TimeSlot(dateTime: dateTime!);
 
   @override
   String toString() => "Appointment<$username:$dateTime:$comment>";

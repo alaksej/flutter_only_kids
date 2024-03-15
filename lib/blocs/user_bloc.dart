@@ -6,8 +6,10 @@ class UserEvent {
 }
 
 class UserBloc extends Bloc<UserEvent, int> {
+  UserBloc(super.initialState);
+
   @override
-  int get initialState => null;
+  int? get initialState => null;
 
   bool get isLoggedIn => initialState != null;
 

@@ -18,10 +18,10 @@ import 'package:only_kids/main.dart';
 import 'appointment_page.dart';
 
 class AppointmentsPage extends StatelessWidget {
-  AppointmentsPage({Key key, this.analytics, this.observer}) : super(key: key);
+  AppointmentsPage({Key? key, this.analytics, this.observer}) : super(key: key);
 
-  final FirebaseAnalytics analytics;
-  final FirebaseAnalyticsObserver observer;
+  final FirebaseAnalytics? analytics;
+  final FirebaseAnalyticsObserver? observer;
   final LoadingService loadingService = getIt.get<LoadingService>();
   final AuthService authService = getIt.get<AuthService>();
   final AppointmentService appointmentService = getIt.get<AppointmentService>();
@@ -30,7 +30,7 @@ class AppointmentsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserProfile userProfile = Provider.of<UserProfile>(context);
     final bool isLoggedIn = userProfile != null;
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     final List<Tab> myTabs = <Tab>[
       Tab(text: l10ns.upcoming.toUpperCase()),
       Tab(text: l10ns.past.toUpperCase()),
@@ -122,7 +122,7 @@ class AppointmentsPage extends StatelessWidget {
     return StreamBuilder<List<Appointment>>(
       stream: appointmentsStream,
       builder: (context, snapshot) =>
-          !snapshot.hasData ? Spinner() : AppointmentsList(snapshot.data, emptyMessage, mode),
+          !snapshot.hasData ? Spinner() : AppointmentsList(snapshot.data!, emptyMessage, mode),
     );
   }
 
@@ -130,7 +130,7 @@ class AppointmentsPage extends StatelessWidget {
     return StreamBuilder<bool>(
       stream: loadingService.loading$,
       builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data) {
+        if (!snapshot.hasData || snapshot.data!) {
           return Spinner();
         }
 
@@ -141,18 +141,18 @@ class AppointmentsPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  OnlyKidsLocalizations.of(context).logInToManage,
-                  style: Theme.of(context).textTheme.headline,
+                  OnlyKidsLocalizations.of(context)!.logInToManage,
+                  style: Theme.of(context).textTheme.headlineLarge,
                   textAlign: TextAlign.center,
                 ),
               ),
-              RaisedButton(
-                color: Theme.of(context).primaryColor,
-                textColor: Theme.of(context).primaryTextTheme.button.color,
+              ElevatedButton(
+                // color: Theme.of(context).primaryColor,
+                // textColor: Theme.of(context).primaryTextTheme.button.color,
                 onPressed: () {
                   _redirectToLoginPage(context);
                 },
-                child: Text(OnlyKidsLocalizations.of(context).logIn),
+                child: Text(OnlyKidsLocalizations.of(context)!.logIn),
               ),
             ],
           ),
@@ -183,7 +183,7 @@ class AppointmentsPage extends StatelessWidget {
     return [
       IconButton(
         icon: Icon(Icons.account_circle),
-        tooltip: OnlyKidsLocalizations.of(context).logIn,
+        tooltip: OnlyKidsLocalizations.of(context)!.logIn,
         onPressed: () {
           _redirectToLoginPage(context);
         },

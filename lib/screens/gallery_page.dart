@@ -22,7 +22,7 @@ class _GalleryPageState extends State<GalleryPage> {
   @override
   void initState() {
     ctrl.addListener(() {
-      int next = ctrl.page.round();
+      int next = ctrl.page!.round();
       if (currentPage != next) {
         setState(() {
           currentPage = next;
@@ -34,7 +34,7 @@ class _GalleryPageState extends State<GalleryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     final UserProfile userProfile = Provider.of<UserProfile>(context);
 
     return Scaffold(
@@ -61,10 +61,10 @@ class _GalleryPageState extends State<GalleryPage> {
               return Spinner();
             }
 
-            List hairstyles = snapshot.data;
+            List<Hairstyle> hairstyles = snapshot.hasData ? snapshot.data! : List.empty();
             return PageView.builder(
               controller: ctrl,
-              itemCount: hairstyles.length,
+              itemCount: hairstyles?.length,
               itemBuilder: (context, int currentIdx) {
                 bool active = currentPage == currentIdx;
                 return _buildHairstylePage(context, hairstyles[currentIdx], active);
@@ -87,7 +87,7 @@ class _GalleryPageState extends State<GalleryPage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         image: DecorationImage(
-          image: data.imageUrl != null ? NetworkImage(data.imageUrl) : AssetImage('assets/only_kids_logo.png'),
+          image: data.imageUrl != null ? NetworkImage(data.imageUrl!) as ImageProvider : AssetImage('assets/only_kids_logo.png'),
           fit: BoxFit.cover,
         ),
         boxShadow: [
@@ -121,14 +121,14 @@ class _GalleryPageState extends State<GalleryPage> {
               child: Row(
                 children: <Widget>[
                   Text(
-                    data.name,
-                    style: Theme.of(context).primaryTextTheme.display1,
+                    data.name!,
+                    style: Theme.of(context).primaryTextTheme.displayLarge,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Text(
                       data.price ?? '',
-                      style: Theme.of(context).primaryTextTheme.body1,
+                      style: Theme.of(context).primaryTextTheme.bodyLarge,
                     ),
                   ),
                 ],

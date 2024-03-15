@@ -4,11 +4,11 @@ import 'package:only_kids/models/time_slot.dart';
 import 'package:only_kids/utils/utils.dart';
 
 class CalendarService {
-  final CollectionReference _collectionRef = Firestore.instance.collection('calendars');
+  final CollectionReference _collectionRef = FirebaseFirestore.instance.collection('calendars');
 
   Stream<List<TimeSlot>> getTimeSlots(DateTime dateTime) {
-    return _collectionRef.document('fixed').snapshots().map((snapshot) {
-      final List<dynamic> slots = snapshot.data['timeslots'] ?? [];
+    return _collectionRef.doc('fixed').snapshots().map((snapshot) {
+      final List<dynamic> slots = (snapshot.data() as Map)['timeslots'] ?? [];
       final List<TimeOfDay> times = slots.map((s) => stringToTime(s)).toList();
       times.sort((a, b) => compareTimeOfDay(a, b));
       final List<TimeSlot> timeSlots = times.map((time) => TimeSlot(dateTime: fromDateAndTime(dateTime, time))).toList();

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../localizations.dart';
 
 class CheckEmailPage extends StatelessWidget {
-  CheckEmailPage({Key key}) : super(key: key);
+  CheckEmailPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(),
       body: Container(
@@ -18,13 +18,13 @@ class CheckEmailPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 40.0),
               child: Text(
                 l10ns.checkEmailForResetInfo,
-                style: Theme.of(context).textTheme.headline,
+                style: Theme.of(context).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
               ),
             ),
             SizedBox(height: 20.0),
             Align(
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: Text(l10ns.ok),
                 onPressed: () => _onOk(context),
               ),

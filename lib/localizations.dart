@@ -6,12 +6,12 @@ class OnlyKidsLocalizations {
 
   final Locale locale;
 
-  static OnlyKidsLocalizations of(BuildContext context) {
+  static OnlyKidsLocalizations? of(BuildContext context) {
     return Localizations.of<OnlyKidsLocalizations>(context, OnlyKidsLocalizations);
   }
 
   _get(String key) {
-    return _localizedValues[locale.languageCode][key];
+    return _localizedValues[locale.languageCode]![key];
   }
 
   static Map<String, Map<String, String>> _localizedValues = {

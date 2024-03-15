@@ -6,23 +6,23 @@ final int daysPerYear = 365;
 
 class DatePicker extends StatelessWidget {
   const DatePicker({
-    Key key,
+    Key? key,
     this.selectedDate,
     this.selectDate,
     this.isReadonly = false,
   }) : super(key: key);
 
-  final DateTime selectedDate;
-  final ValueChanged<DateTime> selectDate;
+  final DateTime? selectedDate;
+  final ValueChanged<DateTime>? selectDate;
   final isReadonly;
 
-  bool _isSelectable(DateTime date) => startOfDay(date).compareTo(startOfToday) >= 0;
+  bool _isSelectable(DateTime? date) => startOfDay(date!).compareTo(startOfToday) >= 0;
   DateTime get now => DateTime.now();
   DateTime get startOfToday => startOfDay(now);
   DateTime get lastDate => startOfToday.add(Duration(days: yearsToShow * daysPerYear));
 
   Future<void> _pickDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
       firstDate: startOfToday,
@@ -32,15 +32,15 @@ class DatePicker extends StatelessWidget {
     if (picked != null && picked != selectedDate) _selectDate(picked);
   }
 
-  void _selectDate(DateTime date) {
+  void _selectDate(DateTime? date) {
     if (!_isSelectable(date)) {
       return;
     }
-    selectDate(date);
+    selectDate!(date!);
   }
 
-  DateTime get prevDay => selectedDate.subtract(Duration(days: 1));
-  DateTime get nextDay => selectedDate.add(Duration(days: 1));
+  DateTime? get prevDay => selectedDate?.subtract(Duration(days: 1));
+  DateTime? get nextDay => selectedDate?.add(Duration(days: 1));
 
   void goPrevDay() {
     _selectDate(prevDay);
@@ -55,10 +55,10 @@ class DatePicker extends StatelessWidget {
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final ThemeData themeData = Theme.of(context);
     final TextTheme headerTextTheme = themeData.primaryTextTheme;
-    Color dayColor;
-    Color yearColor;
+    Color dayColor = Colors.black87;
+    Color yearColor = Colors.black87;
 
-    switch (themeData.primaryColorBrightness) {
+    switch (themeData!.primaryColor) {
       case Brightness.light:
         dayColor = Colors.black87;
         yearColor = Colors.black54;
@@ -69,8 +69,8 @@ class DatePicker extends StatelessWidget {
         break;
     }
 
-    final TextStyle dayStyle = headerTextTheme.display1.copyWith(color: dayColor);
-    final TextStyle yearStyle = headerTextTheme.subhead.copyWith(color: yearColor);
+    final TextStyle dayStyle = headerTextTheme.displayLarge!.copyWith(color: dayColor);
+    final TextStyle yearStyle = headerTextTheme.bodyMedium!.copyWith(color: yearColor);
 
     Color backgroundColor;
     switch (themeData.brightness) {
@@ -99,8 +99,8 @@ class DatePicker extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(localizations.formatYear(selectedDate), style: yearStyle),
-                      Text(localizations.formatMediumDate(selectedDate), style: dayStyle),
+                      Text(localizations.formatYear(selectedDate!), style: yearStyle),
+                      Text(localizations.formatMediumDate(selectedDate!), style: dayStyle),
                     ],
                   ),
                 ],
@@ -113,7 +113,7 @@ class DatePicker extends StatelessWidget {
     );
   }
 
-  InkWell _buildArrow(IconData icon, Color color, {void Function() onTap}) {
+  InkWell _buildArrow(IconData icon, Color color, {void Function()? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Container(

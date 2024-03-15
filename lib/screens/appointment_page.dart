@@ -19,14 +19,14 @@ enum AppointmentMode {
 
 class AppointmentPage extends StatefulWidget {
   AppointmentPage({
-    Key key,
+    Key? key,
     this.appointment,
     this.mode,
   })  : assert(appointment != null || mode == AppointmentMode.create),
         super(key: key);
 
-  final Appointment appointment;
-  final AppointmentMode mode;
+  final Appointment? appointment;
+  final AppointmentMode? mode;
 
   @override
   _AppointmentPageState createState() => _AppointmentPageState();
@@ -36,8 +36,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
   final AppointmentService _appointmentService = getIt.get<AppointmentService>();
   final CalendarService _calendarService = getIt.get<CalendarService>();
 
-  DateTime _selectedDate;
-  TimeSlot _selectedTimeSlot;
+  DateTime? _selectedDate;
+  TimeSlot? _selectedTimeSlot;
   String get _comment => commentController.text;
 
   final commentController = TextEditingController();
@@ -45,9 +45,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
   @override
   void initState() {
     super.initState();
-    _selectedDate = widget.mode != AppointmentMode.create ? widget.appointment.dateTime : DateTime.now();
+    _selectedDate = widget.mode != AppointmentMode.create ? widget.appointment?.dateTime : DateTime.now();
     _selectedTimeSlot = widget.appointment?.timeSlot;
-    commentController.text = widget.appointment?.comment;
+    commentController.text = widget.appointment?.comment ?? "";
   }
 
   @override
@@ -57,7 +57,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   }
 
   String _getTitle(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     switch (widget.mode) {
       case AppointmentMode.create:
         return l10ns.newAppointment;
@@ -71,7 +71,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(_getTitle(context)),
@@ -79,7 +79,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
           if (widget.mode != AppointmentMode.create)
             IconButton(
               icon: Icon(Icons.delete),
-              tooltip: OnlyKidsLocalizations.of(context).delete,
+              tooltip: OnlyKidsLocalizations.of(context)!.delete,
               onPressed: () => _cancelAppointment(context),
             ),
         ],
@@ -100,18 +100,18 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   isReadonly: widget.mode == AppointmentMode.readonly,
                 ),
                 StreamBuilder<List<TimeSlot>>(
-                  stream: _calendarService.getTimeSlots(_selectedDate),
+                  stream: _calendarService.getTimeSlots(_selectedDate!),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Spinner();
                     }
 
                     final timeSlots = snapshot.data;
-                    return timeSlots.any((slot) => slot.isSelectable) || widget.mode == AppointmentMode.readonly
-                        ? _buildContentForDate(timeSlots)
+                    return timeSlots!.any((slot) => slot.isSelectable) || widget.mode == AppointmentMode.readonly
+                        ? _buildContentForDate(timeSlots!)
                         : Center(
                             child: Text(
-                              OnlyKidsLocalizations.of(context).timeslotsUnavailable,
+                              OnlyKidsLocalizations.of(context)!.timeslotsUnavailable,
                               textAlign: TextAlign.center,
                             ),
                           );
@@ -129,9 +129,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 ),
                 child: ButtonBar(
                   children: <Widget>[
-                    RaisedButton(
-                      color: Theme.of(context).primaryColor,
-                      textColor: Theme.of(context).primaryTextTheme.button.color,
+                    ElevatedButton(
+                      // color: Theme.of(context).primaryColor,
+                      // textColor: Theme.of(context).primaryTextTheme.button.color,
                       onPressed: canSubmit ? () => _save(context) : null,
                       child: Text(widget.mode == AppointmentMode.edit ? l10ns.save : l10ns.book),
                     ),
@@ -167,7 +167,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   }
 
   Container _buildComment() {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(10.0),
       child: TextFormField(
@@ -188,12 +188,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
   bool get canSubmit => _selectedDate != null && _selectedTimeSlot != null;
 
   Future<void> _save(BuildContext context) async {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     assert(widget.mode != AppointmentMode.readonly);
 
     final picked = fromDateAndTime(
-      _selectedDate,
-      _selectedTimeSlot.timeOfDay,
+      _selectedDate!,
+      _selectedTimeSlot!.timeOfDay,
     );
 
     final confirmed = widget.mode == AppointmentMode.edit
@@ -234,7 +234,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   }
 
   _cancelAppointment(BuildContext context) async {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     final confirmed = widget.mode == AppointmentMode.edit
         ? await showConfirmationDialog(
             context,
@@ -255,7 +255,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
       return;
     }
 
-    await _appointmentService.delete(widget.appointment.id);
+    if (widget.appointment?.id != null) {
+      await _appointmentService.delete(widget.appointment!.id!);
+    }
     Navigator.pop(context);
     showToast(l10ns.appointmentRemoved);
   }

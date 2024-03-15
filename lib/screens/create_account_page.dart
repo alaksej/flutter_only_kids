@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:only_kids/screens/phone_page.dart';
 import 'package:only_kids/services/auth_service.dart';
 import 'package:only_kids/services/loading_service.dart';
@@ -12,7 +13,7 @@ import '../localizations.dart';
 import '../main.dart';
 
 class CreateAccountPage extends StatefulWidget {
-  const CreateAccountPage({Key key, this.email}) : super(key: key);
+  const CreateAccountPage({Key? key, required this.email}) : super(key: key);
 
   final String email;
 
@@ -23,7 +24,7 @@ class CreateAccountPage extends StatefulWidget {
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _autovalidate = false;
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   final TextEditingController nameTextController = TextEditingController();
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
@@ -44,14 +45,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(),
       body: StreamBuilder<bool>(
           stream: _loadingService.loading$,
           builder: (context, snapshot) {
-            if (!snapshot.hasData || snapshot.data) {
+            if (!snapshot.hasData || snapshot.data!) {
               return Spinner();
             }
 
@@ -63,13 +64,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Text(
                       l10ns.createNewAccount,
-                      style: Theme.of(context).textTheme.headline,
+                      style: Theme.of(context).textTheme.headlineLarge,
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Form(
                     key: _formKey,
-                    autovalidate: _autovalidate,
+                    autovalidateMode: _autovalidateMode,
                     child: Column(
                       children: <Widget>[
                         TextFormField(
@@ -80,7 +81,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             hintText: l10ns.fullName,
                           ),
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value == null || value.isEmpty) {
                               return l10ns.enterYourName;
                             }
                             return null;
@@ -101,7 +102,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           passwordTextController: passwordTextController,
                           hintText: l10ns.password,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value == null || value.isEmpty) {
                               return l10ns.enterPassword;
                             }
 
@@ -118,7 +119,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   ),
                   SizedBox(height: 20.0),
                   Align(
-                    child: RaisedButton(
+                    child: ElevatedButton(
                       child: Text(l10ns.create),
                       onPressed: () => _onCreate(context),
                     ),
@@ -138,10 +139,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   _onCreate(BuildContext context) async {
     setState(() {
-      _autovalidate = true;
+      _autovalidateMode = AutovalidateMode.always;
     });
 
-    if (!_formKey.currentState.validate()) {
+    if (_formKey.currentState != null && !_formKey.currentState!.validate()) {
       return;
     }
 
@@ -152,7 +153,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
     if (user == null) {
       showSnackBar(
-          scaffoldState: _scaffoldKey.currentState, text: OnlyKidsLocalizations.of(context).failedToCreateUser);
+          scaffoldState: _scaffoldKey.currentState, text: OnlyKidsLocalizations.of(context)!.failedToCreateUser);
       return;
     }
 

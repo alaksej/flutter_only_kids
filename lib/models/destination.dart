@@ -9,7 +9,7 @@ class Destination {
 }
 
 List<Destination> getAllDestinations(BuildContext context) {
-  final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+  final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
   return <Destination>[
     Destination(l10ns.appointments, Icons.people, Colors.teal),
     Destination(l10ns.gallery, Icons.image, Colors.cyan),

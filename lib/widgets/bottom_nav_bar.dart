@@ -4,7 +4,7 @@ import 'package:only_kids/blocs/nav_bar_bloc.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -18,19 +18,19 @@ class BottomNavBar extends StatelessWidget {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              title: Text('Home'),
+              label: 'Home',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.date_range),
-              title: Text('Calendar'),
+              label: 'Calendar',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.location_on),
-              title: Text('Contacts'),
+              label: 'Contacts',
             ),
           ],
           currentIndex: _navBarBloc.state,
-          selectedItemColor: Theme.of(context).accentColor,
+          selectedItemColor: Theme.of(context).secondaryHeaderColor,
           onTap: (index) {
             _navBarBloc.add(NavBarEvent(index));
           },

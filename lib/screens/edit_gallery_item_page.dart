@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,9 +14,9 @@ import 'package:only_kids/widgets/spinner.dart';
 import '../main.dart';
 
 class EditGalleryItemPage extends StatefulWidget {
-  EditGalleryItemPage({this.hairstyle, Key key}) : super(key: key);
+  EditGalleryItemPage({this.hairstyle, Key? key}) : super(key: key);
 
-  final Hairstyle hairstyle;
+  final Hairstyle? hairstyle;
 
   _EditGalleryItemPageState createState() => _EditGalleryItemPageState();
 }
@@ -24,23 +25,23 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
   final HairstylesService _hairstylesService = getIt.get<HairstylesService>();
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _autovalidate = false;
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   final TextEditingController nameTextController = TextEditingController();
   final TextEditingController priceTextController = TextEditingController();
-  File _savedImageFile;
-  File _imageFile;
+  late XFile _savedImageFile;
+  late XFile? _imageFile;
   bool errorLoadingImage = false;
 
   @override
   void initState() {
-    nameTextController.text = widget.hairstyle?.name;
-    priceTextController.text = widget.hairstyle?.price;
+    nameTextController.text = widget.hairstyle?.name ?? "";
+    priceTextController.text = widget.hairstyle?.price ?? "";
     final imageUrl = widget.hairstyle?.imageUrl;
     if (imageUrl != null) {
       DefaultCacheManager().getSingleFile(imageUrl).then((file) {
-        _savedImageFile = file;
+        _savedImageFile = XFile(file.path);
         setState(() {
-          _imageFile = file;
+          _imageFile = XFile(file.path);
         });
       }).catchError((e) {
         print(e);
@@ -57,7 +58,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
 
   /// Select an image via gallery or camera
   Future<void> _pickImage(ImageSource source) async {
-    File selected = await ImagePicker.pickImage(source: source);
+    XFile? selected = await ImagePicker().pickImage(source: source);
 
     setState(() {
       _imageFile = selected;
@@ -66,18 +67,17 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
 
   /// Cropper plugin
   Future<void> _cropImage() async {
-    File cropped = await ImageCropper.cropImage(
-      sourcePath: _imageFile.path,
-      aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 3),
-      androidUiSettings: AndroidUiSettings(
-        toolbarColor: Theme.of(context).primaryColor,
-        toolbarWidgetColor: Colors.white,
-        toolbarTitle: 'Crop It',
-      ),
-    );
+    // CroppedFile? cropped = await ImageCropper().cropImage(
+    //     sourcePath: _imageFile.path,
+    //     aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 3),
+    //     uiSettings: List.from({
+    //       // toolbarColor: Theme.of(context).primaryColor,
+    //       // toolbarWidgetColor: Colors.white,
+    //       // toolbarTitle: 'Crop It',
+    //     }));
 
     setState(() {
-      _imageFile = cropped ?? _imageFile;
+      // _imageFile = cropped?. ?? _imageFile;
     });
   }
 
@@ -102,7 +102,7 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
             padding: const EdgeInsets.all(8.0),
             child: Form(
               key: _formKey,
-              autovalidate: _autovalidate,
+              autovalidateMode: _autovalidateMode,
               child: Column(
                 children: <Widget>[
                   TextFormField(
@@ -166,13 +166,13 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
                                 height: 200,
                                 child: Center(
                                   child: _imageFile != null
-                                      ? Image.file(_imageFile)
+                                      ? Image.file(File(_imageFile!.path))
                                       : Padding(
                                           padding: const EdgeInsets.only(top: 40.0),
                                           child: Center(
                                             child: Text(
                                               'Take a picture using camera or select from gallery',
-                                              style: Theme.of(context).textTheme.title,
+                                              style: Theme.of(context).textTheme.titleLarge,
                                               textAlign: TextAlign.center,
                                             ),
                                           ),
@@ -190,12 +190,12 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
   }
 
   handleSave(BuildContext context, bool isNew) async {
-    String imageUrl = widget.hairstyle?.imageUrl;
-    String imageStoragePath = widget.hairstyle?.imageStoragePath;
+    String? imageUrl = widget.hairstyle?.imageUrl;
+    String? imageStoragePath = widget.hairstyle?.imageStoragePath;
 
-    if (shouldUploadImage) {
-      final ImageUploaderResult uploadResult = await Navigator.push<ImageUploaderResult>(context,
-          MaterialPageRoute(builder: (context) => ImageUploaderPage(_imageFile, widget.hairstyle?.imageStoragePath)));
+    if (shouldUploadImage && _imageFile != null && imageStoragePath != null) {
+      final ImageUploaderResult? uploadResult = await Navigator.push<ImageUploaderResult>(context,
+          MaterialPageRoute(builder: (context) => ImageUploaderPage(_imageFile!, imageStoragePath!)));
       imageUrl = uploadResult?.downloadUrl ?? imageUrl;
       imageStoragePath = uploadResult?.imageStoragePath;
     }
@@ -209,19 +209,19 @@ class _EditGalleryItemPageState extends State<EditGalleryItemPage> {
       await _hairstylesService.add(
         nameTextController.text,
         priceTextController.text,
-        imageUrl,
-        imageStoragePath,
+        imageUrl!,
+        imageStoragePath!,
         nextOrder,
       );
     } else {
       await _hairstylesService.update(
         Hairstyle(
-          id: widget.hairstyle.id,
+          id: widget.hairstyle?.id,
           name: nameTextController.text,
           price: priceTextController.text,
           imageUrl: imageUrl,
           imageStoragePath: imageStoragePath,
-          order: widget.hairstyle.order,
+          order: widget.hairstyle?.order,
         ),
       );
     }

@@ -3,16 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class UserProfile {
   final String uid;
-  final String email;
-  final String photoUrl;
-  final String displayName;
-  final String phoneNumber;
-  final DateTime lastSeen;
+  final String? email;
+  final String? photoUrl;
+  final String? displayName;
+  final String? phoneNumber;
+  final DateTime? lastSeen;
   final bool admin;
-  DocumentReference reference;
+  DocumentReference? reference;
 
   UserProfile({
-    this.uid,
+    required this.uid,
     this.email,
     this.photoUrl,
     this.displayName,
@@ -21,12 +21,12 @@ class UserProfile {
     this.admin = false,
   });
 
-  static Map<String, dynamic> firebaseUserToMap(FirebaseUser user) {
+  static Map<String, dynamic> firebaseUserToMap(User user) {
     assert(user != null);
     return {
       'uid': user.uid,
-      'email': user.email.toLowerCase(),
-      'photoUrl': user.photoUrl,
+      'email': user.email?.toLowerCase(),
+      'photoUrl': user.photoURL,
       'displayName': user.displayName,
       'lastSeen': DateTime.now(),
     };
@@ -47,7 +47,7 @@ class UserProfile {
 
   Map<String, dynamic> toMap() => {
         'uid': uid,
-        'email': email.toLowerCase(),
+        'email': email?.toLowerCase(),
         'photoURL': photoUrl,
         'displayName': displayName,
         'phoneNumber': phoneNumber,

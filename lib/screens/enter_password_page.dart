@@ -11,7 +11,7 @@ import '../localizations.dart';
 import '../main.dart';
 
 class EnterPasswordPage extends StatefulWidget {
-  const EnterPasswordPage({Key key, this.email}) : super(key: key);
+  const EnterPasswordPage({Key? key, required this.email}) : super(key: key);
 
   final String email;
 
@@ -22,7 +22,7 @@ class EnterPasswordPage extends StatefulWidget {
 class _EnterPasswordPageState extends State<EnterPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _autovalidate = false;
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
   final AuthService authService = getIt.get<AuthService>();
@@ -43,14 +43,14 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(),
       body: StreamBuilder<bool>(
           stream: _loadingService.loading$,
           builder: (context, snapshot) {
-            if (!snapshot.hasData || snapshot.data) {
+            if (!snapshot.hasData || snapshot.data!) {
               return Spinner();
             }
 
@@ -62,13 +62,13 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Text(
                       l10ns.welcomeBack,
-                      style: Theme.of(context).textTheme.headline,
+                      style: Theme.of(context).textTheme.headlineLarge,
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Form(
                     key: _formKey,
-                    autovalidate: _autovalidate,
+                    autovalidateMode: _autovalidateMode,
                     child: Column(
                       children: <Widget>[
                         TextFormField(
@@ -85,7 +85,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                           passwordTextController: passwordTextController,
                           hintText: l10ns.password,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value == null || value.isEmpty) {
                               return l10ns.enterPassword;
                             }
 
@@ -97,7 +97,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
                   ),
                   SizedBox(height: 20.0),
                   Align(
-                    child: RaisedButton(
+                    child: ElevatedButton(
                       child: Text(l10ns.logIn),
                       onPressed: () => _onLogIn(context),
                     ),
@@ -117,10 +117,10 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
 
   _onLogIn(BuildContext context) async {
     setState(() {
-      _autovalidate = true;
+      _autovalidateMode = AutovalidateMode.always;
     });
 
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
@@ -129,7 +129,7 @@ class _EnterPasswordPageState extends State<EnterPasswordPage> {
     if (user == null) {
       showSnackBar(
         scaffoldState: _scaffoldKey.currentState,
-        text: OnlyKidsLocalizations.of(context).badUsernameOrPassword,
+        text: OnlyKidsLocalizations.of(context)!.badUsernameOrPassword,
       );
       return;
     }

@@ -10,7 +10,7 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  GoogleMapController mapController;
+  GoogleMapController? mapController;
 
   final LatLng _center = const LatLng(52.43775156440748, 31.003112813409757);
 
@@ -20,7 +20,7 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(l10ns.ourLocation),

@@ -34,7 +34,7 @@ int compareTimeOfDay(TimeOfDay a, TimeOfDay b) {
   return minutesA > minutesB ? 1 : minutesA < minutesB ? -1 : 0;
 }
 
-Future<bool> showConfirmationDialog(BuildContext context, String title, String content, String confirmButton,
+Future<dynamic> showConfirmationDialog(BuildContext context, String title, String content, String confirmButton,
     [String closeButtton = 'Close']) {
   return showDialog(
     context: context,
@@ -43,13 +43,13 @@ Future<bool> showConfirmationDialog(BuildContext context, String title, String c
         title: new Text(title),
         content: new Text(content),
         actions: <Widget>[
-          new FlatButton(
+          new TextButton(
             child: new Text(closeButtton.toUpperCase()),
             onPressed: () {
               Navigator.of(context).pop(false);
             },
           ),
-          new FlatButton(
+          new TextButton(
             child: new Text(confirmButton.toUpperCase()),
             onPressed: () {
               Navigator.of(context).pop(true);
@@ -61,15 +61,16 @@ Future<bool> showConfirmationDialog(BuildContext context, String title, String c
   );
 }
 
-void showSnackBar({BuildContext context, ScaffoldState scaffoldState, durationSeconds = 3, String text}) {
+void showSnackBar({BuildContext? context, ScaffoldState? scaffoldState, durationSeconds = 3, String? text}) {
   assert((scaffoldState != null) ^ (context != null));
-  final SnackBar snackBar = SnackBar(
-    duration: Duration(seconds: durationSeconds),
-    content: Text(text),
-  );
-  if (scaffoldState != null) {
-    scaffoldState.showSnackBar(snackBar);
-  } else if (context != null) {
-    Scaffold.of(context).showSnackBar(snackBar);
-  }
+  // TODO
+  // final SnackBar snackBar = SnackBar(
+  //   duration: Duration(seconds: durationSeconds),
+  //   content: Text(text!),
+  // );
+  // if (scaffoldState != null) {
+  //   scaffoldState.showSnackBar(snackBar);
+  // } else if (context != null) {
+  //   Scaffold.of(context).showSnackBar(snackBar);
+  // }
 }

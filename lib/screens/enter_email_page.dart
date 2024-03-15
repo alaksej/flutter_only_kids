@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:only_kids/screens/create_account_page.dart';
 import 'package:only_kids/screens/enter_password_page.dart';
 import 'package:only_kids/services/auth_service.dart';
@@ -10,7 +11,7 @@ import '../localizations.dart';
 import '../main.dart';
 
 class EnterEmailPage extends StatefulWidget {
-  const EnterEmailPage({Key key}) : super(key: key);
+  const EnterEmailPage({Key? key}) : super(key: key);
 
   @override
   _EnterEmailPageState createState() => _EnterEmailPageState();
@@ -18,7 +19,7 @@ class EnterEmailPage extends StatefulWidget {
 
 class _EnterEmailPageState extends State<EnterEmailPage> {
   final _formKey = GlobalKey<FormState>();
-  bool _autovalidate = false;
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   final TextEditingController textController = TextEditingController();
   final AuthService authService = getIt.get<AuthService>();
   final LoadingService _loadingService = getIt.get<LoadingService>();
@@ -31,13 +32,13 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context);
+    final OnlyKidsLocalizations l10ns = OnlyKidsLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(),
       body: StreamBuilder<bool>(
           stream: _loadingService.loading$,
           builder: (context, snapshot) {
-            if (!snapshot.hasData || snapshot.data) {
+            if (!snapshot.hasData || snapshot.data!) {
               return Spinner();
             }
 
@@ -49,13 +50,13 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Text(
                       l10ns.useAccountViaEmail,
-                      style: Theme.of(context).textTheme.headline,
+                      style: Theme.of(context).textTheme.headlineLarge,
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Form(
                     key: _formKey,
-                    autovalidate: _autovalidate,
+                    autovalidateMode: _autovalidateMode,
                     child: TextFormField(
                       controller: textController,
                       keyboardType: TextInputType.emailAddress,
@@ -69,7 +70,7 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
                   ),
                   SizedBox(height: 20.0),
                   Align(
-                    child: RaisedButton(
+                    child: ElevatedButton(
                       child: Text(l10ns.next),
                       onPressed: () => _onNext(context),
                     ),
@@ -83,10 +84,10 @@ class _EnterEmailPageState extends State<EnterEmailPage> {
 
   _onNext(BuildContext context) async {
     setState(() {
-      _autovalidate = true;
+      _autovalidateMode = AutovalidateMode.always;
     });
 
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 

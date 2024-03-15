@@ -2,23 +2,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:only_kids/models/hairstyle.dart';
 
 class HairstylesService {
-  final CollectionReference _collectionRef = Firestore.instance.collection('hairstyles');
+  final CollectionReference _collectionRef = FirebaseFirestore.instance.collection('hairstyles');
 
   Stream<List<Hairstyle>> getHairstyles() {
     Query query = _collectionRef.orderBy('order');
-    return query.snapshots().map((list) => list.documents.map((snapshot) => Hairstyle.fromSnapshot(snapshot)).toList());
+    return query.snapshots().map((list) => list.docs.map((snapshot) => Hairstyle.fromSnapshot(snapshot)).toList());
   }
 
   Future<double> getMaxOrder() async {
     final query = _collectionRef.orderBy('order', descending: true).limit(1);
-    final querySnapshot = await query.getDocuments();
-    final list = querySnapshot.documents.toList();
+    final querySnapshot = await query.get();
+    final list = querySnapshot.docs.toList();
     if (list.length == 0) {
       return 0;
     }
 
     final documentSnapshot = list.first;
-    final double maxOrder = documentSnapshot.data['order'];
+    Object? data = documentSnapshot.data();
+    final double maxOrder = data == null ? 0 : (data as Map)['order'];
     return maxOrder;
   }
 
@@ -39,14 +40,14 @@ class HairstylesService {
 
     final docRef = await _collectionRef.add(hairstyle.toMap());
 
-    return docRef.documentID;
+    return docRef.id;
   }
 
   Future<void> update(Hairstyle hairstyle) async {
-    await _collectionRef.document(hairstyle.id).setData(hairstyle.toMap(), merge: true);
+    await _collectionRef.doc(hairstyle.id).set(hairstyle.toMap(), SetOptions(merge: true));
   }
 
   Future<void> delete(String id) async {
-    await _collectionRef.document(id).delete();
+    await _collectionRef.doc(id).delete();
   }
 }

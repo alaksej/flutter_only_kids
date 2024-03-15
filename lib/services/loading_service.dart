@@ -7,7 +7,7 @@ class LoadingService {
 
   BehaviorSubject<int> _counter$ = BehaviorSubject.seeded(0);
   int get count => _counter$.value;
-  Stream<bool> loading$;
+  late Stream<bool> loading$;
 
   _begin() {
     _counter$.add(count + 1);

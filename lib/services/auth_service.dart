@@ -10,44 +10,46 @@ import 'package:rxdart/rxdart.dart';
 class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Firestore _db = Firestore.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   final LoadingService _loadingService = getIt.get<LoadingService>();
 
-  Stream<FirebaseUser> firebaseUser$; // firebase user
-  Stream<UserProfile> userProfile$; // custom user data in Firestore
+  late Stream<User?> firebaseUser$; // firebase user
+  late Stream<UserProfile?> userProfile$; // custom user data in Firestore
 
-  FirebaseUser _firebaseUser;
-  FirebaseUser get currentUser => _firebaseUser;
+  User? _firebaseUser;
+  User? get currentUser => _firebaseUser;
   bool get isLoggedIn => _firebaseUser != null;
 
   AuthService() {
-    firebaseUser$ = _auth.onAuthStateChanged.doOnData((u) => _firebaseUser = u).shareReplay(maxSize: 1);
+    firebaseUser$ = _auth.authStateChanges().doOnData((u) => _firebaseUser = u).shareReplay(maxSize: 1);
     userProfile$ = firebaseUser$
-        .switchMap((FirebaseUser u) => u != null ? _getUserProfileStream(u.uid) : Stream.value(null))
+        .switchMap((User? u) => u != null ? _getUserProfileStream(u.uid) : Stream.value(null))
         .shareReplay(maxSize: 1);
   }
 
-  Stream<UserProfile> _getUserProfileStream(String uid) {
-    return _db.collection('users').document(uid).snapshots().map((snap) => UserProfile.fromMap(snap.data));
+  Stream<UserProfile?> _getUserProfileStream(String uid) {
+    return _db.collection('users').doc(uid).snapshots().map((snap) => UserProfile.fromMap(snap.data()!));
   }
 
   Future<UserProfile> _getUserProfile(String uid) {
-    return _db.collection('users').document(uid).get().then((value) => UserProfile.fromMap(value.data));
+    return _db.collection('users').doc(uid).get().then((value) => UserProfile.fromMap(value.data()!));
   }
 
-  Future<UserProfile> googleSignIn() async {
+  Future<UserProfile?> googleSignIn() async {
     try {
-      GoogleSignInAccount googleSignInAccount = await _loadingService.wrap(_googleSignIn.signIn());
-      GoogleSignInAuthentication googleAuth = await _loadingService.wrap(googleSignInAccount.authentication);
+      GoogleSignInAccount? googleSignInAccount = await _loadingService.wrap(_googleSignIn.signIn());
+      GoogleSignInAuthentication? googleAuth = googleSignInAccount?.authentication == null 
+      ? null 
+      : await _loadingService.wrap(googleSignInAccount!.authentication);
 
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
       );
 
-      FirebaseUser user = (await _loadingService.wrap(_auth.signInWithCredential(credential))).user;
+      User? user = (await _loadingService.wrap(_auth.signInWithCredential(credential))).user;
       await updateUserData(user);
-      userProfile$ = _getUserProfileStream(user.uid);
+      userProfile$ = _getUserProfileStream(user!.uid);
       UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
       return userProfile;
     } catch (error) {
@@ -56,9 +58,9 @@ class AuthService {
     }
   }
 
-  Future<UserProfile> createUserWithPassword(String email, String password, String name) async {
+  Future<UserProfile?> createUserWithPassword(String email, String password, String name) async {
     try {
-      FirebaseUser user = (await _loadingService.wrap(
+      User? user = (await _loadingService.wrap(
         _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
@@ -66,7 +68,7 @@ class AuthService {
       )).user;
 
       await updateUserData(user, name);
-      userProfile$ = _getUserProfileStream(user.uid);
+      userProfile$ = _getUserProfileStream(user!.uid);
       UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
       return userProfile;
     } catch (error) {
@@ -75,7 +77,7 @@ class AuthService {
     }
   }
 
-  Future<UserProfile> passwordSignIn(String email, String password) async {
+  Future<UserProfile?> passwordSignIn(String email, String password) async {
     try {
       final authResult = await _loadingService.wrap(
         _auth.signInWithEmailAndPassword(
@@ -84,9 +86,9 @@ class AuthService {
         ),
       );
 
-      FirebaseUser user = authResult.user;
+      User? user = authResult.user;
 
-      userProfile$ = _getUserProfileStream(user.uid);
+      userProfile$ = _getUserProfileStream(user!.uid);
       UserProfile userProfile = await _loadingService.wrap(_getUserProfile(user.uid));
       return userProfile;
     } catch (error) {
@@ -95,22 +97,22 @@ class AuthService {
     }
   }
 
-  Future<void> updateUserData(FirebaseUser user, [String displayName]) async {
+  Future<void> updateUserData(User? user, [String? displayName]) async {
     // TODO: refactor the mess:
-    DocumentReference ref = _db.collection('users').document(user.uid);
-    final map = UserProfile.firebaseUserToMap(user);
+    DocumentReference ref = _db.collection('users').doc(user?.uid);
+    final map = UserProfile.firebaseUserToMap(user!);
     if (displayName != null && displayName.isNotEmpty) {
       map['displayName'] = displayName;
     }
 
     return await _loadingService.wrap(
-      ref.setData(map, merge: true),
+      ref.set(map, SetOptions(merge: true)),
     );
   }
 
   Future<void> updateCurrentUserPhone(String phoneNumber) async {
-    DocumentReference ref = _db.collection('users').document(currentUser.uid);
-    return await _loadingService.wrap(ref.setData({'phoneNumber': phoneNumber}, merge: true));
+    DocumentReference ref = _db.collection('users').doc(currentUser?.uid);
+    return await _loadingService.wrap(ref.set({'phoneNumber': phoneNumber}, SetOptions(merge: true)));
   }
 
   Future<bool> userExists(String email) async {
